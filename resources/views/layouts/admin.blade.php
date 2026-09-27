@@ -11,22 +11,21 @@
 
 <!-- Admin Sidebar -->
 <aside class="admin-sidebar" id="adminSidebar">
-    <div class="sidebar-brand">
-        <img src="{{ asset('images/Emblem_of_Nepal.png') }}" alt="Bahrdashi Gaupalikaù Logo" style="height: 40px; width: auto;" class="me-2">
-
+    <div class="sidebar-brand d-flex align-items-center gap-2">
+        <img src="{{ asset('images/Emblem_of_Nepal.png') }}" alt="Nepal Government Logo" style="height: 42px; width: auto;" class="me-2">
         <div>
-            <h5>बाह्रदशी गाउँपालिका</h5>
-            <small>प्रशासकीय कक्ष</small>
+            <h5 class="mb-0 fw-bold text-white" style="font-size: 1.15rem;">बाह्रदशी गाउँपालिका</h5>
+            <small class="text-warning fw-semibold" style="font-size: 0.75rem;">प्रशासकीय नियन्त्रण कक्ष</small>
         </div>
     </div>
 
-    <nav class="sidebar-nav">
-        <div class="nav-section">मुख्य</div>
+    <nav class="sidebar-nav flex-grow-1">
+        <div class="nav-section">मुख्य ड्यासबोर्ड</div>
         <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <i data-lucide="layout-dashboard"></i> ड्यासबोर्ड
         </a>
 
-        <div class="nav-section">व्यवस्थापन</div>
+        <div class="nav-section">प्रशासन तथा सेवा</div>
         <a href="{{ route('admin.departments.index') }}" class="nav-link {{ request()->routeIs('admin.departments.*') ? 'active' : '' }}">
             <i data-lucide="network"></i> मन्त्रालय / विभागहरू
         </a>
@@ -40,7 +39,7 @@
             <i data-lucide="file-text"></i> प्राप्त निवेदनहरू
         </a>
 
-        <div class="nav-section">नागरिकहरू</div>
+        <div class="nav-section">नागरिक सेवा</div>
         <a href="{{ route('admin.citizens.index') }}" class="nav-link {{ request()->routeIs('admin.citizens.*') ? 'active' : '' }}">
             <i data-lucide="users"></i> नागरिक सूची
         </a>
@@ -53,32 +52,52 @@
             <i data-lucide="message-square"></i> गुनासो तथा सुझाव
         </a>
     </nav>
+
+    <!-- Sidebar Footer / System Status -->
+    <div class="p-3 border-top border-secondary border-opacity-25 mt-auto">
+        <div class="d-flex align-items-center justify-content-between text-muted" style="font-size: 0.72rem;">
+            <span class="d-flex align-items-center gap-1 text-success">
+                <span class="d-inline-block rounded-circle bg-success" style="width: 7px; height: 7px;"></span>
+                सर्भर: सक्रिय
+            </span>
+            <span class="text-white-50">v1.2 e-Gov</span>
+        </div>
+    </div>
 </aside>
 
 <!-- Main Content -->
 <div class="admin-main">
     <!-- Top Navbar -->
-    <div class="top-navbar">
+    <div class="top-navbar d-flex align-items-center justify-content-between px-3 px-lg-4 py-2">
         <div class="d-flex align-items-center gap-3">
             <button class="btn btn-sm btn-outline-secondary d-lg-none" onclick="toggleSidebar()" id="sidebarToggle">
                 <i data-lucide="menu"></i>
             </button>
-            <h1 class="page-title">{{ $pageTitle ?? 'ड्यासबोर्ड' }}</h1>
+            <div>
+                <div class="text-muted extra-small d-none d-sm-block">
+                    नेपाल सरकार • कोशी प्रदेश • बाह्रदशी गाउँपालिका
+                </div>
+                <h1 class="page-title mb-0 fs-5 fw-bold text-dark">{{ $pageTitle ?? 'ड्यासबोर्ड' }}</h1>
+            </div>
         </div>
-        <div class="navbar-user">
+        
+        <div class="navbar-user d-flex align-items-center gap-3">
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle d-none d-md-inline-block fw-semibold px-2 py-1">
+                <i data-lucide="shield-check" style="width:12px;height:12px;"></i> प्रशासक मोड
+            </span>
             <div class="dropdown">
-                <button class="btn btn-sm btn-light dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                <button class="btn btn-sm btn-light dropdown-toggle d-flex align-items-center gap-2 border shadow-sm rounded-pill px-3 py-1" data-bs-toggle="dropdown">
                     @if(auth()->user()->profile_photo)
-                        <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="{{ auth()->user()->name }}" class="rounded-circle object-fit-cover" style="width:36px;height:36px;">
+                        <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="{{ auth()->user()->name }}" class="rounded-circle object-fit-cover" style="width:30px;height:30px;">
                     @else
-                        <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+                        <div class="user-avatar" style="width:30px;height:30px;font-size:0.75rem;">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
                     @endif
-                    <span class="d-none d-sm-inline">{{ auth()->user()->name }}</span>
+                    <span class="d-none d-sm-inline fw-semibold text-dark">{{ auth()->user()->name }}</span>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><span class="dropdown-item-text text-muted small">{{ auth()->user()->email }}</span></li>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                    <li><span class="dropdown-item-text text-muted small fw-semibold">{{ auth()->user()->email }}</span></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-lucide="user" class="me-2"></i>प्रोफाइल</a></li>
+                    <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-lucide="user" class="me-2"></i>मेरो प्रोफाइल</a></li>
                     <li>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -86,6 +105,14 @@
                         </form>
                     </li>
                 </ul>
+            </div>
+
+            <!-- Right side Nepal Animated Flag (Transparent - Reference: bahradashimun.gov.np) -->
+            <div class="navbar-nepal-flag d-none d-sm-flex align-items-center" title="नेपालको राष्ट्रिय झण्डा">
+                <picture>
+                    <source srcset="{{ asset('images/nepal-flag.webp') }}?v=3" type="image/webp">
+                    <img src="{{ asset('images/nepal-flag.gif') }}?v=3" alt="नेपालको राष्ट्रिय झण्डा" class="nepal-flag-navbar-img">
+                </picture>
             </div>
         </div>
     </div>

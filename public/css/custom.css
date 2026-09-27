@@ -1,50 +1,71 @@
 /* =========================================================
    Government Service Management System — Ultra-Premium Stylesheet
+   Barhadashi Rural Municipality (नेपाल सरकार e-Governance Standard)
    ========================================================= */
 
-/* --- Root Design System Tokens --- */
+/* --- Official Nepal Government Design System Tokens --- */
 :root {
-    --primary: #2563eb;
-    --primary-dark: #1d4ed8;
-    --primary-light: #eff6ff;
-    --primary-gradient: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+    /* Sovereign National Colors */
+    --gov-crimson: #C8102E;         /* Simrik Rato - National Crimson */
+    --gov-crimson-dark: #9E0A22;
+    --gov-crimson-light: #FDF2F4;
+    --gov-crimson-subtle: rgba(200, 16, 46, 0.08);
+    --gov-blue: #003893;            /* National Flag Border Blue */
+    --gov-blue-dark: #00225E;
+    --gov-blue-light: #EBF3FF;
+    --gov-navy: #05264E;            /* Royal Executive Navy */
+    --gov-navy-dark: #031733;       /* Topbar / Dark Footer Navy */
+    --gov-navy-light: #0A376C;
+    --gov-gold: #D4AF37;            /* Government Laurel Gold */
+    --gov-gold-light: #FEF9C3;
+    --gov-gold-dark: #A16207;
+    
+    /* Primary & Brand Themes */
+    --primary: #053775;
+    --primary-dark: #00225E;
+    --primary-light: #EBF3FF;
+    --primary-gradient: linear-gradient(135deg, #053775 0%, #003893 100%);
+    --crimson-gradient: linear-gradient(135deg, #C8102E 0%, #9E0A22 100%);
     
     --secondary: #059669;
     --secondary-dark: #047857;
-    --secondary-light: #ecfdf5;
+    --secondary-light: #ECFDF5;
     
-    --accent: #0ea5e9;
-    --accent-light: #e0f2fe;
+    --accent: #0284C7;
+    --accent-light: #E0F2FE;
     
-    --danger: #dc2626;
-    --danger-light: #fef2f2;
+    --danger: #DC2626;
+    --danger-light: #FEF2F2;
     
-    --warning: #64748b;
-    --warning-light: #f1f5f9;
+    --warning: #D97706;
+    --warning-light: #FFFBEB;
     
-    --info: #0284c7;
-    --info-light: #f0f9ff;
+    --info: #0284C7;
+    --info-light: #F0F9FF;
     
-    --dark: #0f172a;
+    --dark: #0F172A;
     --dark-muted: #475569;
     
-    --sidebar-bg: #0f172a;
-    --sidebar-border: #1e293b;
-    --sidebar-hover: #1e293b;
-    --sidebar-active: #2563eb;
+    --sidebar-bg: #08172E;
+    --sidebar-border: #132746;
+    --sidebar-hover: #0F2A52;
+    --sidebar-active: #C8102E;
     
-    --body-bg: #f8fafc;
-    --surface-bg: #ffffff;
-    --border-color: #e2e8f0;
+    --body-bg: #F4F6FA;
+    --surface-bg: #FFFFFF;
+    --border-color: #E2E8F0;
+    --border-strong: #CBD5E1;
     
-    --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-    --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.07), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+    --card-shadow: 0 2px 6px 0 rgba(5, 38, 78, 0.04), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+    --card-shadow-hover: 0 16px 28px -6px rgba(5, 38, 78, 0.10), 0 8px 12px -4px rgba(0, 0, 0, 0.04);
+    --card-shadow-lg: 0 20px 35px -8px rgba(5, 38, 78, 0.12), 0 10px 15px -5px rgba(0, 0, 0, 0.05);
     
-    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     --radius-sm: 0.375rem;
     --radius: 0.75rem;
     --radius-lg: 1rem;
+    --radius-xl: 1.25rem;
     --radius-full: 9999px;
 }
 
@@ -1253,7 +1274,7 @@ a {
 
 .auth-form-container {
     width: 100%;
-    max-width: 440px;
+    max-width: 500px;
     margin: auto;
 }
 
@@ -1547,11 +1568,35 @@ a {
 .citizen-main {
     position: relative;
     z-index: 1;
-    max-width: 1280px;
-    width: 100%;
+    max-width: 1720px;
+    width: 94%;
     margin: 0 auto;
-    padding: 1.75rem 1.25rem 3.5rem;
+    padding: 1.75rem 0.5rem 3.5rem;
     flex: 1;
+}
+
+.citizen-navbar .container,
+.citizen-navbar .citizen-nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    max-width: 1720px;
+    width: 94%;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+}
+
+@media (max-width: 767.98px) {
+    .citizen-main {
+        width: 100%;
+        padding: 1.25rem 0.75rem 2.5rem;
+    }
+    .citizen-navbar .container,
+    .citizen-navbar .citizen-nav-container {
+        width: 100%;
+        padding: 0 0.75rem;
+    }
 }
 
 .admin-main {
@@ -1574,6 +1619,24 @@ a {
 .citizen-navbar .navbar-brand {
     color: #ffffff !important;
     font-weight: 700;
+    display: inline-flex !important;
+    align-items: center;
+    width: auto !important;
+    max-width: fit-content !important;
+    flex-shrink: 0 !important;
+    text-decoration: none;
+    padding: 0.35rem 0.65rem;
+    background: transparent !important;
+    cursor: pointer;
+}
+
+.citizen-navbar .navbar-brand:hover,
+.citizen-navbar .navbar-brand:focus,
+.citizen-navbar .navbar-brand:active {
+    background: transparent !important;
+    transform: none !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
 }
 
 .citizen-navbar .nav-link {
@@ -1625,15 +1688,705 @@ a {
     align-items: center;
     gap: 0.5rem;
     background: rgba(255, 255, 255, 0.18);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.32);
     border-radius: 9999px;
-    padding: 0.25rem 0.85rem;
-    font-size: 0.8rem;
+    padding: 0.38rem 1.1rem;
+    font-size: 0.92rem;
     font-weight: 600;
     color: #ffffff;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    letter-spacing: 0.01em;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
+/* Animated Nepal Flag on Navbar (Reference: bahradashimun.gov.np) */
+.navbar-nepal-flag {
+    display: flex;
+    align-items: center;
+    padding-left: 0.5rem;
+}
 
+.nepal-flag-navbar-img {
+    height: 42px;
+    width: auto;
+    max-width: 60px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.28));
+    transition: transform 0.25s ease;
+}
+
+.nepal-flag-navbar-img:hover {
+    transform: scale(1.06);
+}
+
+/* ==========================================================================
+   NEPAL GOVERNMENT e-GOVERNANCE SUITE — ULTRA-MODERN STYLING
+   Barhadashi Rural Municipality Portal
+   ========================================================================== */
+
+/* --- Top National Bar (राष्ट्रिय सूचना पट्टी) --- */
+.gov-topbar {
+    background: var(--gov-navy-dark);
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.76rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    position: relative;
+    z-index: 1030;
+    line-height: 1.4;
+}
+
+.gov-topbar-inner {
+    max-width: 1720px;
+    width: 94%;
+    margin: 0 auto;
+    padding: 0.4rem 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.gov-topbar-hierarchy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+}
+
+.gov-topbar-hierarchy .gov-flag-icon {
+    font-size: 0.95rem;
+}
+
+.gov-topbar-slogan {
+    color: #fef08a; /* soft gold */
+    font-size: 0.74rem;
+    font-style: italic;
+    letter-spacing: 0.01em;
+}
+
+.gov-topbar-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.gov-date-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(255, 255, 255, 0.10);
+    padding: 0.18rem 0.65rem;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.gov-emergency-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(200, 16, 46, 0.28);
+    color: #fecdd3;
+    padding: 0.18rem 0.65rem;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(200, 16, 46, 0.5);
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.gov-emergency-chip:hover {
+    background: var(--gov-crimson);
+    color: #ffffff;
+    border-color: var(--gov-crimson);
+}
+
+/* --- Upgraded Citizen Navbar --- */
+.citizen-navbar {
+    background: linear-gradient(180deg, #053775 0%, #032757 100%) !important;
+    border-bottom: 3px solid var(--gov-crimson) !important;
+    box-shadow: 0 4px 20px rgba(5, 55, 117, 0.22) !important;
+    padding: 0.55rem 0 !important;
+}
+
+.citizen-navbar .navbar-brand {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    background: transparent !important;
+}
+
+.brand-emblem-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-emblem-img {
+    height: 44px;
+    width: auto;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+    transition: transform 0.25s ease;
+}
+
+.citizen-navbar .navbar-brand:hover .brand-emblem-img {
+    transform: scale(1.05);
+}
+
+.brand-text-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-title-main {
+    font-size: 1.28rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.brand-subtitle-sub {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #93c5fd; /* Soft sky blue */
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    margin-top: 0.15rem;
+}
+
+.citizen-navbar .nav-link {
+    color: rgba(255, 255, 255, 0.90) !important;
+    font-weight: 600;
+    padding: 0.52rem 0.95rem !important;
+    font-size: 0.88rem;
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.citizen-navbar .nav-link:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.14) !important;
+    transform: translateY(-1px);
+}
+
+.citizen-navbar .nav-link.active {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #c8102e 0%, #9e0a22 100%) !important;
+    box-shadow: 0 2px 8px rgba(200, 16, 46, 0.4);
+    font-weight: 700;
+}
+
+.navbar-user-btn {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 0.35rem 0.85rem !important;
+    border-radius: var(--radius-full) !important;
+    font-weight: 600;
+    font-size: 0.86rem;
+    transition: all 0.2s ease;
+}
+
+.navbar-user-btn:hover {
+    background: rgba(255, 255, 255, 0.22) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    transform: translateY(-1px);
+}
+
+/* --- Hero Banner & Search (ड्यासबोर्ड ब्यानर तथा खोजी) --- */
+.barhadashi-dashboard-banner {
+    border-radius: var(--radius-xl) !important;
+    background: linear-gradient(135deg, #031e42 0%, #053775 60%, #00225e 100%) !important;
+    box-shadow: 0 12px 30px -5px rgba(5, 55, 117, 0.32) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.barhadashi-banner-bg {
+    opacity: 0.28 !important;
+}
+
+.greeting-time-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(254, 240, 138, 0.18);
+    border: 1px solid rgba(254, 240, 138, 0.4);
+    color: #fef08a;
+    font-size: 0.80rem;
+    font-weight: 700;
+    padding: 0.22rem 0.75rem;
+    border-radius: var(--radius-full);
+}
+
+.verified-citizen-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(16, 185, 129, 0.22);
+    border: 1px solid rgba(16, 185, 129, 0.45);
+    color: #a7f3d0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.65rem;
+    border-radius: var(--radius-full);
+}
+
+.banner-search-box {
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    border-radius: var(--radius-lg);
+    padding: 0.35rem 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transition: all 0.25s ease;
+}
+
+.banner-search-box:focus-within {
+    background: rgba(255, 255, 255, 0.96);
+    border-color: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.banner-search-box:focus-within .banner-search-input {
+    color: var(--dark);
+}
+
+.banner-search-box:focus-within .banner-search-input::placeholder {
+    color: #64748b;
+}
+
+.banner-search-box:focus-within .banner-search-icon {
+    color: var(--primary);
+}
+
+.banner-search-input {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 500;
+    outline: none;
+    width: 100%;
+    padding: 0.4rem 0.5rem;
+}
+
+.banner-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.banner-search-icon {
+    color: rgba(255, 255, 255, 0.85);
+    padding-left: 0.5rem;
+}
+
+/* --- Quick Action Cards (४ द्रुत सेवा कार्डहरू) --- */
+.quick-action-card {
+    background: var(--surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+    border-color: #93c5fd;
+    color: inherit;
+}
+
+.quick-action-icon-box {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+    color: #ffffff;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.quick-action-icon-box.action-blue   { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); }
+.quick-action-icon-box.action-green  { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+.quick-action-icon-box.action-amber  { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); }
+.quick-action-icon-box.action-purple { background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); }
+
+.quick-action-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--dark);
+    margin-bottom: 0.15rem;
+    line-height: 1.3;
+}
+
+.quick-action-desc {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-bottom: 0;
+    line-height: 1.3;
+}
+
+/* --- Stat Cards Enhanced --- */
+.stat-card {
+    background: var(--surface-bg);
+    border: 1px solid var(--border-color);
+    border-top: 3.5px solid var(--primary);
+    border-radius: var(--radius-lg);
+    padding: 1.35rem 1.45rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.stat-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-3px);
+}
+
+.stat-card.primary { border-top-color: #053775; }
+.stat-card.warning { border-top-color: #d97706; }
+.stat-card.success { border-top-color: #059669; }
+.stat-card.danger  { border-top-color: #c8102e; }
+.stat-card.info    { border-top-color: #0284c7; }
+
+.stat-card .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+/* --- Official Government Footer --- */
+.gov-footer {
+    background: var(--gov-navy-dark);
+    color: #cbd5e1;
+    border-top: 4px solid var(--gov-crimson);
+    position: relative;
+    z-index: 10;
+    margin-top: auto;
+}
+
+.gov-footer-main {
+    max-width: 1720px;
+    width: 94%;
+    margin: 0 auto;
+    padding: 3.5rem 0.5rem 2.5rem;
+}
+
+.gov-footer-brand h4 {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 1.3rem;
+    margin-bottom: 0.35rem;
+}
+
+.gov-footer-brand p {
+    color: #94a3b8;
+    font-size: 0.86rem;
+    line-height: 1.6;
+}
+
+.gov-footer-heading {
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.15rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.gov-footer-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 32px;
+    height: 2px;
+    background: var(--gov-crimson);
+    border-radius: 2px;
+}
+
+.gov-footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.gov-footer-links li {
+    margin-bottom: 0.65rem;
+}
+
+.gov-footer-links a {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.86rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: var(--transition-fast);
+}
+
+.gov-footer-links a:hover {
+    color: #ffffff;
+    transform: translateX(3px);
+}
+
+.gov-footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.86rem;
+    color: #cbd5e1;
+}
+
+.gov-footer-contact-item i {
+    color: #fef08a;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+}
+
+.gov-footer-bottom {
+    background: #020f21;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1.1rem 0;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.gov-footer-bottom-inner {
+    max-width: 1720px;
+    width: 94%;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+/* --- Admin Sidebar Sovereign Modern Theme --- */
+.admin-sidebar {
+    background: #07152b !important;
+    border-right: 1px solid #102342 !important;
+}
+
+.admin-sidebar .sidebar-brand {
+    background: linear-gradient(180deg, #051d3b 0%, #07152b 100%);
+    border-bottom: 2px solid var(--gov-crimson);
+    padding: 1.25rem 1.4rem;
+}
+
+.admin-sidebar .nav-section {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    padding: 1rem 1.4rem 0.4rem;
+}
+
+.admin-sidebar .nav-link {
+    color: #94a3b8;
+    padding: 0.72rem 1.4rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-left: 3px solid transparent;
+    transition: var(--transition-fast);
+}
+
+.admin-sidebar .nav-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
+    border-left-color: #38bdf8;
+}
+
+.admin-sidebar .nav-link.active {
+    color: #ffffff;
+    background: linear-gradient(90deg, rgba(200, 16, 46, 0.20) 0%, rgba(200, 16, 46, 0.04) 100%);
+    border-left-color: var(--gov-crimson);
+    font-weight: 700;
+}
+
+.admin-sidebar .nav-link.active i {
+    color: #f87171;
+}
+
+.admin-main .top-navbar {
+    background: #ffffff;
+    border-bottom: 2px solid #e2e8f0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* --- Notice Board Card Upgraded --- */
+.notice-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--gov-crimson);
+    border-radius: var(--radius);
+    padding: 1.15rem;
+    margin-bottom: 0.85rem;
+    transition: var(--transition-fast);
+}
+
+.notice-card:hover {
+    box-shadow: var(--card-shadow);
+    transform: translateX(3px);
+    border-left-color: var(--gov-blue);
+}
+
+/* --- Responsive Helpers --- */
+@media (max-width: 991.98px) {
+    .gov-topbar-slogan {
+        display: none;
+    }
+    .gov-topbar-inner {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+/* --- Admin Dashboard Enhancements --- */
+.admin-action-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.15rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.admin-action-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--card-shadow-hover);
+    border-color: #93c5fd;
+    color: inherit;
+}
+
+.admin-action-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.admin-action-icon.bg-action-blue   { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); }
+.admin-action-icon.bg-action-crimson{ background: linear-gradient(135deg, #c8102e 0%, #9e0a22 100%); }
+.admin-action-icon.bg-action-gold   { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); }
+.admin-action-icon.bg-action-green  { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+
+.admin-metric-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.15rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    height: 100%;
+}
+
+.admin-metric-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-2px);
+}
+
+.table-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #053775 0%, #234a83 100%);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.auth-feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-top: 1.75rem;
+    text-align: left;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.auth-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 0.55rem 0.95rem;
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.86rem;
+    color: #ffffff;
+}
+
+.auth-feature-item i {
+    color: #fef08a;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
 

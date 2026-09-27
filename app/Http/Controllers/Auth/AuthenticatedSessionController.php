@@ -14,9 +14,21 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('auth.login');
+        $rememberedEmail = $request->cookie('remembered_email', '');
+        $rememberedRole = $request->cookie('remembered_role', '');
+        $rememberMeChecked = (bool) $request->cookie('remember_me_checked', false);
+        $rememberedAdminEmail = $request->cookie('remembered_admin_email', '');
+        $rememberedCitizenEmail = $request->cookie('remembered_citizen_email', '');
+
+        return view('auth.login', compact(
+            'rememberedEmail',
+            'rememberedRole',
+            'rememberMeChecked',
+            'rememberedAdminEmail',
+            'rememberedCitizenEmail'
+        ));
     }
 
     /**
@@ -28,11 +40,37 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if (auth()->user()->isAdmin()) {
-            return redirect()->intended(route('admin.dashboard', absolute: false));
+        $redirect = auth()->user()->isAdmin()
+            ? redirect()->intended(route('admin.dashboard', absolute: false))
+            : redirect()->intended(route('citizen.dashboard', absolute: false));
+
+        $email = $request->string('email')->toString();
+        $role = $request->string('role')->toString();
+
+        if ($request->boolean('remember')) {
+            // Save remember cookies for 1 year
+            $redirect->withCookie(cookie()->forever('remembered_email', $email))
+                ->withCookie(cookie()->forever('remembered_role', $role))
+                ->withCookie(cookie()->forever('remember_me_checked', '1'));
+
+            if ($role === 'admin') {
+                $redirect->withCookie(cookie()->forever('remembered_admin_email', $email));
+            } else {
+                $redirect->withCookie(cookie()->forever('remembered_citizen_email', $email));
+            }
+        } else {
+            // Clear remember cookies if remember me was unchecked
+            $redirect->withCookie(cookie()->forget('remembered_email'))
+                ->withCookie(cookie()->forget('remember_me_checked'));
+
+            if ($role === 'admin') {
+                $redirect->withCookie(cookie()->forget('remembered_admin_email'));
+            } else {
+                $redirect->withCookie(cookie()->forget('remembered_citizen_email'));
+            }
         }
 
-        return redirect()->intended(route('citizen.dashboard', absolute: false));
+        return $redirect;
     }
 
     /**
