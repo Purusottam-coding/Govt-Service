@@ -1470,14 +1470,11 @@ a {
 
 /* Footer Links */
 .auth-footer-links {
-    margin-top: 1.5rem;
+    margin-top: 1.25rem;
     text-align: center;
-    font-size: 0.86rem;
+    font-size: 0.84rem;
     color: #64748b;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
+    width: 100%;
 }
 
 .auth-footer-link {
@@ -1724,87 +1721,76 @@ a {
    Barhadashi Rural Municipality Portal
    ========================================================================== */
 
-/* --- Top National Bar (राष्ट्रिय सूचना पट्टी) --- */
+/* --- Top National Bar (राष्ट्रिय सूचना पट्टी - Koshi Gov Red Style) --- */
 .gov-topbar {
-    background: var(--gov-navy-dark);
-    color: rgba(255, 255, 255, 0.88);
-    font-size: 0.76rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    background: #a60f1e !important; /* Official Crimson Red like koshi.gov.np */
+    color: #ffffff !important;
+    font-size: 0.81rem;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     position: relative;
-    z-index: 1030;
-    line-height: 1.4;
+    z-index: 1040;
+    line-height: 1.5;
+    padding: 0;
 }
 
 .gov-topbar-inner {
     max-width: 1720px;
-    width: 94%;
+    width: 95%;
     margin: 0 auto;
-    padding: 0.4rem 0.5rem;
+    padding: 0.35rem 0.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
-.gov-topbar-hierarchy {
-    display: inline-flex;
+.gov-topbar-left {
+    display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-weight: 600;
     color: #ffffff;
-    letter-spacing: 0.02em;
+    font-size: 0.82rem;
+    white-space: nowrap;
+    overflow-x: auto;
 }
 
-.gov-topbar-hierarchy .gov-flag-icon {
-    font-size: 0.95rem;
+.gov-topbar-left .topbar-cal-icon {
+    width: 14px;
+    height: 14px;
+    stroke: #ffffff;
+    color: #ffffff;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: -2px;
 }
 
-.gov-topbar-slogan {
-    color: #fef08a; /* soft gold */
-    font-size: 0.74rem;
-    font-style: italic;
+.gov-topbar-left .bilingual-live-date {
+    color: #ffffff;
+    font-weight: 500;
     letter-spacing: 0.01em;
 }
 
-.gov-topbar-meta {
-    display: inline-flex;
+.gov-topbar-right {
+    display: flex;
     align-items: center;
     gap: 0.85rem;
-    flex-wrap: wrap;
-}
-
-.gov-date-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    background: rgba(255, 255, 255, 0.10);
-    padding: 0.18rem 0.65rem;
-    border-radius: var(--radius-full);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    font-weight: 500;
+    flex-shrink: 0;
 }
 
 .gov-emergency-chip {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    background: rgba(200, 16, 46, 0.28);
-    color: #fecdd3;
-    padding: 0.18rem 0.65rem;
+    gap: 0.3rem;
+    background: rgba(0, 0, 0, 0.18);
+    color: #ffffff;
+    padding: 0.12rem 0.55rem;
     border-radius: var(--radius-full);
-    border: 1px solid rgba(200, 16, 46, 0.5);
-    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    font-weight: 500;
     font-size: 0.72rem;
     text-decoration: none;
-    transition: var(--transition-fast);
-}
-
-.gov-emergency-chip:hover {
-    background: var(--gov-crimson);
-    color: #ffffff;
-    border-color: var(--gov-crimson);
 }
 
 /* --- Upgraded Citizen Navbar --- */
@@ -2389,4 +2375,307 @@ a {
     font-size: 1.1rem;
     flex-shrink: 0;
 }
+
+/* ==========================================================================
+   Koshi Government Standard Language Switcher & Translator (नेपाली | English)
+   ========================================================================== */
+.auth-top-lang-switch {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    z-index: 1050;
+}
+
+.koshi-language-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.84rem;
+    font-weight: 500;
+}
+
+.koshi-lang-btn {
+    background: none !important;
+    border: none !important;
+    padding: 0.12rem 0.35rem !important;
+    font-size: 0.84rem !important;
+    cursor: pointer !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    transition: all 0.2s ease !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+}
+
+.koshi-lang-btn:hover {
+    color: #ffffff !important;
+}
+
+.koshi-lang-btn.active {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 3px !important;
+}
+
+.koshi-lang-pipe {
+    color: rgba(255, 255, 255, 0.45);
+    user-select: none;
+    font-size: 0.8rem;
+}
+
+/* Light Theme for Login Screen */
+.koshi-language-switch.light-theme {
+    background: rgba(255, 255, 255, 0.96);
+    border: 1.5px solid #cbd5e1;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 14px rgba(5, 55, 117, 0.12);
+}
+
+.koshi-language-switch.light-theme .koshi-lang-btn {
+    color: #64748b !important;
+}
+
+.koshi-language-switch.light-theme .koshi-lang-btn:hover {
+    color: #053775 !important;
+}
+
+.koshi-language-switch.light-theme .koshi-lang-btn.active {
+    color: #053775 !important;
+    font-weight: 800 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 3px !important;
+}
+
+.koshi-language-switch.light-theme .koshi-lang-pipe {
+    color: #cbd5e1;
+}
+
+/* Admin Navbar Theme */
+.koshi-language-switch.admin-theme {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+}
+
+.koshi-language-switch.admin-theme .koshi-lang-btn {
+    color: #64748b !important;
+}
+
+.koshi-language-switch.admin-theme .koshi-lang-btn:hover {
+    color: #053775 !important;
+}
+
+.koshi-language-switch.admin-theme .koshi-lang-btn.active {
+    color: #053775 !important;
+    font-weight: 800 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 3px !important;
+}
+
+.koshi-language-switch.admin-theme .koshi-lang-pipe {
+    color: #cbd5e1;
+}
+
+/* Hide Google Translate top toolbar and banners */
+iframe.skiptranslate,
+.skiptranslate iframe,
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame,
+iframe[id*="container"],
+iframe[id*=":1."],
+iframe[id*=":2."],
+.VIpgJd-ZVi9od-ORLlD-bN97Pc-haAclf,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+.VIpgJd-ZVi9od-OZhGNc {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+    pointer-events: none !important;
+}
+body {
+    top: 0px !important;
+    position: static !important;
+}
+html {
+    top: 0px !important;
+}
+.goog-te-gadget {
+    display: none !important;
+}
+/* Completely eliminate Google Translate hover highlight & tooltips */
+/* Completely eliminate Google Translate hover highlight & tooltips */
+font,
+font[style*="vertical-align"],
+font.goog-text-highlight,
+.goog-text-highlight,
+span.goog-text-highlight {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
+    text-decoration: inherit !important;
+    cursor: inherit !important;
+    pointer-events: none !important;
+}
+
+html body font,
+html body font:hover,
+html body font.goog-text-highlight,
+html body .goog-text-highlight,
+html body .goog-text-highlight:hover,
+html body *[class*="goog-text-highlight"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    text-decoration: inherit !important;
+    color: inherit !important;
+    pointer-events: none !important;
+}
+
+/* Ensure interactive elements stay clickable */
+a, button, select, input, textarea, label, [role="button"], .koshi-lang-btn, .font-btn {
+    pointer-events: auto !important;
+}
+a font, button font, label font, [role="button"] font {
+    pointer-events: none !important;
+}
+
+#goog-gt-tt, 
+#goog-gt-vt,
+.goog-te-balloon-frame,
+.goog-tooltip,
+.goog-tooltip:hover,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+.VIpgJd-ZVi9od-aZ2wEe-OkiMDh,
+.VIpgJd-yAWNEb-hvhgl-bN97Pc,
+.VIpgJd-ZVi9od-aZ2wEe,
+.VIpgJd-ZVi9od-v2WNKv {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: fixed !important;
+    top: -99999px !important;
+    left: -99999px !important;
+    z-index: -9999 !important;
+}
+
+/* ==========================================================================
+   KOSHI TOPBAR CONTROLS & LANGUAGE SWITCHER
+   ========================================================================== */
+.font-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.font-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 3px;
+    line-height: 1.25;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+.font-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: #ffffff;
+    color: #ffffff;
+}
+
+.koshi-language-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    user-select: none;
+}
+
+.koshi-lang-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    font-size: 0.82rem;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.koshi-lang-btn:hover {
+    color: #ffffff;
+}
+
+.koshi-lang-btn.active {
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+}
+
+.koshi-lang-pipe {
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 400;
+}
+
+/* Light theme variant */
+.koshi-language-switch.light-theme .koshi-lang-btn {
+    color: #4b5563;
+}
+.koshi-language-switch.light-theme .koshi-lang-btn:hover {
+    color: #1e3a8a;
+}
+.koshi-language-switch.light-theme .koshi-lang-btn.active {
+    color: #a60f1e;
+    text-decoration: underline;
+    font-weight: 700;
+}
+.koshi-language-switch.light-theme .koshi-lang-pipe {
+    color: #9ca3af;
+}
+
+/* Admin theme variant */
+.koshi-language-switch.admin-theme .koshi-lang-btn {
+    color: #4b5563;
+}
+.koshi-language-switch.admin-theme .koshi-lang-btn:hover {
+    color: #1e3a8a;
+}
+.koshi-language-switch.admin-theme .koshi-lang-btn.active {
+    color: #a60f1e;
+    text-decoration: underline;
+    font-weight: 700;
+}
+.koshi-language-switch.admin-theme .koshi-lang-pipe {
+    color: #cbd5e1;
+}
+
+.admin-gov-topbar {
+    border-radius: 0;
+}
+
+
 

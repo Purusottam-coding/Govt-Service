@@ -53,20 +53,34 @@
         </a>
     </nav>
 
-    <!-- Sidebar Footer / System Status -->
-    <div class="p-3 border-top border-secondary border-opacity-25 mt-auto">
-        <div class="d-flex align-items-center justify-content-between text-muted" style="font-size: 0.72rem;">
-            <span class="d-flex align-items-center gap-1 text-success">
-                <span class="d-inline-block rounded-circle bg-success" style="width: 7px; height: 7px;"></span>
-                सर्भर: सक्रिय
-            </span>
-            <span class="text-white-50">v1.2 e-Gov</span>
-        </div>
-    </div>
+
 </aside>
 
 <!-- Main Content -->
 <div class="admin-main">
+    <!-- Official Koshi-style Top Bar -->
+    <div class="gov-topbar admin-gov-topbar">
+        <div class="gov-topbar-inner">
+            <div class="gov-topbar-left">
+                <i data-lucide="calendar" class="topbar-cal-icon"></i>
+                <span class="bilingual-live-date">११ असोज २०८३, आइतबार | Sunday, September 27, 2026</span>
+            </div>
+
+            <div class="gov-topbar-right">
+                <div class="font-controls" aria-label="अक्षर साइज नियन्त्रण">
+                    <button class="font-btn" type="button" onclick="changeFontSize(-1)" aria-label="अक्षर साइज घटाउनुहोस्" title="अक्षर साइज घटाउनुहोस्">-A</button>
+                    <button class="font-btn" type="button" onclick="changeFontSize(1)" aria-label="अक्षर साइज बढाउनुहोस्" title="अक्षर साइज बढाउनुहोस्">+A</button>
+                </div>
+
+                <div class="koshi-language-switch" aria-label="Language Selector">
+                    <button type="button" class="koshi-lang-btn active" data-lang="ne" onclick="setLanguage('ne')">नेपाली</button>
+                    <span class="koshi-lang-pipe">|</span>
+                    <button type="button" class="koshi-lang-btn" data-lang="en" onclick="setLanguage('en')">English</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Top Navbar -->
     <div class="top-navbar d-flex align-items-center justify-content-between px-3 px-lg-4 py-2">
         <div class="d-flex align-items-center gap-3">
@@ -108,10 +122,10 @@
             </div>
 
             <!-- Right side Nepal Animated Flag (Transparent - Reference: bahradashimun.gov.np) -->
-            <div class="navbar-nepal-flag d-none d-sm-flex align-items-center" title="नेपालको राष्ट्रिय झण्डा">
+            <div class="navbar-nepal-flag d-none d-sm-flex align-items-center">
                 <picture>
                     <source srcset="{{ asset('images/nepal-flag.webp') }}?v=3" type="image/webp">
-                    <img src="{{ asset('images/nepal-flag.gif') }}?v=3" alt="नेपालको राष्ट्रिय झण्डा" class="nepal-flag-navbar-img">
+                    <img src="{{ asset('images/nepal-flag.gif') }}?v=3" alt="" class="nepal-flag-navbar-img">
                 </picture>
             </div>
         </div>

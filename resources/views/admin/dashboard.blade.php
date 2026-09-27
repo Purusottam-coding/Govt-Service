@@ -9,13 +9,13 @@
         <div class="row align-items-center">
             <div class="col-lg-8">
                 <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-                    <img src="{{ asset('images/Emblem_of_Nepal.png') }}" alt="Nepal Emblem" style="height: 38px; width: auto;" class="bg-white rounded-circle p-1 shadow-sm">
                     <span class="barhadashi-badge-pill">
                         <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
                         नेपाल सरकार • बाह्रदशी गाउँपालिका • प्रशासकीय कक्ष
                     </span>
-                    <span class="badge bg-white bg-opacity-20 text-white fw-medium py-1.5 px-2.5 rounded-pill extra-small">
-                        <i data-lucide="calendar" class="me-1" style="width: 12px; height: 12px;"></i>{{ date('Y F d, l') }}
+                    <span class="d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill" style="background: rgba(0, 0, 0, 0.40); border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; font-size: 0.82rem; font-weight: 600;">
+                        <i data-lucide="calendar" style="width: 13px; height: 13px; color: #fef08a;"></i>
+                        <span class="bilingual-live-date">११ असोज २०८३, आइतबार | Sunday, September 27, 2026</span>
                     </span>
                 </div>
                 <h2 class="fw-extrabold text-white mb-2" style="font-size: 1.75rem;">स्वागत छ, {{ auth()->user()->name }}!</h2>
@@ -28,9 +28,6 @@
                     <a href="{{ route('admin.applications.index') }}" class="btn btn-light fw-bold px-4 py-2.5 text-primary shadow-sm d-inline-flex align-items-center justify-content-center gap-2">
                         <i data-lucide="file-check"></i>
                         <span>निवेदन समीक्षा गर्नुहोस्</span>
-                        @if($stats['pending_applications'] > 0)
-                            <span class="badge bg-danger rounded-pill px-2 py-0.5" style="font-size: 0.72rem;">{{ $stats['pending_applications'] }} बाँकी</span>
-                        @endif
                     </a>
                     <a href="{{ route('admin.services.create') }}" class="btn btn-outline-light fw-semibold px-4 py-2 d-inline-flex align-items-center justify-content-center gap-2">
                         <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i>

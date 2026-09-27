@@ -18,8 +18,7 @@
     $isRememberChecked = old('remember') ? true : (!empty($rememberMeChecked) && !empty($initialEmail));
 @endphp
 
-<h4 class="auth-form-title">खातामा प्रवेश गर्नुहोस् (Sign In)</h4>
-<p class="auth-form-subtitle">गाउँ कार्यपालिकाको कार्यालय • e-Governance Portal</p>
+<h4 class="auth-form-title mb-3">खातामा प्रवेश गर्नुहोस् (Sign In)</h4>
 
 @if (session('status'))
     <div class="alert alert-success py-2 px-3 mb-3 small" role="alert">

@@ -7,33 +7,32 @@
 <div class="dashboard-watermark-fixed"></div>
 
 <div class="citizen-portal-wrapper">
-    <!-- Official Top National Info Bar -->
+    <!-- Official Top National Info Bar (Matching koshi.gov.np red top bar) -->
     <div class="gov-topbar">
         <div class="gov-topbar-inner">
-            <div class="gov-topbar-hierarchy">
-                <span class="gov-flag-icon">🇳🇵</span>
-                <span>नेपाल सरकार</span>
-                <span class="text-white-50">|</span>
-                <span>कोशी प्रदेश</span>
-                <span class="text-white-50">|</span>
-                <span class="text-warning fw-bold">बाह्रदशी गाउँपालिका, झापा</span>
-            </div>
-            
-            <div class="gov-topbar-slogan d-none d-xl-block">
-                "समृद्ध बाह्रदशीको आधार: कृषि, शिक्षा, स्वास्थ्य र पूर्वाधार"
+            <div class="gov-topbar-left">
+                <i data-lucide="calendar" class="topbar-cal-icon"></i>
+                <span id="govNepaliLiveDate" class="bilingual-live-date">११ असोज २०८३, आइतबार | Sunday, September 27, 2026</span>
+                <span class="gov-topbar-divider d-none d-xl-inline text-white-50 ms-3 me-2">|</span>
+                <p class="gov-emergency-chip mb-0 d-none d-xl-inline-flex" style="cursor: default;">
+                    <i data-lucide="phone-call" style="width: 12px; height: 12px;"></i> एम्बुलेन्स: १०२
+                </p>
+                <p class="gov-emergency-chip mb-0 d-none d-xl-inline-flex ms-1" style="cursor: default;">
+                    <i data-lucide="shield-alert" style="width: 12px; height: 12px;"></i> प्रहरी: १००
+                </p>
             </div>
 
-            <div class="gov-topbar-meta">
-                <span class="gov-date-badge">
-                    <i data-lucide="calendar" style="width: 13px; height: 13px;"></i>
-                    <span id="govNepaliLiveDate">{{ date('F d, Y') }}</span>
-                </span>
-                <a href="tel:102" class="gov-emergency-chip" title="आपतकालीन एम्बुलेन्स सेवा">
-                    <i data-lucide="phone-call" style="width: 12px; height: 12px;"></i> एम्बुलेन्स: १०२
-                </a>
-                <a href="tel:100" class="gov-emergency-chip" title="नेपाल प्रहरी आपतकालीन सेवा">
-                    <i data-lucide="shield-alert" style="width: 12px; height: 12px;"></i> प्रहरी: १००
-                </a>
+            <div class="gov-topbar-right">
+                <div class="font-controls" aria-label="अक्षर साइज नियन्त्रण">
+                    <button class="font-btn" type="button" onclick="changeFontSize(-1)" aria-label="अक्षर साइज घटाउनुहोस्" title="अक्षर साइज घटाउनुहोस्">-A</button>
+                    <button class="font-btn" type="button" onclick="changeFontSize(1)" aria-label="अक्षर साइज बढाउनुहोस्" title="अक्षर साइज बढाउनुहोस्">+A</button>
+                </div>
+
+                <div class="koshi-language-switch" aria-label="Language Selector">
+                    <button type="button" class="koshi-lang-btn active" data-lang="ne" onclick="setLanguage('ne')">नेपाली</button>
+                    <span class="koshi-lang-pipe">|</span>
+                    <button type="button" class="koshi-lang-btn" data-lang="en" onclick="setLanguage('en')">English</button>
+                </div>
             </div>
         </div>
     </div>
@@ -47,6 +46,7 @@
                 </div>
                 <div class="brand-text-block">
                     <span class="brand-title-main">बाह्रदशी गाउँपालिका</span>
+                    <span class="brand-subtitle-sub d-none d-sm-block">गाउँ कार्यपालिकाको कार्यालय, चकचकी, झापा</span>
                 </div>
             </a>
             <button class="navbar-toggler text-white border-0 d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#citizenNav" aria-controls="citizenNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,10 +103,10 @@
                     </div>
 
                     <!-- Right side Nepal Animated Flag (Transparent - Reference: bahradashimun.gov.np) -->
-                    <div class="navbar-nepal-flag d-none d-sm-flex align-items-center" title="नेपालको राष्ट्रिय झण्डा">
+                    <div class="navbar-nepal-flag d-none d-sm-flex align-items-center">
                         <picture>
                             <source srcset="{{ asset('images/nepal-flag.webp') }}?v=3" type="image/webp">
-                            <img src="{{ asset('images/nepal-flag.gif') }}?v=3" alt="नेपालको राष्ट्रिय झण्डा" class="nepal-flag-navbar-img">
+                            <img src="{{ asset('images/nepal-flag.gif') }}?v=3" alt="" class="nepal-flag-navbar-img">
                         </picture>
                     </div>
                 </div>

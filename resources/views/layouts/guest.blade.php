@@ -2,6 +2,15 @@
 
 @section('body')
 <div class="auth-split-wrapper">
+    <!-- Top-Right Language Switcher on Login Page (Like koshi.gov.np) -->
+    <div class="auth-top-lang-switch">
+        <div class="koshi-language-switch light-theme" aria-label="Language Selector">
+            <button type="button" class="koshi-lang-btn active" data-lang="ne" onclick="setLanguage('ne')">नेपाली</button>
+            <span class="koshi-lang-pipe">|</span>
+            <button type="button" class="koshi-lang-btn" data-lang="en" onclick="setLanguage('en')">English</button>
+        </div>
+    </div>
+
     <!-- Left Hero Showcase Pane -->
     <div class="auth-hero-pane">
         <div class="auth-hero-overlay"></div>
@@ -13,27 +22,7 @@
             <h2 class="auth-hero-title-en">Barhadashi Rural Municipality</h2>
             <p class="auth-hero-sub-np">गाउँ कार्यपालिकाको कार्यालय, चकचकी, झापा</p>
             <p class="auth-hero-sub-en">Office of the Rural Municipal Executive • Koshi Province, Nepal</p>
-            
-            <div class="auth-hero-meta mb-4">
-                <span>डिजिटल नेपाल e-Governance पोर्टल</span>
-                <span class="auth-hero-separator">•</span>
-                <span>जननी जन्मभूमिश्च स्वर्गादपि गरीयसी</span>
-            </div>
 
-            <div class="auth-feature-list">
-                <div class="auth-feature-item">
-                    <i data-lucide="award"></i>
-                    <span>अनलाइन सिफारिस तथा प्रमाणित विद्युतीय प्रमाणपत्र</span>
-                </div>
-                <div class="auth-feature-item">
-                    <i data-lucide="qr-code"></i>
-                    <span>द्रुत तथा सुरक्षित डिजिटल राजस्व भुक्तानी (QR Pay)</span>
-                </div>
-                <div class="auth-feature-item">
-                    <i data-lucide="shield-check"></i>
-                    <span>नागरिक अधिकार, गोपनीयता तथा प्रत्यक्ष गुनासो सुनुवाइ</span>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -61,11 +50,10 @@
             </div>
 
             <!-- Footer Info -->
-            <div class="auth-footer-links text-center mt-3">
-                <span class="text-muted small d-inline-flex align-items-center gap-1">
-                    <i data-lucide="shield-check" class="text-success" style="width: 14px; height: 14px;"></i>
-                    बाह्रदशी गाउँपालिका, झापा • सुरक्षित सरकारी विद्युतीय सेवा प्रणाली
-                </span>
+            <div class="auth-footer-links mt-3">
+                <p class="text-muted small mb-0 text-center" style="font-size: 0.82rem; line-height: 1.5;">
+                    <i data-lucide="shield-check" class="text-success" style="width: 15px; height: 15px; display: inline-block; vertical-align: -2px; margin-right: 4px;"></i><span>बाह्रदशी गाउँपालिका, झापा • सुरक्षित सरकारी विद्युतीय सेवा प्रणाली</span>
+                </p>
             </div>
         </div>
     </div>
