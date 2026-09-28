@@ -3,38 +3,6 @@
 A full-stack municipal and government service management portal built with **Laravel** and **Blade**. The platform provides streamlined digital workflows for citizen public service applications, document submission and verification, automated unique verification IDs, QR-based fee payments, and an administrative review portal.
 
 ---
-
-## 📁 Project Architecture (Monorepo)
-
-The repository is structured into two clean directories with a dedicated backend core and frontend presentation layer:
-
-```text
-government-service/
-├── backend/                      # Laravel Server Core & APIs
-│   ├── app/                     # Controllers, Models, Services, Middleware, Enums
-│   ├── bootstrap/               # Application bootstrap & middleware
-│   ├── config/                  # App configuration (custom view path configured)
-│   ├── database/                # Migrations, seeders, factories
-│   ├── public/                  # Web server entry (index.php) & asset junctions
-│   ├── routes/                  # Route definitions (web.php, auth.php, console.php)
-│   ├── storage/                 # Uploaded documents, receipts, logs, caches
-│   ├── vendor/                  # Composer dependencies
-│   ├── artisan                  # Artisan CLI
-│   ├── composer.json            # PHP dependencies & autoloading
-│   └── .env.example             # Environment template
-│
-├── frontend/                     # UI Views & Static Assets
-│   ├── views/                   # Blade templates (citizen, admin, auth, layouts)
-│   ├── css/                     # Styling (custom.css, app.css)
-│   ├── js/                      # Client-side scripts & interactivity
-│   ├── images/                  # Government emblems, logos, and static media
-│   └── package.json             # Frontend assets configuration
-│
-└── README.md                     # Main project documentation
-```
-
----
-
 ## 🚀 Key Features
 
 ### 👤 Citizen Portal
