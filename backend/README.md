@@ -14,19 +14,52 @@ Government Service Portal is a Laravel-based web application for managing citize
 - Department, service, notice, and feedback management
 - Role-based access control for citizen and admin users
 
-## Tech Stack
+## Project Structure (Monorepo)
 
-- Laravel 13
-- PHP 8.4
-- MySQL
-- Blade templates
-- Bootstrap 5
-- Vite
-- Tailwind CSS utilities for supporting assets
+The project is organized into clean, dedicated `frontend/` and `backend/` directories:
+
+```text
+government-service/
+├── frontend/                     # Client-side UI, Templates & Styling
+│   ├── views/                   # Blade Templates (Admin, Citizen, Auth, Layouts, Emails)
+│   ├── css/                     # Custom Styles & Animations (custom.css, app.css)
+│   ├── js/                      # Interactive Scripts (Lucide icons, live validation)
+│   ├── images/                  # Municipality logos, emblems, building photos
+│   └── package.json             # Frontend assets configuration
+│
+├── backend/                      # Laravel Server Core & APIs
+│   ├── app/                     # Controllers, Models, Middleware, Notifications
+│   ├── bootstrap/               # Application bootstrap & middleware aliases
+│   ├── config/                  # App Settings & View Resolution config
+│   ├── database/                # Migrations, Seeders, Factories
+│   ├── public/                  # Web Server Entry (index.php) + Asset junctions
+│   ├── routes/                  # Route definitions (web.php, auth.php, console.php)
+│   ├── storage/                 # Uploaded files, logs, and framework caches
+│   ├── vendor/                  # Composer dependencies
+│   ├── artisan                  # Artisan CLI
+│   └── .env                     # Database & Gmail SMTP configuration
+│
+└── artisan                       # Root-level CLI proxy (run commands directly from root)
+```
+
+## Running the Application
+
+You can run the development server directly from the root directory or inside `backend/`:
+
+```bash
+# Option 1: Directly from the root directory
+php artisan serve
+
+# Option 2: From the backend directory
+cd backend
+php artisan serve
+```
+
+The application will be available at `http://127.0.0.1:8000`.
 
 ## Prerequisites
 
-- PHP 8.4 or newer
+- PHP 8.2 or newer
 - Composer
 - Node.js and npm
 - MySQL 8+

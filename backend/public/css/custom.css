@@ -1,0 +1,2799 @@
+/* =========================================================
+   Government Service Management System — Ultra-Premium Stylesheet
+   Barhadashi Rural Municipality (नेपाल सरकार e-Governance Standard)
+   ========================================================= */
+
+/* --- Official Nepal Government Design System Tokens --- */
+:root {
+    /* Sovereign National Colors */
+    --gov-crimson: #C8102E;         /* Simrik Rato - National Crimson */
+    --gov-crimson-dark: #9E0A22;
+    --gov-crimson-light: #FDF2F4;
+    --gov-crimson-subtle: rgba(200, 16, 46, 0.08);
+    --gov-blue: #003893;            /* National Flag Border Blue */
+    --gov-blue-dark: #00225E;
+    --gov-blue-light: #EBF3FF;
+    --gov-navy: #05264E;            /* Royal Executive Navy */
+    --gov-navy-dark: #031733;       /* Topbar / Dark Footer Navy */
+    --gov-navy-light: #0A376C;
+    --gov-gold: #D4AF37;            /* Government Laurel Gold */
+    --gov-gold-light: #FEF9C3;
+    --gov-gold-dark: #A16207;
+    
+    /* Primary & Brand Themes */
+    --primary: #053775;
+    --primary-dark: #00225E;
+    --primary-light: #EBF3FF;
+    --primary-gradient: linear-gradient(135deg, #053775 0%, #003893 100%);
+    --crimson-gradient: linear-gradient(135deg, #C8102E 0%, #9E0A22 100%);
+    
+    --secondary: #059669;
+    --secondary-dark: #047857;
+    --secondary-light: #ECFDF5;
+    
+    --accent: #0284C7;
+    --accent-light: #E0F2FE;
+    
+    --danger: #DC2626;
+    --danger-light: #FEF2F2;
+    
+    --warning: #D97706;
+    --warning-light: #FFFBEB;
+    
+    --info: #0284C7;
+    --info-light: #F0F9FF;
+    
+    --dark: #0F172A;
+    --dark-muted: #475569;
+    
+    --sidebar-bg: #08172E;
+    --sidebar-border: #132746;
+    --sidebar-hover: #0F2A52;
+    --sidebar-active: #C8102E;
+    
+    --body-bg: #F4F6FA;
+    --surface-bg: #FFFFFF;
+    --border-color: #E2E8F0;
+    --border-strong: #CBD5E1;
+    
+    --card-shadow: 0 2px 6px 0 rgba(5, 38, 78, 0.04), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+    --card-shadow-hover: 0 16px 28px -6px rgba(5, 38, 78, 0.10), 0 8px 12px -4px rgba(0, 0, 0, 0.04);
+    --card-shadow-lg: 0 20px 35px -8px rgba(5, 38, 78, 0.12), 0 10px 15px -5px rgba(0, 0, 0, 0.05);
+    
+    --transition-fast: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius-sm: 0.375rem;
+    --radius: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.25rem;
+    --radius-full: 9999px;
+}
+
+/* --- Global Resets & Base --- */
+body {
+    font-family: 'Inter', 'Mukta', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--body-bg);
+    color: #334155;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a { 
+    text-decoration: none; 
+    transition: var(--transition-fast);
+}
+
+/* --- Gradient Text Helper --- */
+.text-gradient {
+    background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* --- Lucide Icons Alignment --- */
+[data-lucide] {
+    width: 1.15em;
+    height: 1.15em;
+    vertical-align: -0.15em;
+    stroke-width: 2px;
+}
+
+/* --- Admin Sidebar --- */
+.admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 270px;
+    height: 100vh;
+    background: var(--sidebar-bg);
+    color: #94a3b8;
+    z-index: 1040;
+    transition: var(--transition);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--sidebar-border);
+}
+
+.admin-sidebar .sidebar-brand {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    border-bottom: 1px solid var(--sidebar-border);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+}
+
+.admin-sidebar .sidebar-brand .brand-icon {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, #3b82f6 0%, #38bdf8 100%);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.admin-sidebar .sidebar-brand h5 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #f8fafc;
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+.admin-sidebar .sidebar-brand small {
+    font-size: 0.68rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+}
+
+.sidebar-nav {
+    padding: 1rem 0.75rem;
+    flex: 1;
+}
+
+.sidebar-nav .nav-section {
+    padding: 0.75rem 0.875rem 0.375rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #64748b;
+    margin-top: 0.5rem;
+}
+
+.sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.875rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+    margin-bottom: 2px;
+    position: relative;
+}
+
+.sidebar-nav .nav-link [data-lucide] {
+    font-size: 1.1rem;
+    color: #64748b;
+    transition: var(--transition-fast);
+}
+
+.sidebar-nav .nav-link:hover {
+    color: #f1f5f9;
+    background: var(--sidebar-hover);
+}
+
+.sidebar-nav .nav-link:hover [data-lucide] {
+    color: #93c5fd;
+}
+
+.sidebar-nav .nav-link.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.25) 0%, rgba(79, 70, 229, 0.25) 100%);
+    font-weight: 600;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.sidebar-nav .nav-link.active [data-lucide] {
+    color: #60a5fa;
+}
+
+/* --- Admin Main Content --- */
+.admin-main {
+    margin-left: 270px;
+    min-height: 100vh;
+    transition: var(--transition);
+}
+
+/* --- Top Navbar --- */
+.top-navbar {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.875rem 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+.top-navbar .page-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--dark);
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.top-navbar .navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+}
+
+.top-navbar .user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+/* --- Content Area --- */
+.content-area {
+    padding: 1.75rem;
+}
+
+/* --- Stat Cards --- */
+.stat-card {
+    background: var(--surface-bg);
+    border-radius: var(--radius-lg);
+    padding: 1.35rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+}
+
+.stat-card.primary::before { background: linear-gradient(to bottom, #2563eb, #3b82f6); }
+.stat-card.success::before { background: linear-gradient(to bottom, #059669, #10b981); }
+.stat-card.warning::before { background: linear-gradient(to bottom, #64748b, #94a3b8); }
+.stat-card.danger::before  { background: linear-gradient(to bottom, #dc2626, #ef4444); }
+.stat-card.info::before    { background: linear-gradient(to bottom, #0284c7, #38bdf8); }
+.stat-card.accent::before  { background: linear-gradient(to bottom, #0ea5e9, #38bdf8); }
+
+.stat-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-4px);
+    border-color: #cbd5e1;
+}
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.08) rotate(3deg);
+    transition: var(--transition);
+}
+
+.stat-card .stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+    transition: var(--transition);
+}
+
+.stat-card .stat-icon.primary { background: #eff6ff; color: #2563eb; }
+.stat-card .stat-icon.success { background: #ecfdf5; color: #059669; }
+.stat-card .stat-icon.warning { background: #f1f5f9; color: #64748b; }
+.stat-card .stat-icon.danger  { background: #fef2f2; color: #dc2626; }
+.stat-card .stat-icon.info    { background: #f0f9ff; color: #0284c7; }
+.stat-card .stat-icon.accent  { background: #e0f2fe; color: #0ea5e9; }
+
+.stat-card .stat-value {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.1;
+    margin-top: 0.35rem;
+    letter-spacing: -0.02em;
+}
+
+.stat-card .stat-label {
+    font-size: 0.82rem;
+    color: #64748b;
+    font-weight: 600;
+    margin-top: 0.25rem;
+}
+
+/* --- Cards --- */
+.card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    background: var(--surface-bg);
+    overflow: hidden;
+}
+
+.card:hover {
+    box-shadow: var(--card-shadow-hover);
+}
+
+.card-header {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 700;
+    padding: 1.1rem 1.35rem;
+    color: var(--dark);
+}
+
+/* --- Tables --- */
+.table-card {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.table-card .table {
+    margin: 0;
+}
+
+.table thead th {
+    background: #f8fafc;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.95rem 1.25rem;
+    white-space: nowrap;
+}
+
+.table tbody td {
+    padding: 0.95rem 1.25rem;
+    vertical-align: middle;
+    font-size: 0.875rem;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.table tbody tr {
+    transition: var(--transition-fast);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f5f9 !important;
+}
+
+/* --- Pulsing Badge Dot --- */
+@keyframes badgePulse {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    50% { transform: scale(1.25); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+/* --- Status Badges --- */
+.badge-status {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.35em 0.75em;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.badge-status::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.badge-pending { 
+    background: #f1f5f9; 
+    color: #475569; 
+    border: 1px solid #e2e8f0; 
+}
+.badge-pending::before { background: #94a3b8; }
+
+.badge-under-review { 
+    background: #eff6ff; 
+    color: #1d4ed8; 
+    border: 1px solid #bfdbfe; 
+}
+.badge-under-review::before { background: #2563eb; }
+
+.badge-approved { 
+    background: #ecfdf5; 
+    color: #047857; 
+    border: 1px solid #a7f3d0; 
+}
+.badge-approved::before { background: #10b981; }
+
+.badge-rejected { 
+    background: #fef2f2; 
+    color: #b91c1c; 
+    border: 1px solid #fecaca; 
+}
+.badge-rejected::before { background: #ef4444; }
+
+.badge-completed { 
+    background: #e0f2fe; 
+    color: #0369a1; 
+    border: 1px solid #bae6fd; 
+}
+.badge-completed::before { background: #38bdf8; }
+
+.badge-active { 
+    background: #ecfdf5; 
+    color: #047857; 
+    border: 1px solid #a7f3d0; 
+}
+.badge-active::before { background: #10b981; }
+
+.badge-inactive { 
+    background: #f1f5f9; 
+    color: #475569; 
+    border: 1px solid #e2e8f0; 
+}
+.badge-inactive::before { background: #94a3b8; }
+
+.badge-open { 
+    background: #f0f9ff; 
+    color: #0369a1; 
+    border: 1px solid #bae6fd; 
+}
+.badge-open::before { background: #0284c7; }
+
+.badge-replied { 
+    background: #f1f5f9; 
+    color: #475569; 
+    border: 1px solid #e2e8f0; 
+}
+.badge-replied::before { background: #94a3b8; }
+
+.badge-closed { 
+    background: #f1f5f9; 
+    color: #475569; 
+    border: 1px solid #e2e8f0; 
+}
+.badge-closed::before { background: #94a3b8; }
+
+/* --- Buttons --- */
+.btn {
+    border-radius: var(--radius);
+    font-weight: 600;
+    padding: 0.58rem 1.25rem;
+    font-size: 0.875rem;
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary::after, .btn-success::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(60deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+    transform: rotate(30deg) translateX(-100%);
+    transition: transform 0.65s ease;
+}
+
+.btn-primary:hover::after, .btn-success:hover::after {
+    transform: rotate(30deg) translateX(100%);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px 0 rgba(37, 99, 235, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 4px 14px 0 rgba(5, 150, 105, 0.3);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px 0 rgba(5, 150, 105, 0.4);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border: 1.5px solid var(--primary);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.btn-sm {
+    padding: 0.38rem 0.88rem;
+    font-size: 0.8rem;
+    border-radius: var(--radius-sm);
+}
+
+.btn-lg {
+    padding: 0.78rem 1.85rem;
+    font-size: 1rem;
+    border-radius: var(--radius);
+}
+
+.btn-action {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: var(--radius-sm);
+}
+
+/* --- Form Controls --- */
+.form-control, .form-select {
+    border-radius: var(--radius);
+    border: 1.5px solid #cbd5e1;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    color: var(--dark);
+    background-color: var(--surface-bg);
+    transition: var(--transition-fast);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14);
+    background-color: #ffffff;
+}
+
+.form-label {
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: #334155;
+    margin-bottom: 0.4rem;
+}
+
+.form-control::placeholder {
+    color: #94a3b8;
+}
+
+/* --- Auth Wrapper Pages --- */
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at top left, #1e1b4b, #0f172a 65%);
+    padding: 2.5rem 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 650px;
+    height: 650px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, rgba(0,0,0,0) 70%);
+    top: -200px;
+    right: -200px;
+    pointer-events: none;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    max-width: 440px;
+    width: 100%;
+    padding: 2.75rem 2.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    animation: fadeInUp 0.4s ease;
+}
+
+.auth-card .auth-logo {
+    width: 62px;
+    height: 62px;
+    background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.65rem;
+    font-weight: 800;
+    margin: 0 auto 1.35rem;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+}
+
+.auth-card h3 {
+    text-align: center;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.02em;
+}
+
+.auth-card .auth-subtitle {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.875rem;
+    margin-bottom: 1.75rem;
+}
+
+/* --- Citizen Navbar --- */
+.citizen-navbar {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+.citizen-navbar .navbar-brand {
+    font-weight: 800;
+    color: var(--primary) !important;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    letter-spacing: -0.01em;
+}
+
+.citizen-navbar .navbar-brand .brand-icon-sm {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+}
+
+.citizen-navbar .nav-link {
+    font-weight: 600;
+    color: #475569 !important;
+    padding: 0.55rem 1.1rem !important;
+    font-size: 0.9rem;
+    transition: var(--transition-fast);
+    border-radius: var(--radius);
+    margin: 0 0.125rem;
+}
+
+.citizen-navbar .nav-link:hover {
+    color: var(--primary) !important;
+    background: var(--primary-light);
+}
+
+.citizen-navbar .nav-link.active {
+    color: var(--primary) !important;
+    background: var(--primary-light);
+    font-weight: 700;
+}
+
+.citizen-main {
+    padding: 2rem 1.5rem;
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+/* --- Service Cards --- */
+.service-card {
+    background: var(--surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    transition: var(--transition);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.service-card:hover {
+    border-color: #93c5fd;
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-4px);
+}
+
+.service-card .service-dept {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--primary);
+    background: var(--primary-light);
+    padding: 0.25em 0.75em;
+    border-radius: var(--radius-full);
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    border: 1px solid #bfdbfe;
+}
+
+.service-card h6, .service-card h5 {
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+.service-card p {
+    font-size: 0.875rem;
+    color: #64748b;
+    flex: 1;
+}
+
+.service-card .service-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.service-card .service-fee {
+    font-weight: 800;
+    color: var(--secondary);
+    font-size: 1rem;
+}
+
+/* --- Status Tracker --- */
+.status-tracker {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 2rem 0 1rem;
+    padding: 0;
+    list-style: none;
+}
+
+.status-tracker::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    background: #e2e8f0;
+    z-index: 0;
+}
+
+.status-tracker .step {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+}
+
+.status-tracker .step .step-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border: 2px solid #e2e8f0;
+    transition: var(--transition);
+}
+
+.status-tracker .step.completed .step-icon {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3);
+}
+
+.status-tracker .step.active .step-icon {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.2);
+}
+
+.status-tracker .step.rejected .step-icon {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: #ffffff;
+}
+
+.status-tracker .step .step-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.status-tracker .step.completed .step-label,
+.status-tracker .step.active .step-label {
+    color: var(--dark);
+}
+
+/* --- Welcome / Landing Page --- */
+.hero-section {
+    background: radial-gradient(circle at top right, #1e1b4b 0%, #0f172a 60%, #0284c7 100%);
+    color: #ffffff;
+    padding: 6rem 0 5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0,0,0,0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.hero-section h1 {
+    font-size: 3.25rem;
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.03em;
+}
+
+.hero-section .lead {
+    font-size: 1.18rem;
+    opacity: 0.9;
+    max-width: 560px;
+    line-height: 1.7;
+}
+
+.hero-section .btn-hero {
+    padding: 0.85rem 2.25rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.hero-section .btn-hero:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+}
+
+.feature-card {
+    background: var(--surface-bg);
+    border-radius: var(--radius-lg);
+    padding: 2.25rem 1.75rem;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--card-shadow-hover);
+    border-color: #93c5fd;
+}
+
+.notice-card {
+    background: var(--surface-bg);
+    border-left: 4px solid var(--primary);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1.35rem;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+    border-top: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.notice-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateX(4px);
+}
+
+/* --- Receipt --- */
+.receipt {
+    background: #ffffff;
+    border: 2px dashed #cbd5e1;
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    max-width: 620px;
+    margin: 0 auto;
+    box-shadow: var(--card-shadow);
+}
+
+.receipt .receipt-header {
+    text-align: center;
+    border-bottom: 2px solid var(--dark);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.75rem;
+}
+
+/* --- Animations --- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.45s ease;
+}
+
+.fade-in {
+    animation: fadeIn 0.35s ease;
+}
+
+/* --- Custom Scrollbar --- */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.admin-sidebar::-webkit-scrollbar { width: 4px; }
+.admin-sidebar::-webkit-scrollbar-track { background: transparent; }
+.admin-sidebar::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+
+/* Responsive Media Queries */
+@media (max-width: 991.98px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+    .admin-sidebar.show {
+        transform: translateX(0);
+    }
+    .admin-main {
+        margin-left: 0;
+    }
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 1035;
+    }
+    .sidebar-overlay.show {
+        display: block;
+    }
+    .hero-section h1 {
+        font-size: 2.25rem;
+    }
+}
+
+/* Print */
+@media print {
+    .admin-sidebar, .top-navbar, .citizen-navbar, .btn, .no-print {
+        display: none !important;
+    }
+    .admin-main {
+        margin-left: 0 !important;
+    }
+    .receipt {
+        border: none;
+        box-shadow: none;
+    }
+}
+
+/* --- Pagination Styles --- */
+.pagination {
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    gap: 0.35rem;
+    margin-bottom: 0;
+    align-items: center;
+}
+
+.pagination .page-item {
+    display: inline-block;
+}
+
+.pagination .page-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--dark-muted);
+    background-color: var(--surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+    min-width: 36px;
+    height: 36px;
+    text-decoration: none;
+}
+
+.pagination .page-link:hover {
+    z-index: 2;
+    color: var(--primary-dark);
+    background-color: var(--primary-light);
+    border-color: #bfdbfe;
+    transform: translateY(-1px);
+}
+
+.pagination .page-item.active .page-link {
+    z-index: 3;
+    color: #ffffff;
+    background: var(--primary-gradient);
+    border-color: var(--primary);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #cbd5e1;
+    pointer-events: none;
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+    box-shadow: none;
+}
+
+.card-footer .pagination {
+    justify-content: flex-end;
+}
+
+@media (max-width: 575.98px) {
+    .card-footer nav {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: center !important;
+    }
+    .card-footer .pagination {
+        justify-content: center;
+    }
+}
+
+/* =========================================================
+   Barhadashi Municipal Split-Screen Authentication Styling
+   Colors matched to official website (bahradashimun.gov.np):
+   - Primary Navy Blue: #053775 (rgb(5, 55, 117))
+   - Header/Footer Blue: #234a83
+   - Accent Crimson Red: #b21c42 (rgb(178, 28, 66))
+   ========================================================= */
+.auth-split-wrapper {
+    min-height: 100vh;
+    display: flex;
+    width: 100%;
+    background-color: #f1f5f9;
+}
+
+/* Left Hero Showcase Pane */
+.auth-hero-pane {
+    flex: 1.28;
+    position: relative;
+    background: url('../images/barhadashi_bg.jpg') center center / cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2.5rem;
+    overflow: hidden;
+}
+
+.auth-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(5, 55, 117, 0.94) 0%, rgba(35, 74, 131, 0.90) 60%, rgba(3, 37, 82, 0.95) 100%);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+}
+
+.auth-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: #ffffff;
+    max-width: 560px;
+    padding: 2rem 1.5rem;
+}
+
+.auth-hero-emblem {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: #ffffff;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    padding: 10px;
+}
+
+.auth-hero-emblem img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.auth-hero-title-np {
+    font-size: 2.35rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.01em;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+    font-family: 'Noto Sans Devanagari', 'Mukta', sans-serif;
+}
+
+.auth-hero-title-en {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 0.65rem;
+    letter-spacing: 0.02em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.auth-hero-sub-np {
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.92);
+    margin-bottom: 0.2rem;
+}
+
+.auth-hero-sub-en {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.82);
+    margin-bottom: 1.75rem;
+}
+
+.auth-hero-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 9999px;
+    padding: 0.5rem 1.4rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.auth-hero-separator {
+    opacity: 0.6;
+}
+
+/* Right Form Pane */
+.auth-form-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    padding: 2.5rem 2rem;
+    min-height: 100vh;
+}
+
+.auth-form-container {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+}
+
+/* Auth Card Box */
+.auth-card-box {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px -10px rgba(5, 55, 117, 0.12), 0 4px 16px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+/* Card Header Box (Barhadashi Government Navy Blue) */
+.auth-card-header {
+    background: linear-gradient(135deg, #053775 0%, #234a83 100%);
+    color: #ffffff;
+    padding: 1.75rem 1.5rem 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    position: relative;
+}
+
+.auth-header-emblem {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: #ffffff;
+    margin: 0 auto 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    padding: 6px;
+}
+
+.auth-header-emblem img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.auth-header-title-np {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.15rem;
+    letter-spacing: -0.01em;
+}
+
+.auth-header-title-en {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.92);
+    margin-bottom: 0.75rem;
+}
+
+.auth-header-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 9999px;
+    padding: 0.28rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* Card Body */
+.auth-card-body {
+    padding: 2rem 2rem 2.25rem;
+}
+
+.auth-form-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #053775;
+    margin-bottom: 0.25rem;
+}
+
+.auth-form-subtitle {
+    font-size: 0.84rem;
+    color: #64748b;
+    margin-bottom: 1.5rem;
+}
+
+/* Role Selection Tabs */
+.auth-role-tabs {
+    display: flex;
+    gap: 0.5rem;
+    background: #f1f5f9;
+    padding: 0.35rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+.auth-role-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.auth-role-tab:hover {
+    color: #053775;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.auth-role-tab.active {
+    background: #053775;
+    color: #ffffff !important;
+    border-color: #053775;
+    box-shadow: 0 2px 8px rgba(5, 55, 117, 0.25);
+}
+
+.extra-small {
+    font-size: 0.76rem;
+}
+
+/* Custom Auth Inputs */
+.auth-input-group {
+    border-radius: 8px;
+}
+
+.auth-input-group .input-group-text {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+    color: #053775;
+    padding: 0.65rem 0.85rem;
+}
+
+.auth-input-group .form-control {
+    border-color: #cbd5e1;
+    font-size: 0.92rem;
+    padding: 0.65rem 0.85rem;
+    color: #1e293b;
+}
+
+.auth-input-group .form-control:focus {
+    border-color: #053775;
+    box-shadow: 0 0 0 3px rgba(5, 55, 117, 0.15);
+}
+
+.auth-input-group .input-group-text-btn {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+    cursor: pointer;
+    color: #64748b;
+    transition: color 0.15s ease;
+}
+
+.auth-input-group .input-group-text-btn:hover {
+    color: #053775;
+}
+
+/* Primary Button (Barhadashi Navy) */
+.btn-auth-primary {
+    background: linear-gradient(135deg, #053775 0%, #234a83 100%);
+    border-color: #053775;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.72rem 1.25rem;
+    border-radius: 8px;
+    transition: all 0.25s ease-in-out;
+    box-shadow: 0 4px 12px rgba(5, 55, 117, 0.25);
+}
+
+.btn-auth-primary:hover,
+.btn-auth-primary:focus {
+    background: linear-gradient(135deg, #032552 0%, #163e75 100%);
+    border-color: #032552;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(5, 55, 117, 0.35);
+}
+
+.btn-auth-primary:active {
+    transform: translateY(0);
+}
+
+/* Footer Links */
+.auth-footer-links {
+    margin-top: 1.25rem;
+    text-align: center;
+    font-size: 0.84rem;
+    color: #64748b;
+    width: 100%;
+}
+
+.auth-footer-link {
+    color: #053775;
+    text-decoration: none;
+    transition: color 0.2s;
+    font-weight: 500;
+}
+
+.auth-footer-link:hover {
+    color: #032552;
+    text-decoration: underline;
+}
+
+.auth-footer-separator {
+    opacity: 0.5;
+}
+
+/* Mobile Responsive */
+@media (max-width: 991.98px) {
+    .auth-split-wrapper {
+        flex-direction: column;
+    }
+
+    .auth-hero-pane {
+        flex: none;
+        min-height: 320px;
+        padding: 3rem 1.5rem;
+    }
+
+    .auth-hero-title-np {
+        font-size: 1.85rem;
+    }
+
+    .auth-hero-title-en {
+        font-size: 1.2rem;
+    }
+
+    .auth-form-pane {
+        min-height: auto;
+        padding: 2rem 1.25rem 3rem;
+        background: #f8fafc;
+    }
+
+    .auth-card-body {
+        padding: 1.75rem 1.5rem;
+    }
+}
+
+/* =========================================================
+   Barhadashi Municipality Dashboard Watermark & Banners
+   ========================================================= */
+.dashboard-watermark-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../images/barhadashi_building.jpg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.08; /* Low transparency / subtle faint watermark */
+    pointer-events: none;
+    z-index: 0;
+}
+
+.admin-watermark-offset {
+    left: 270px;
+    width: calc(100vw - 270px);
+}
+
+@media (max-width: 991.98px) {
+    .admin-watermark-offset {
+        left: 0;
+        width: 100vw;
+    }
+}
+
+.citizen-portal-wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.citizen-main {
+    position: relative;
+    z-index: 1;
+    max-width: 1720px;
+    width: 94%;
+    margin: 0 auto;
+    padding: 1.75rem 0.5rem 3.5rem;
+    flex: 1;
+}
+
+.citizen-navbar .container,
+.citizen-navbar .citizen-nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    max-width: 1720px;
+    width: 94%;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+}
+
+@media (max-width: 767.98px) {
+    .citizen-main {
+        width: 100%;
+        padding: 1.25rem 0.75rem 2.5rem;
+    }
+    .citizen-navbar .container,
+    .citizen-navbar .citizen-nav-container {
+        width: 100%;
+        padding: 0 0.75rem;
+    }
+}
+
+.admin-main {
+    position: relative;
+    z-index: 1;
+}
+
+.admin-main .content-area {
+    position: relative;
+    z-index: 1;
+}
+
+/* Citizen Navbar Branding */
+.citizen-navbar {
+    background: #053775;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 14px rgba(5, 55, 117, 0.18);
+}
+
+.citizen-navbar .navbar-brand {
+    color: #ffffff !important;
+    font-weight: 700;
+    display: inline-flex !important;
+    align-items: center;
+    width: auto !important;
+    max-width: fit-content !important;
+    flex-shrink: 0 !important;
+    text-decoration: none;
+    padding: 0.35rem 0.65rem;
+    background: transparent !important;
+    cursor: pointer;
+}
+
+.citizen-navbar .navbar-brand:hover,
+.citizen-navbar .navbar-brand:focus,
+.citizen-navbar .navbar-brand:active {
+    background: transparent !important;
+    transform: none !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+.citizen-navbar .nav-link {
+    color: rgba(255, 255, 255, 0.88) !important;
+    font-weight: 500;
+    padding: 0.5rem 0.85rem !important;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.citizen-navbar .nav-link:hover,
+.citizen-navbar .nav-link.active {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Barhadashi Municipality Dashboard Hero Banner */
+.barhadashi-dashboard-banner {
+    border-radius: 16px;
+    background: linear-gradient(135deg, #053775 0%, #163e75 100%);
+    box-shadow: 0 10px 25px -5px rgba(5, 55, 117, 0.25);
+    overflow: hidden;
+    position: relative;
+}
+
+.barhadashi-banner-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center 35%;
+    opacity: 0.24; /* Faint, low-transparency building photo */
+    filter: saturate(1.15) contrast(1.05);
+    transition: opacity 0.3s ease;
+}
+
+.barhadashi-banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(5, 55, 117, 0.90) 0%, rgba(22, 62, 117, 0.85) 60%, rgba(3, 37, 82, 0.92) 100%);
+}
+
+.barhadashi-banner-content {
+    position: relative;
+    z-index: 2;
+}
+
+.barhadashi-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    border-radius: 9999px;
+    padding: 0.38rem 1.1rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.01em;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* Animated Nepal Flag on Navbar (Reference: bahradashimun.gov.np) */
+.navbar-nepal-flag {
+    display: flex;
+    align-items: center;
+    padding-left: 0.5rem;
+}
+
+.nepal-flag-navbar-img {
+    height: 42px;
+    width: auto;
+    max-width: 60px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.28));
+    transition: transform 0.25s ease;
+}
+
+.nepal-flag-navbar-img:hover {
+    transform: scale(1.06);
+}
+
+/* ==========================================================================
+   NEPAL GOVERNMENT e-GOVERNANCE SUITE — ULTRA-MODERN STYLING
+   Barhadashi Rural Municipality Portal
+   ========================================================================== */
+
+/* --- Top National Bar (राष्ट्रिय सूचना पट्टी - Koshi Gov Red Style) --- */
+.gov-topbar {
+    background: #a60f1e !important; /* Official Crimson Red like koshi.gov.np */
+    color: #ffffff !important;
+    font-size: 0.81rem;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    position: relative;
+    z-index: 1040;
+    line-height: 1.5;
+    padding: 0;
+}
+
+.gov-topbar-inner {
+    max-width: 1720px;
+    width: 95%;
+    margin: 0 auto;
+    padding: 0.35rem 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: nowrap;
+}
+
+.gov-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #ffffff;
+    font-size: 0.82rem;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+.gov-topbar-left .topbar-cal-icon {
+    width: 14px;
+    height: 14px;
+    stroke: #ffffff;
+    color: #ffffff;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: -2px;
+}
+
+.gov-topbar-left .bilingual-live-date {
+    color: #ffffff;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+.gov-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex-shrink: 0;
+}
+
+.gov-emergency-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: rgba(0, 0, 0, 0.18);
+    color: #ffffff;
+    padding: 0.12rem 0.55rem;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    font-weight: 500;
+    font-size: 0.72rem;
+    text-decoration: none;
+}
+
+/* --- Upgraded Citizen Navbar --- */
+.citizen-navbar {
+    background: linear-gradient(180deg, #053775 0%, #032757 100%) !important;
+    border-bottom: 3px solid var(--gov-crimson) !important;
+    box-shadow: 0 4px 20px rgba(5, 55, 117, 0.22) !important;
+    padding: 0.55rem 0 !important;
+}
+
+.citizen-navbar .navbar-brand {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    background: transparent !important;
+}
+
+.brand-emblem-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-emblem-img {
+    height: 44px;
+    width: auto;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+    transition: transform 0.25s ease;
+}
+
+.citizen-navbar .navbar-brand:hover .brand-emblem-img {
+    transform: scale(1.05);
+}
+
+.brand-text-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-title-main {
+    font-size: 1.28rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.brand-subtitle-sub {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #93c5fd; /* Soft sky blue */
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    margin-top: 0.15rem;
+}
+
+.citizen-navbar .nav-link {
+    color: rgba(255, 255, 255, 0.90) !important;
+    font-weight: 600;
+    padding: 0.52rem 0.95rem !important;
+    font-size: 0.88rem;
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.citizen-navbar .nav-link:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.14) !important;
+    transform: translateY(-1px);
+}
+
+.citizen-navbar .nav-link.active {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #c8102e 0%, #9e0a22 100%) !important;
+    box-shadow: 0 2px 8px rgba(200, 16, 46, 0.4);
+    font-weight: 700;
+}
+
+.navbar-user-btn {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 0.35rem 0.85rem !important;
+    border-radius: var(--radius-full) !important;
+    font-weight: 600;
+    font-size: 0.86rem;
+    transition: all 0.2s ease;
+}
+
+.navbar-user-btn:hover {
+    background: rgba(255, 255, 255, 0.22) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    transform: translateY(-1px);
+}
+
+/* --- Hero Banner & Search (ड्यासबोर्ड ब्यानर तथा खोजी) --- */
+.barhadashi-dashboard-banner {
+    border-radius: var(--radius-xl) !important;
+    background: linear-gradient(135deg, #031e42 0%, #053775 60%, #00225e 100%) !important;
+    box-shadow: 0 12px 30px -5px rgba(5, 55, 117, 0.32) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.barhadashi-banner-bg {
+    opacity: 0.28 !important;
+}
+
+.greeting-time-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(254, 240, 138, 0.18);
+    border: 1px solid rgba(254, 240, 138, 0.4);
+    color: #fef08a;
+    font-size: 0.80rem;
+    font-weight: 700;
+    padding: 0.22rem 0.75rem;
+    border-radius: var(--radius-full);
+}
+
+.verified-citizen-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(16, 185, 129, 0.22);
+    border: 1px solid rgba(16, 185, 129, 0.45);
+    color: #a7f3d0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.65rem;
+    border-radius: var(--radius-full);
+}
+
+.banner-search-box {
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    border-radius: var(--radius-lg);
+    padding: 0.35rem 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transition: all 0.25s ease;
+}
+
+.banner-search-box:focus-within {
+    background: rgba(255, 255, 255, 0.96);
+    border-color: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.banner-search-box:focus-within .banner-search-input {
+    color: var(--dark);
+}
+
+.banner-search-box:focus-within .banner-search-input::placeholder {
+    color: #64748b;
+}
+
+.banner-search-box:focus-within .banner-search-icon {
+    color: var(--primary);
+}
+
+.banner-search-input {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 500;
+    outline: none;
+    width: 100%;
+    padding: 0.4rem 0.5rem;
+}
+
+.banner-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.banner-search-icon {
+    color: rgba(255, 255, 255, 0.85);
+    padding-left: 0.5rem;
+}
+
+/* --- Quick Action Cards (४ द्रुत सेवा कार्डहरू) --- */
+.quick-action-card {
+    background: var(--surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+    border-color: #93c5fd;
+    color: inherit;
+}
+
+.quick-action-icon-box {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+    color: #ffffff;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.quick-action-icon-box.action-blue   { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); }
+.quick-action-icon-box.action-green  { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+.quick-action-icon-box.action-amber  { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); }
+.quick-action-icon-box.action-purple { background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); }
+
+.quick-action-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--dark);
+    margin-bottom: 0.15rem;
+    line-height: 1.3;
+}
+
+.quick-action-desc {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-bottom: 0;
+    line-height: 1.3;
+}
+
+/* --- Stat Cards Enhanced --- */
+.stat-card {
+    background: var(--surface-bg);
+    border: 1px solid var(--border-color);
+    border-top: 3.5px solid var(--primary);
+    border-radius: var(--radius-lg);
+    padding: 1.35rem 1.45rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.stat-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-3px);
+}
+
+.stat-card.primary { border-top-color: #053775; }
+.stat-card.warning { border-top-color: #d97706; }
+.stat-card.success { border-top-color: #059669; }
+.stat-card.danger  { border-top-color: #c8102e; }
+.stat-card.info    { border-top-color: #0284c7; }
+
+.stat-card .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+/* --- Official Government Footer --- */
+.gov-footer {
+    background: var(--gov-navy-dark);
+    color: #cbd5e1;
+    border-top: 4px solid var(--gov-crimson);
+    position: relative;
+    z-index: 10;
+    margin-top: auto;
+}
+
+.gov-footer-main {
+    max-width: 1720px;
+    width: 94%;
+    margin: 0 auto;
+    padding: 3.5rem 0.5rem 2.5rem;
+}
+
+.gov-footer-brand h4 {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 1.3rem;
+    margin-bottom: 0.35rem;
+}
+
+.gov-footer-brand p {
+    color: #94a3b8;
+    font-size: 0.86rem;
+    line-height: 1.6;
+}
+
+.gov-footer-heading {
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.15rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.gov-footer-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 32px;
+    height: 2px;
+    background: var(--gov-crimson);
+    border-radius: 2px;
+}
+
+.gov-footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.gov-footer-links li {
+    margin-bottom: 0.65rem;
+}
+
+.gov-footer-links a {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.86rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: var(--transition-fast);
+}
+
+.gov-footer-links a:hover {
+    color: #ffffff;
+    transform: translateX(3px);
+}
+
+.gov-footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.86rem;
+    color: #cbd5e1;
+}
+
+.gov-footer-contact-item i {
+    color: #fef08a;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+}
+
+.gov-footer-bottom {
+    background: #020f21;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1.1rem 0;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.gov-footer-bottom-inner {
+    max-width: 1720px;
+    width: 94%;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+/* --- Admin Sidebar Sovereign Modern Theme --- */
+.admin-sidebar {
+    background: #07152b !important;
+    border-right: 1px solid #102342 !important;
+}
+
+.admin-sidebar .sidebar-brand {
+    background: linear-gradient(180deg, #051d3b 0%, #07152b 100%);
+    border-bottom: 2px solid var(--gov-crimson);
+    padding: 1.25rem 1.4rem;
+}
+
+.admin-sidebar .nav-section {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    padding: 1rem 1.4rem 0.4rem;
+}
+
+.admin-sidebar .nav-link {
+    color: #94a3b8;
+    padding: 0.72rem 1.4rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-left: 3px solid transparent;
+    transition: var(--transition-fast);
+}
+
+.admin-sidebar .nav-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
+    border-left-color: #38bdf8;
+}
+
+.admin-sidebar .nav-link.active {
+    color: #ffffff;
+    background: linear-gradient(90deg, rgba(200, 16, 46, 0.20) 0%, rgba(200, 16, 46, 0.04) 100%);
+    border-left-color: var(--gov-crimson);
+    font-weight: 700;
+}
+
+.admin-sidebar .nav-link.active i {
+    color: #f87171;
+}
+
+.admin-main .top-navbar {
+    background: #ffffff;
+    border-bottom: 2px solid #e2e8f0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* --- Notice Board Card Upgraded --- */
+.notice-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--gov-crimson);
+    border-radius: var(--radius);
+    padding: 1.15rem;
+    margin-bottom: 0.85rem;
+    transition: var(--transition-fast);
+}
+
+.notice-card:hover {
+    box-shadow: var(--card-shadow);
+    transform: translateX(3px);
+    border-left-color: var(--gov-blue);
+}
+
+/* --- Responsive Helpers --- */
+@media (max-width: 991.98px) {
+    .gov-topbar-slogan {
+        display: none;
+    }
+    .gov-topbar-inner {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+/* --- Admin Dashboard Enhancements --- */
+.admin-action-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.15rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.admin-action-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--card-shadow-hover);
+    border-color: #93c5fd;
+    color: inherit;
+}
+
+.admin-action-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.admin-action-icon.bg-action-blue   { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); }
+.admin-action-icon.bg-action-crimson{ background: linear-gradient(135deg, #c8102e 0%, #9e0a22 100%); }
+.admin-action-icon.bg-action-gold   { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); }
+.admin-action-icon.bg-action-green  { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+
+.admin-metric-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.15rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    height: 100%;
+}
+
+.admin-metric-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-2px);
+}
+
+.table-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #053775 0%, #234a83 100%);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.auth-feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-top: 1.75rem;
+    text-align: left;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.auth-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 0.55rem 0.95rem;
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.86rem;
+    color: #ffffff;
+}
+
+.auth-feature-item i {
+    color: #fef08a;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Koshi Government Standard Language Switcher & Translator (नेपाली | English)
+   ========================================================================== */
+.auth-top-lang-switch {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    z-index: 1050;
+}
+
+.koshi-language-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.84rem;
+    font-weight: 500;
+}
+
+.koshi-lang-btn {
+    background: none !important;
+    border: none !important;
+    padding: 0.12rem 0.35rem !important;
+    font-size: 0.84rem !important;
+    cursor: pointer !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    transition: all 0.2s ease !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+}
+
+.koshi-lang-btn:hover {
+    color: #ffffff !important;
+}
+
+.koshi-lang-btn.active {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 3px !important;
+}
+
+.koshi-lang-pipe {
+    color: rgba(255, 255, 255, 0.45);
+    user-select: none;
+    font-size: 0.8rem;
+}
+
+/* Light Theme for Login Screen */
+.koshi-language-switch.light-theme {
+    background: rgba(255, 255, 255, 0.96);
+    border: 1.5px solid #cbd5e1;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 14px rgba(5, 55, 117, 0.12);
+}
+
+.koshi-language-switch.light-theme .koshi-lang-btn {
+    color: #64748b !important;
+}
+
+.koshi-language-switch.light-theme .koshi-lang-btn:hover {
+    color: #053775 !important;
+}
+
+.koshi-language-switch.light-theme .koshi-lang-btn.active {
+    color: #053775 !important;
+    font-weight: 800 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 3px !important;
+}
+
+.koshi-language-switch.light-theme .koshi-lang-pipe {
+    color: #cbd5e1;
+}
+
+/* Admin Navbar Theme */
+.koshi-language-switch.admin-theme {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+}
+
+.koshi-language-switch.admin-theme .koshi-lang-btn {
+    color: #64748b !important;
+}
+
+.koshi-language-switch.admin-theme .koshi-lang-btn:hover {
+    color: #053775 !important;
+}
+
+.koshi-language-switch.admin-theme .koshi-lang-btn.active {
+    color: #053775 !important;
+    font-weight: 800 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 3px !important;
+}
+
+.koshi-language-switch.admin-theme .koshi-lang-pipe {
+    color: #cbd5e1;
+}
+
+/* Hide Google Translate top toolbar and banners */
+iframe.skiptranslate,
+.skiptranslate iframe,
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame,
+iframe[id*="container"],
+iframe[id*=":1."],
+iframe[id*=":2."],
+.VIpgJd-ZVi9od-ORLlD-bN97Pc-haAclf,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+.VIpgJd-ZVi9od-OZhGNc {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+    pointer-events: none !important;
+}
+body {
+    top: 0px !important;
+    position: static !important;
+}
+html {
+    top: 0px !important;
+}
+.goog-te-gadget {
+    display: none !important;
+}
+/* Completely eliminate Google Translate hover highlight & tooltips */
+/* Completely eliminate Google Translate hover highlight & tooltips */
+font,
+font[style*="vertical-align"],
+font.goog-text-highlight,
+.goog-text-highlight,
+span.goog-text-highlight {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
+    text-decoration: inherit !important;
+    cursor: inherit !important;
+    pointer-events: none !important;
+}
+
+html body font,
+html body font:hover,
+html body font.goog-text-highlight,
+html body .goog-text-highlight,
+html body .goog-text-highlight:hover,
+html body *[class*="goog-text-highlight"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    text-decoration: inherit !important;
+    color: inherit !important;
+    pointer-events: none !important;
+}
+
+/* Ensure interactive elements stay clickable */
+a, button, select, input, textarea, label, [role="button"], .koshi-lang-btn, .font-btn {
+    pointer-events: auto !important;
+}
+a font, button font, label font, [role="button"] font {
+    pointer-events: none !important;
+}
+
+#goog-gt-tt, 
+#goog-gt-vt,
+.goog-te-balloon-frame,
+.goog-tooltip,
+.goog-tooltip:hover,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+.VIpgJd-ZVi9od-aZ2wEe-OkiMDh,
+.VIpgJd-yAWNEb-hvhgl-bN97Pc,
+.VIpgJd-ZVi9od-aZ2wEe,
+.VIpgJd-ZVi9od-v2WNKv {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: fixed !important;
+    top: -99999px !important;
+    left: -99999px !important;
+    z-index: -9999 !important;
+}
+
+/* ==========================================================================
+   KOSHI TOPBAR CONTROLS & LANGUAGE SWITCHER
+   ========================================================================== */
+.font-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.font-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 3px;
+    line-height: 1.25;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+.font-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: #ffffff;
+    color: #ffffff;
+}
+
+.koshi-language-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    user-select: none;
+}
+
+.koshi-lang-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    font-size: 0.82rem;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.koshi-lang-btn:hover {
+    color: #ffffff;
+}
+
+.koshi-lang-btn.active {
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+}
+
+.koshi-lang-pipe {
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 400;
+}
+
+/* Light theme variant */
+.koshi-language-switch.light-theme .koshi-lang-btn {
+    color: #4b5563;
+}
+.koshi-language-switch.light-theme .koshi-lang-btn:hover {
+    color: #1e3a8a;
+}
+.koshi-language-switch.light-theme .koshi-lang-btn.active {
+    color: #a60f1e;
+    text-decoration: underline;
+    font-weight: 700;
+}
+.koshi-language-switch.light-theme .koshi-lang-pipe {
+    color: #9ca3af;
+}
+
+/* Admin theme variant */
+.koshi-language-switch.admin-theme .koshi-lang-btn {
+    color: #4b5563;
+}
+.koshi-language-switch.admin-theme .koshi-lang-btn:hover {
+    color: #1e3a8a;
+}
+.koshi-language-switch.admin-theme .koshi-lang-btn.active {
+    color: #a60f1e;
+    text-decoration: underline;
+    font-weight: 700;
+}
+.koshi-language-switch.admin-theme .koshi-lang-pipe {
+    color: #cbd5e1;
+}
+
+.admin-gov-topbar {
+    border-radius: 0;
+}
+
+/* ==========================================================================
+   LIVE PASSWORD CRITERIA & ANIMATION STYLES
+   ========================================================================== */
+.password-criteria-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.password-strength-wrap {
+    margin-bottom: 10px;
+}
+
+.password-strength-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #475569;
+}
+
+.password-strength-bar {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.password-strength-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 10px;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.35s ease;
+}
+
+.criteria-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns horizontal, 2 rows vertical (2x2 grid) */
+    gap: 8px 12px;
+}
+
+.criteria-item {
+    font-size: 0.76rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.25s ease;
+}
+
+.criteria-icon-box {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #e2e8f0;
+    color: #94a3b8;
+    font-size: 9px;
+    font-weight: 800;
+    flex-shrink: 0;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.criteria-item.valid {
+    color: #15803d;
+    font-weight: 600;
+}
+
+.criteria-item.valid .criteria-icon-box {
+    background: #16a34a;
+    color: #ffffff;
+    transform: scale(1.15);
+    animation: criteriaPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes criteriaPop {
+    0% { transform: scale(0.6); opacity: 0.5; }
+    50% { transform: scale(1.35); }
+    100% { transform: scale(1.15); opacity: 1; }
+}
+
+.password-match-status {
+    font-size: 0.78rem;
+    font-weight: 500;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+}
+
+.password-toggle-btn {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    padding: 0 10px;
+    cursor: pointer;
+    transition: color 0.15s ease;
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle-btn:hover {
+    color: #0f172a;
+}
+
+
+
+
