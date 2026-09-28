@@ -69,6 +69,42 @@
     </ul>
 </div>
 
+@if($application->hasApprovedDocument())
+    <div class="card border-0 shadow-sm mb-4 overflow-hidden" style="background: linear-gradient(135deg, #064e3b 0%, #047857 100%); color: #ffffff; border-radius: 12px;">
+        <div class="card-body p-3 p-lg-4">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(255, 255, 255, 0.2);">
+                        <i data-lucide="award" style="width: 28px; height: 28px; color: #fef08a;"></i>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                            <span class="badge bg-warning text-dark fw-bold small">आधिकारिक प्रमाणपत्र जारी भएको</span>
+                            @if($application->certificate_number)
+                                <span class="badge bg-white text-dark font-monospace fw-bold px-2 py-0.5" style="letter-spacing: 0.5px;">
+                                    ID: {{ $application->certificate_number }}
+                                </span>
+                            @endif
+                        </div>
+                        <h5 class="fw-bold mb-1 text-white">{{ $application->approved_document_name }}</h5>
+                        <p class="mb-0 text-white-50 small">
+                            जारी मिति: {{ $application->issued_at ? $application->issued_at->format('M d, Y') : ($application->processed_at ? $application->processed_at->format('M d, Y') : 'N/A') }} &bull; फाइल ढाँचा: <span class="text-uppercase fw-bold text-white">{{ $application->approved_document_type }}</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{{ route('citizen.approved-documents.view', $application) }}" target="_blank" class="btn btn-light fw-bold px-3">
+                        <i data-lucide="eye" class="me-1"></i> कागजात हेर्नुहोस्
+                    </a>
+                    <a href="{{ route('citizen.approved-documents.download', $application) }}" class="btn btn-warning fw-bold px-3 text-dark">
+                        <i data-lucide="download" class="me-1"></i> डाउनलोड गर्नुहोस्
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+
 <div class="row g-4">
     <!-- Main Info -->
     <div class="col-12 col-lg-8">

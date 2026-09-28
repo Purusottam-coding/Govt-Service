@@ -36,6 +36,18 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('verify-otp', [\App\Http\Controllers\Auth\VerifyOtpController::class, 'show'])
+        ->name('otp.verify');
+
+    Route::post('verify-otp', [\App\Http\Controllers\Auth\VerifyOtpController::class, 'verify'])
+        ->name('otp.submit');
+
+    Route::post('verify-otp/resend', [\App\Http\Controllers\Auth\VerifyOtpController::class, 'resend'])
+        ->name('otp.resend');
+
+    Route::post('verify-otp/cancel', [\App\Http\Controllers\Auth\VerifyOtpController::class, 'cancel'])
+        ->name('otp.cancel');
+
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 

@@ -2,15 +2,15 @@
 
 @section('content')
 @php
-    $hour = (int) date('H');
+    $hour = (int) now('Asia/Kathmandu')->format('H');
     if ($hour >= 5 && $hour < 12) {
-        $greeting = 'शुभ प्रभात';
+        $greetingPrefix = 'शुभ दिन';
         $greetingIcon = 'sun-medium';
     } elseif ($hour >= 12 && $hour < 17) {
-        $greeting = 'शुभ दिन';
+        $greetingPrefix = 'अपराह्न';
         $greetingIcon = 'sun';
     } else {
-        $greeting = 'शुभ सन्ध्या';
+        $greetingPrefix = 'शुभ रात्री';
         $greetingIcon = 'moon-star';
     }
 @endphp
@@ -23,17 +23,14 @@
         <div class="row align-items-center g-4">
             <div class="col-12 col-lg-7">
                 <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-                    <span class="greeting-time-badge">
-                        <i data-lucide="{{ $greetingIcon }}" style="width: 14px; height: 14px;"></i> {{ $greeting }}
+                    <span class="barhadashi-badge-pill">
+                        <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
+                        बाह्रदशी गाउँपालिका • नागरिक सेवा पोर्टल
                     </span>
-                    <span class="verified-citizen-badge">
-                        <i data-lucide="shield-check" style="width: 14px; height: 14px;"></i> प्रमाणित नागरिक
-                    </span>
-                    <span class="barhadashi-badge-pill">बाह्रदशी गाउँपालिका • नागरिक सेवा पोर्टल</span>
                 </div>
-                <h2 class="fw-extrabold text-white mb-2" style="font-size: 2rem; letter-spacing: -0.02em;">
-                    स्वागत छ, {{ auth()->user()->name }}!
-                </h2>
+                <h1 class="fw-extrabold text-white mb-2 live-time-greeting" style="font-size: 2.25rem; letter-spacing: -0.02em;">
+                    <i data-lucide="{{ $greetingIcon }}" class="me-2 text-warning" style="width: 32px; height: 32px; display: inline-block; vertical-align: -4px;"></i>{{ $greetingPrefix }}, {{ auth()->user()->name }}!
+                </h1>
                 <p class="mb-0 text-white-50" style="color: rgba(255, 255, 255, 0.92) !important; font-size: 0.95rem; line-height: 1.6;">
                     गाउँ कार्यपालिकाको कार्यालय, चकचकी, झापा — घरमै बसेर सरकारी सेवाहरूमा अनलाइन आवेदन दिनुहोस्, दस्तुर भुक्तानी गर्नुहोस् र निवेदनको स्थिति प्रत्यक्ष ट्र्याक गर्नुहोस्।
                 </p>
@@ -135,15 +132,17 @@
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="stat-card success">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="stat-value text-success">{{ $stats['approved_applications'] }}</div>
-                    <div class="stat-label">स्वीकृत भएका निवेदनहरू</div>
+        <a href="{{ route('citizen.approved-documents.index') }}" class="text-decoration-none">
+            <div class="stat-card success" style="cursor: pointer; transition: transform 0.15s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-value text-success">{{ $stats['approved_applications'] }}</div>
+                        <div class="stat-label">स्वीकृत / प्रमाणित कागजात <i data-lucide="arrow-right" style="width: 12px; height: 12px;"></i></div>
+                    </div>
+                    <div class="stat-icon success"><i data-lucide="award"></i></div>
                 </div>
-                <div class="stat-icon success"><i data-lucide="check-circle-2"></i></div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-6 col-md-3">
         <div class="stat-card danger">
@@ -188,9 +187,16 @@
                                 <td><span class="badge-status {{ $app->getStatusBadgeClass() }}">{{ $app->getStatusLabel() }}</span></td>
                                 <td>{{ $app->submitted_at ? $app->submitted_at->format('M d, Y') : $app->created_at->format('M d, Y') }}</td>
                                 <td>
-                                    <a href="{{ route('citizen.applications.show', $app) }}" class="btn btn-sm btn-outline-primary">
-                                        <i data-lucide="eye"></i> ट्र्याक
-                                    </a>
+                                    <div class="d-flex align-items-center gap-1">
+                                        <a href="{{ route('citizen.applications.show', $app) }}" class="btn btn-sm btn-outline-primary">
+                                            <i data-lucide="eye"></i> ट्र्याक
+                                        </a>
+                                        @if($app->hasApprovedDocument())
+                                            <a href="{{ route('citizen.approved-documents.view', $app) }}" target="_blank" class="btn btn-sm btn-success text-white" title="प्रमाणित कागजात हेर्नुहोस् (ID: {{ $app->certificate_number }})">
+                                                <i data-lucide="award" style="width: 13px; height: 13px;"></i>
+                                            </a>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @empty
@@ -246,3 +252,33 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const hour = new Date().getHours();
+        const citizenName = @json(auth()->user()->name);
+        let prefix = 'शुभ रात्री';
+        let iconName = 'moon-star';
+
+        if (hour >= 5 && hour < 12) {
+            prefix = 'शुभ दिन';
+            iconName = 'sun-medium';
+        } else if (hour >= 12 && hour < 17) {
+            prefix = 'अपराह्न';
+            iconName = 'sun';
+        } else {
+            prefix = 'शुभ रात्री';
+            iconName = 'moon-star';
+        }
+
+        const greetingEl = document.querySelector('.live-time-greeting');
+        if (greetingEl) {
+            greetingEl.innerHTML = `<i data-lucide="${iconName}" class="me-2 text-warning" style="width: 32px; height: 32px; display: inline-block; vertical-align: -4px;"></i>${prefix}, ${citizenName}!`;
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+    });
+</script>
+@endpush

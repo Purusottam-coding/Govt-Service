@@ -31,7 +31,7 @@ Route::get('/dashboard', function () {
         return redirect()->route('admin.dashboard');
     }
     return redirect()->route('citizen.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
 
 /*
 |--------------------------------------------------------------------------
@@ -83,7 +83,7 @@ Route::middleware(['auth', 'admin'])
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'citizen'])
+Route::middleware(['auth', 'citizen', 'citizen.verified'])
     ->prefix('citizen')
     ->name('citizen.')
     ->group(function () {
@@ -99,6 +99,11 @@ Route::middleware(['auth', 'citizen'])
         Route::get('/payments/{application}/receipt', [Citizen\PaymentController::class, 'receipt'])->name('payments.receipt');
 
         Route::resource('feedback', Citizen\FeedbackController::class)->only(['index', 'create', 'store']);
+
+        // Approved Documents & Certificates Repository
+        Route::get('/approved-documents', [Citizen\ApprovedDocumentController::class, 'index'])->name('approved-documents.index');
+        Route::get('/approved-documents/{application}/view', [Citizen\ApprovedDocumentController::class, 'viewDocument'])->name('approved-documents.view');
+        Route::get('/approved-documents/{application}/download', [Citizen\ApprovedDocumentController::class, 'download'])->name('approved-documents.download');
     });
 
 require __DIR__.'/auth.php';

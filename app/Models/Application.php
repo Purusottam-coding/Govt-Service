@@ -16,6 +16,11 @@ class Application extends Model
         'applicant_address',
         'status',
         'admin_remarks',
+        'approved_document_path',
+        'approved_document_name',
+        'approved_document_type',
+        'certificate_number',
+        'issued_at',
         'submitted_at',
         'processed_at',
     ];
@@ -23,6 +28,7 @@ class Application extends Model
     protected $casts = [
         'submitted_at' => 'datetime',
         'processed_at' => 'datetime',
+        'issued_at' => 'datetime',
     ];
 
     /* ---------- Auto-generate application number ---------- */
@@ -112,5 +118,38 @@ class Application extends Model
         }
 
         return true;
+    }
+
+    /* ---------- Approved Document / Certificate Helpers ---------- */
+
+    public function hasApprovedDocument(): bool
+    {
+        return !empty($this->approved_document_path);
+    }
+
+    public function getApprovedDocumentUrl(): ?string
+    {
+        return $this->hasApprovedDocument() ? \Illuminate\Support\Facades\Storage::url($this->approved_document_path) : null;
+    }
+
+    /**
+     * Generate a unique 6-character alphanumeric Certificate ID (e.g. ABC123).
+     */
+    public static function generateUniqueCertificateId(): string
+    {
+        $letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // Exclude ambiguous chars like I, O
+        $digits = '123456789';
+
+        do {
+            $code = '';
+            for ($i = 0; $i < 3; $i++) {
+                $code .= $letters[random_int(0, strlen($letters) - 1)];
+            }
+            for ($i = 0; $i < 3; $i++) {
+                $code .= $digits[random_int(0, strlen($digits) - 1)];
+            }
+        } while (static::where('certificate_number', $code)->exists());
+
+        return $code;
     }
 }

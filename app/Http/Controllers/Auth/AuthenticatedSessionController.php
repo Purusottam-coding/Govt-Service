@@ -40,7 +40,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $redirect = auth()->user()->isAdmin()
+        $user = auth()->user();
+
+        // Clear any pending registration OTP flag on login
+        $request->session()->forget('requires_registration_otp');
+
+        // Direct dashboard redirect on login auth without OTP
+        $redirect = $user->isAdmin()
             ? redirect()->intended(route('admin.dashboard', absolute: false))
             : redirect()->intended(route('citizen.dashboard', absolute: false));
 
@@ -78,6 +84,13 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $user = $request->user();
+
+        // If an unverified citizen logs out during registration, remove the incomplete draft
+        if ($user && $user->isCitizen() && $user->email_verified_at === null) {
+            $user->delete();
+        }
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

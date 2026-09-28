@@ -13,10 +13,6 @@
                         <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
                         नेपाल सरकार • बाह्रदशी गाउँपालिका • प्रशासकीय कक्ष
                     </span>
-                    <span class="d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill" style="background: rgba(0, 0, 0, 0.40); border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; font-size: 0.82rem; font-weight: 600;">
-                        <i data-lucide="calendar" style="width: 13px; height: 13px; color: #fef08a;"></i>
-                        <span class="bilingual-live-date">११ असोज २०८३, आइतबार | Sunday, September 27, 2026</span>
-                    </span>
                 </div>
                 <h2 class="fw-extrabold text-white mb-2" style="font-size: 1.75rem;">स्वागत छ, {{ auth()->user()->name }}!</h2>
                 <p class="text-white-50 mb-0" style="color: rgba(255, 255, 255, 0.90) !important; max-width: 680px; font-size: 0.94rem; line-height: 1.55;">

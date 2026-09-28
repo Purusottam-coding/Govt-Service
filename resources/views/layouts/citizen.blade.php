@@ -71,6 +71,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('citizen.approved-documents.*') ? 'active' : '' }}" href="{{ route('citizen.approved-documents.index') }}">
+                            <i data-lucide="award"></i>प्रमाणित कागजातहरू
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('citizen.feedback.*') ? 'active' : '' }}" href="{{ route('citizen.feedback.index') }}">
                             <i data-lucide="message-square-heart"></i>गुनासो / सुझाव
                         </a>
@@ -92,6 +97,7 @@
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-lucide="user" class="me-2"></i>मेरो प्रोफाइल</a></li>
                             <li><a class="dropdown-item" href="{{ route('citizen.applications.index') }}"><i data-lucide="file-check-2" class="me-2"></i>मेरो निवेदन स्थिति</a></li>
+                            <li><a class="dropdown-item" href="{{ route('citizen.approved-documents.index') }}"><i data-lucide="award" class="me-2 text-success"></i>प्रमाणित कागजातहरू</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
