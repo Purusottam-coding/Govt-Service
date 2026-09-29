@@ -211,4 +211,33 @@ class ApplicationController extends Controller
         return redirect()->route('citizen.applications.index')
             ->with('success', 'निवेदन सफलतापूर्वक हटाइयो।');
     }
+
+    public function replaceDocument(Request $request, Application $application, ApplicationDocument $document)
+    {
+        abort_if($application->user_id !== auth()->id(), 403);
+        abort_if($document->application_id !== $application->id, 404);
+
+        $request->validate([
+            'document_file' => 'required|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
+        ], [
+            'document_file.required' => 'कृपया प्रतिस्थापन गर्न नयाँ फाइल छान्नुहोस्।',
+            'document_file.mimes' => 'कागजात केवल PDF, Word (doc/docx), वा फोटो (jpg, png) ढाँचामा हुनुपर्दछ।',
+            'document_file.max' => 'कागजातको साइज १० MB भन्दा कम हुनुपर्दछ।',
+        ]);
+
+        if ($document->file_path && Storage::disk('public')->exists($document->file_path)) {
+            Storage::disk('public')->delete($document->file_path);
+        }
+
+        $path = $request->file('document_file')->store("application_documents/{$application->id}", 'public');
+
+        $document->update([
+            'file_path' => $path,
+            'status' => 'pending',
+            'replaced_at' => now(),
+        ]);
+
+        return redirect()->route('citizen.applications.show', $application)
+            ->with('success', "'{$document->document_name}' सफलतापूर्वक प्रतिस्थापन गरियो। प्रशासनले यसलाई पुनः रुजु गर्नेछ।");
+    }
 }

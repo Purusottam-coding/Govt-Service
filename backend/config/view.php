@@ -14,8 +14,8 @@ return [
     */
 
     'paths' => [
-        realpath(base_path('../frontend/views')) ?: resource_path('views'),
         resource_path('views'),
+        realpath(base_path('../frontend/views')) ?: resource_path('views'),
     ],
 
     /*

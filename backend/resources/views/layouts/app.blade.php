@@ -326,7 +326,19 @@
                 }
             }, true);
         });
-    </script>
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    @stack('modals')
+
+    <script>
+        // Ensure all Bootstrap modals escape nested stacking contexts so backdrops never overlay them
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.modal').forEach(function (modal) {
+                if (modal.parentElement !== document.body) {
+                    document.body.appendChild(modal);
+                }
+            });
+        });
+    </script>
 </body>
 </html>

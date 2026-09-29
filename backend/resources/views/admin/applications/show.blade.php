@@ -59,20 +59,49 @@
 
                 <h6 class="fw-bold text-dark mb-3"><i data-lucide="file-check" class="me-2 text-primary"></i>अपलोड गरिएका कागजातहरू</h6>
                 @if($application->documents->count() > 0)
-                    <div class="row g-2 mb-4">
+                    <div class="row g-3 mb-4">
                         @foreach($application->documents as $doc)
                             <div class="col-12 col-md-6">
-                                <div class="p-3 border rounded d-flex justify-content-between align-items-center bg-white">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i data-lucide="file-text" class="fs-4 text-danger"></i>
-                                        <div>
-                                            <div class="fw-semibold small">{{ $doc->document_name }}</div>
-                                            <span class="text-muted extra-small">अपलोड गरिएको</span>
+                                <div class="p-3 border rounded bg-white h-100 d-flex flex-column justify-content-between {{ $doc->isReplacementNeeded() ? 'border-danger bg-danger-subtle bg-opacity-10' : '' }}">
+                                    <div>
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i data-lucide="file-text" class="text-danger"></i>
+                                                <span class="fw-bold small text-dark">{{ $doc->document_name }}</span>
+                                            </div>
+                                            @if($doc->isReplacementNeeded())
+                                                <span class="badge bg-danger text-white extra-small"><i data-lucide="alert-triangle" style="width: 10px; height: 10px;" class="me-1"></i>प्रतिस्थापन माग गरिएको</span>
+                                            @elseif($doc->replaced_at)
+                                                <span class="badge bg-info-subtle text-info extra-small"><i data-lucide="refresh-cw" style="width: 10px; height: 10px;" class="me-1"></i>पुनः अपलोड भएको</span>
+                                            @else
+                                                <span class="badge bg-secondary-subtle text-secondary extra-small">पेस गरिएको</span>
+                                            @endif
                                         </div>
+
+                                        @if($doc->admin_feedback)
+                                            <div class="alert alert-danger py-1.5 px-2 mb-2 extra-small" style="font-size: 0.76rem;">
+                                                <strong>कैफियत:</strong> {{ $doc->admin_feedback }}
+                                            </div>
+                                        @endif
                                     </div>
-                                    <a href="{{ Storage::url($doc->file_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                        <i data-lucide="download"></i> हेर्नुहोस्
-                                    </a>
+
+                                    <div class="d-flex justify-content-end gap-2 pt-2 border-top mt-2">
+                                        <a href="{{ Storage::url($doc->file_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                            <i data-lucide="eye" style="width: 13px; height: 13px;"></i> हेर्नुहोस्
+                                        </a>
+
+                                        @if(!in_array($application->status, ['approved', 'completed']))
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-outline-danger" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#replaceDocModal"
+                                                    data-doc-name="{{ $doc->document_name }}"
+                                                    data-action-url="{{ route('admin.applications.documents.request-replacement', [$application, $doc]) }}"
+                                                    data-feedback="{{ $doc->admin_feedback ?? '' }}">
+                                                <i data-lucide="rotate-ccw" style="width: 13px; height: 13px;"></i> प्रतिस्थापन माग
+                                            </button>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -147,14 +176,14 @@
                         @enderror
                     </div>
 
-                    <!-- Approved Document Upload Box -->
-                    <div class="p-3 mb-3 rounded-3 border bg-light" id="approvedDocSection">
+                    <!-- Approved Document Upload Box (Shown only when status is 'approved') -->
+                    <div class="p-3 mb-3 rounded-3 border bg-light" id="approvedDocSection" style="{{ old('status', $application->status) === 'approved' ? '' : 'display: none;' }}">
                         <label class="form-label fw-bold text-dark d-flex align-items-center justify-content-between mb-1">
                             <span><i data-lucide="file-check" class="me-1 text-success"></i> स्वीकृत कागजात / प्रमाणपत्र</span>
-                            <span class="badge bg-secondary-subtle text-secondary small">ऐच्छिक</span>
+                            <span class="badge bg-danger-subtle text-danger small">अनिवार्य *</span>
                         </label>
                         <p class="text-muted extra-small mb-2" style="font-size: 0.75rem;">
-                            नागरिकलाई प्रदान गरिने स्वीकृत पत्र, सिफारिस वा प्रमाणपत्र (PDF/Image)
+                            नागरिकलाई प्रदान गरिने स्वीकृत पत्र, सिफारिस वा प्रमाणपत्र (PDF/Image) अनिवार्य रूपमा अपलोड गर्नुहोस्।
                         </p>
 
                         @if($application->hasApprovedDocument())
@@ -170,13 +199,15 @@
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" name="remove_approved_document" value="1" id="removeDocCheck">
                                 <label class="form-check-label text-danger small" for="removeDocCheck">
-                                    हालको कागजात हटाउनुहोस्
+                                    हालको कागजात हटाउनुहोस् (नयाँ अनिवार्य अपलोड गर्नुपर्नेछ)
                                 </label>
                             </div>
                         @endif
 
                         <div class="mb-2">
-                            <label class="form-label extra-small text-muted mb-1">कागजात फाइल (नयाँ वा प्रतिस्थापन):</label>
+                            <label class="form-label extra-small fw-semibold text-dark mb-1">
+                                कागजात फाइल <span class="text-danger">*</span> (नयाँ वा प्रतिस्थापन):
+                            </label>
                             <input type="file" 
                                    name="approved_document" 
                                    id="approved_document" 
@@ -188,30 +219,38 @@
                         </div>
 
                         <div class="mb-2">
-                            <label class="form-label extra-small text-muted mb-1">कागजातको शीर्षक / नाम:</label>
+                            <label class="form-label extra-small fw-semibold text-dark mb-1">
+                                कागजातको शीर्षक / नाम <span class="text-danger">*</span>:
+                            </label>
                             <input type="text" 
                                    name="approved_document_name" 
-                                   class="form-control form-control-sm" 
-                                   value="{{ old('approved_document_name', $application->approved_document_name) }}" 
+                                   id="approved_document_name"
+                                   class="form-control form-control-sm @error('approved_document_name') is-invalid @enderror" 
+                                   value="{{ old('approved_document_name', $application->approved_document_name ?: ($application->service->name ? $application->service->name . ' — प्रमाणपत्र' : '')) }}" 
                                    placeholder="उदा. नागरिकता सिफारिस पत्र">
+                            @error('approved_document_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-1">
-                            <label class="form-label extra-small text-muted mb-1 d-flex justify-content-between">
+                            <label class="form-label extra-small fw-semibold text-dark mb-1 d-flex justify-content-between align-items-center">
                                 <span>प्रमाणपत्र / यूनिक ID (Unique Verification ID):</span>
-                                <span class="text-primary font-monospace">उदा. ABC123</span>
+                                <span class="badge bg-primary-subtle text-primary small"><i data-lucide="sparkles" style="width: 11px; height: 11px;" class="me-1"></i>स्वचालित Unique ID</span>
                             </label>
                             <div class="input-group input-group-sm">
                                 <input type="text" 
                                        name="certificate_number" 
                                        id="certificate_number"
-                                       class="form-control form-control-sm font-monospace text-uppercase fw-bold" 
-                                       value="{{ old('certificate_number', $application->certificate_number) }}" 
-                                       placeholder="खाली छोडेमा स्वतः ABC123 बन्नेछ">
-                                <button class="btn btn-outline-secondary" type="button" onclick="generateNewCertId()" title="नयाँ ID जेनेरेट गर्नुहोस्">
+                                       class="form-control form-control-sm font-monospace text-uppercase fw-bold bg-light" 
+                                       value="{{ old('certificate_number', $application->certificate_number ?: $suggestedCertificateId) }}" 
+                                       readonly
+                                       placeholder="स्वचालित Unique ID">
+                                <button class="btn btn-outline-secondary" type="button" onclick="generateNewCertId()" title="नयाँ ID पुनः जेनेरेट गर्नुहोस्">
                                     <i data-lucide="refresh-cw" style="width: 12px; height: 12px;"></i>
                                 </button>
                             </div>
+                            <small class="text-muted extra-small" style="font-size: 0.72rem;">प्रणालीद्वारा स्वतः ६-अङ्कीय युनिक कोड (उदा. ABC123) तयार गरिएको छ।</small>
                         </div>
                     </div>
 
@@ -283,6 +322,44 @@
 </div>
 @endsection
 
+@push('modals')
+<!-- Single Reusable Modal for Document Replacement Request (Pushed directly to <body>) -->
+<div class="modal fade" id="replaceDocModal" tabindex="-1" aria-labelledby="replaceDocModalLabel" aria-hidden="true" style="z-index: 1060;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <form id="replaceDocForm" action="" method="POST">
+                @csrf
+                <div class="modal-header bg-danger text-white py-2.5">
+                    <h6 class="modal-title fw-bold" id="replaceDocModalLabel">
+                        <i data-lucide="alert-circle" class="me-1"></i> कागजात प्रतिस्थापन अनुरोध
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <div class="mb-3 p-2.5 rounded bg-light border">
+                        <span class="text-muted extra-small d-block">कागजातको शीर्षक:</span>
+                        <strong class="text-dark fs-6" id="replaceModalDocName">--</strong>
+                    </div>
+                    <div class="mb-2">
+                        <label for="replaceModalFeedback" class="form-label fw-semibold small text-dark">
+                            प्रतिस्थापन गर्नुपर्ने कारण / निर्देशन <span class="text-danger">*</span>
+                        </label>
+                        <textarea name="admin_feedback" id="replaceModalFeedback" rows="3" class="form-control form-control-sm" required placeholder="उदा. नागरिकताको पछाडिको भाग स्पष्ट देखिएन, कृपया पुनः स्पष्ट फोटो खिचेर अपलोड गर्नुहोस्।"></textarea>
+                        <small class="text-muted extra-small">यो निर्देशन निवेदक (नागरिक) ले आफ्नो ड्यासबोर्डमा देख्नेछन्।</small>
+                    </div>
+                </div>
+                <div class="modal-footer py-2 bg-light">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">रद्द गर्नुहोस्</button>
+                    <button type="submit" class="btn btn-sm btn-danger fw-bold">
+                        <i data-lucide="send" style="width: 13px; height: 13px;"></i> अनुरोध पठाउनुहोस्
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endpush
+
 @push('scripts')
 <script>
 function generateNewCertId() {
@@ -300,5 +377,83 @@ function generateNewCertId() {
         certInput.value = code;
     }
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const statusSelect = document.getElementById('status');
+    const docSection = document.getElementById('approvedDocSection');
+    const certInput = document.getElementById('certificate_number');
+    const fileInput = document.getElementById('approved_document');
+    const nameInput = document.getElementById('approved_document_name');
+    const removeDocCheck = document.getElementById('removeDocCheck');
+    const hasExistingDoc = {{ $application->hasApprovedDocument() ? 'true' : 'false' }};
+
+    function updateFieldRequirements() {
+        if (!statusSelect) return;
+        const isApproved = statusSelect.value === 'approved';
+
+        if (nameInput) {
+            nameInput.required = isApproved;
+        }
+
+        if (fileInput) {
+            // File is required when status is approved and either no document exists or existing one is being removed
+            const needsFile = isApproved && (!hasExistingDoc || (removeDocCheck && removeDocCheck.checked));
+            fileInput.required = needsFile;
+        }
+    }
+
+    function toggleApprovedDocSection() {
+        if (!statusSelect || !docSection) return;
+
+        if (statusSelect.value === 'approved') {
+            docSection.style.display = 'block';
+            // Auto-populate unique certificate ID if currently empty
+            if (certInput && !certInput.value.trim()) {
+                generateNewCertId();
+            }
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+        } else {
+            docSection.style.display = 'none';
+        }
+
+        updateFieldRequirements();
+    }
+
+    if (statusSelect) {
+        statusSelect.addEventListener('change', toggleApprovedDocSection);
+        toggleApprovedDocSection();
+    }
+
+    if (removeDocCheck) {
+        removeDocCheck.addEventListener('change', updateFieldRequirements);
+    }
+
+    // Dynamic populate for single document replacement modal
+    const replaceModal = document.getElementById('replaceDocModal');
+    if (replaceModal) {
+        replaceModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            if (!button) return;
+
+            const docName = button.getAttribute('data-doc-name') || '';
+            const actionUrl = button.getAttribute('data-action-url') || '';
+            const feedback = button.getAttribute('data-feedback') || '';
+
+            const form = document.getElementById('replaceDocForm');
+            const nameEl = document.getElementById('replaceModalDocName');
+            const feedbackEl = document.getElementById('replaceModalFeedback');
+
+            if (form) form.action = actionUrl;
+            if (nameEl) nameEl.textContent = docName;
+            if (feedbackEl) feedbackEl.value = feedback;
+
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+        });
+    }
+});
 </script>
 @endpush

@@ -136,20 +136,69 @@
                     </div>
                 @endif
 
+                @php
+                    $replacementDocs = $application->documents->filter(fn($d) => $d->isReplacementNeeded());
+                @endphp
+
+                @if($replacementDocs->count() > 0)
+                    <div class="alert alert-warning border-warning shadow-sm mb-4">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <i data-lucide="alert-triangle" class="text-danger fs-5"></i>
+                            <h6 class="mb-0 fw-bold text-danger">ध्यानाकर्षण: कागजात प्रतिस्थापन आवश्यक छ</h6>
+                        </div>
+                        <p class="small text-dark mb-0">
+                            प्रशासनले तपाईंको निवेदनमा केही कागजातहरू पुनः अपलोड गर्न अनुरोध गरेको छ। कृपया तल रातो चिन्ह लगाइएका कागजातमा नयाँ फाइल छानेर तत्काल प्रतिस्थापन (Replace) गर्नुहोस्।
+                        </p>
+                    </div>
+                @endif
+
                 <h6 class="fw-bold text-dark mb-3"><i data-lucide="file-check" class="me-2 text-primary"></i>अपलोड गरिएका कागजातहरू</h6>
                 @if($application->documents->count() > 0)
                     <div class="list-group mb-4">
                         @foreach($application->documents as $doc)
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i data-lucide="file-text" class="text-danger fs-4"></i>
-                                    <div>
-                                        <span class="fw-semibold text-dark small d-block">{{ $doc->document_name }}</span>
+                            <div class="list-group-item p-3 {{ $doc->isReplacementNeeded() ? 'border-danger bg-danger-subtle bg-opacity-10' : '' }}">
+                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i data-lucide="file-text" class="text-danger fs-4"></i>
+                                        <div>
+                                            <span class="fw-bold text-dark small d-block">{{ $doc->document_name }}</span>
+                                            @if($doc->isReplacementNeeded())
+                                                <span class="badge bg-danger text-white extra-small"><i data-lucide="alert-circle" style="width: 10px; height: 10px;" class="me-1"></i>प्रतिस्थापन आवश्यक</span>
+                                            @elseif($doc->replaced_at)
+                                                <span class="badge bg-info-subtle text-info extra-small"><i data-lucide="check" style="width: 10px; height: 10px;" class="me-1"></i>नयाँ फाइल पेस भयो</span>
+                                            @else
+                                                <span class="text-muted extra-small">पेस गरिएको</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <a href="{{ Storage::url($doc->file_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                            <i data-lucide="eye"></i> हेर्नुहोस्
+                                        </a>
                                     </div>
                                 </div>
-                                <a href="{{ Storage::url($doc->file_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                    <i data-lucide="eye"></i> हेर्नुहोस्
-                                </a>
+
+                                @if($doc->isReplacementNeeded())
+                                    <div class="mt-3 p-3 bg-white border border-danger rounded-3">
+                                        <div class="text-danger small fw-semibold mb-2">
+                                            <i data-lucide="info" class="me-1" style="width: 14px; height: 14px;"></i>
+                                            प्रशासकीय कैफियत: <span class="fw-normal text-dark">{{ $doc->admin_feedback }}</span>
+                                        </div>
+
+                                        <form action="{{ route('citizen.applications.documents.replace', [$application, $doc]) }}" method="POST" enctype="multipart/form-data" class="d-flex flex-column flex-sm-row gap-2 align-items-sm-center">
+                                            @csrf
+                                            <div class="flex-grow-1">
+                                                <input type="file" name="document_file" class="form-control form-control-sm @error('document_file') is-invalid @enderror" required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                @error('document_file')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                            <button type="submit" class="btn btn-sm btn-danger fw-bold text-nowrap">
+                                                <i data-lucide="upload" style="width: 13px; height: 13px;"></i> नयाँ फाइल अपलोड गर्नुहोस्
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endif
                             </div>
                         @endforeach
                     </div>

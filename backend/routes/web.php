@@ -63,6 +63,7 @@ Route::middleware(['auth', 'admin'])
         Route::get('/applications', [Admin\ApplicationController::class, 'index'])->name('applications.index');
         Route::get('/applications/{application}', [Admin\ApplicationController::class, 'show'])->name('applications.show');
         Route::patch('/applications/{application}/status', [Admin\ApplicationController::class, 'updateStatus'])->name('applications.status');
+        Route::post('/applications/{application}/documents/{document}/request-replacement', [Admin\ApplicationController::class, 'requestDocumentReplacement'])->name('applications.documents.request-replacement');
 
         Route::resource('qr-codes', Admin\QrCodeController::class)->names('qr-codes');
         Route::patch('/qr-codes/{qrCode}/toggle-status', [Admin\QrCodeController::class, 'toggleStatus'])->name('qr-codes.toggle-status');
@@ -92,7 +93,15 @@ Route::middleware(['auth', 'citizen', 'citizen.verified'])
         Route::get('/services', [Citizen\ServiceController::class, 'index'])->name('services.index');
         Route::get('/services/{service}', [Citizen\ServiceController::class, 'show'])->name('services.show');
 
+        // Branch Explorer & Yojana Guidance Routes
+        Route::get('/branches', [Citizen\BranchController::class, 'index'])->name('branches.index');
+        Route::get('/branches/{department}', [Citizen\BranchController::class, 'show'])->name('branches.show');
+
+        // Branch & Application Verification Portal
+        Route::get('/verify', [Citizen\BranchController::class, 'verify'])->name('verify.index');
+
         Route::resource('applications', Citizen\ApplicationController::class);
+        Route::post('/applications/{application}/documents/{document}/replace', [Citizen\ApplicationController::class, 'replaceDocument'])->name('applications.documents.replace');
 
         Route::get('/payments/{application}', [Citizen\PaymentController::class, 'create'])->name('payments.create');
         Route::post('/payments/{application}', [Citizen\PaymentController::class, 'store'])->name('payments.store');

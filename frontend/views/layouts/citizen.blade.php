@@ -66,6 +66,16 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('citizen.branches.*') ? 'active' : '' }}" href="{{ route('citizen.branches.index') }}">
+                            <i data-lucide="git-branch"></i>विषयगत शाखाहरू
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('citizen.verify.*') ? 'active' : '' }}" href="{{ route('citizen.verify.index') }}">
+                            <i data-lucide="shield-check"></i>निवेदन प्रमाणीकरण
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('citizen.applications.*') ? 'active' : '' }}" href="{{ route('citizen.applications.index') }}">
                             <i data-lucide="file-text"></i>मेरा निवेदनहरू
                         </a>
@@ -96,6 +106,8 @@
                             <li><span class="dropdown-item-text text-muted small fw-semibold">{{ auth()->user()->email }}</span></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-lucide="user" class="me-2"></i>मेरो प्रोफाइल</a></li>
+                            <li><a class="dropdown-item" href="{{ route('citizen.branches.index') }}"><i data-lucide="building-2" class="me-2 text-primary"></i>विषयगत शाखाहरू निर्देशिका</a></li>
+                            <li><a class="dropdown-item" href="{{ route('citizen.verify.index') }}"><i data-lucide="shield-check" class="me-2 text-success"></i>शाखा तथा निवेदन प्रमाणीकरण</a></li>
                             <li><a class="dropdown-item" href="{{ route('citizen.applications.index') }}"><i data-lucide="file-check-2" class="me-2"></i>मेरो निवेदन स्थिति</a></li>
                             <li><a class="dropdown-item" href="{{ route('citizen.approved-documents.index') }}"><i data-lucide="award" class="me-2 text-success"></i>प्रमाणित कागजातहरू</a></li>
                             <li><hr class="dropdown-divider"></li>

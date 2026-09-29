@@ -25,7 +25,7 @@ class ApprovedDocumentController extends Controller
             ->where('user_id', $user->id)
             ->where(function ($q) {
                 $q->where('status', 'approved')
-                  ->orWhereNotNull('approved_document_path');
+                    ->orWhereNotNull('approved_document_path');
             });
 
         // Search query across Application Number, Unique Certificate ID (e.g. ABC123), Document Title, or Service Name
@@ -33,11 +33,11 @@ class ApprovedDocumentController extends Controller
             $search = trim($request->search);
             $query->where(function ($q) use ($search) {
                 $q->where('application_number', 'like', "%{$search}%")
-                  ->orWhere('certificate_number', 'like', "%{$search}%")
-                  ->orWhere('approved_document_name', 'like', "%{$search}%")
-                  ->orWhereHas('service', function ($serviceQuery) use ($search) {
-                      $serviceQuery->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhere('certificate_number', 'like', "%{$search}%")
+                    ->orWhere('approved_document_name', 'like', "%{$search}%")
+                    ->orWhereHas('service', function ($serviceQuery) use ($search) {
+                        $serviceQuery->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -67,7 +67,7 @@ class ApprovedDocumentController extends Controller
         $totalApprovedCount = Application::where('user_id', $user->id)
             ->where(function ($q) {
                 $q->where('status', 'approved')
-                  ->orWhereNotNull('approved_document_path');
+                    ->orWhereNotNull('approved_document_path');
             })->count();
 
         return view('citizen.approved-documents.index', compact('documents', 'departments', 'totalApprovedCount'));
@@ -102,9 +102,9 @@ class ApprovedDocumentController extends Controller
             return back()->with('error', 'प्रमाणित कागजात फेला परेन। कृपया कार्यालय वा प्रशासकलाई सम्पर्क गर्नुहोस्।');
         }
 
-        $filename = Str::slug($application->approved_document_name ?: $application->service->name, '-') . 
-                    '-' . ($application->certificate_number ?: $application->application_number) . 
-                    '.' . ($application->approved_document_type ?: 'pdf');
+        $filename = Str::slug($application->approved_document_name ?: $application->service->name, '-') .
+            '-' . ($application->certificate_number ?: $application->application_number) .
+            '.' . ($application->approved_document_type ?: 'pdf');
 
         return Storage::disk('public')->download($application->approved_document_path, $filename);
     }
