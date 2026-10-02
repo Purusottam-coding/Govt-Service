@@ -26,7 +26,12 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>
-                            <div class="fw-bold text-dark">{{ $dept->name }}</div>
+                            <div class="fw-bold text-dark d-flex align-items-center gap-2">
+                                <span>{{ $dept->name }}</span>
+                                @if($dept->code)
+                                    <span class="badge bg-primary text-white font-monospace" style="font-size:0.75rem;">{{ $dept->code }}</span>
+                                @endif
+                            </div>
                             <div class="small text-muted text-truncate" style="max-width:300px;">{{ $dept->description ?? 'विवरण उपलब्ध छैन' }}</div>
                         </td>
                         <td>

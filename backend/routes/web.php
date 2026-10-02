@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin as Admin;
+use App\Http\Controllers\ApplicationRemarkController;
 use App\Http\Controllers\Citizen as Citizen;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,9 @@ Route::get('/', function () {
     }
     return redirect()->route('login');
 })->name('welcome');
+
+// Public Application & Certificate Verification Page by ID (KABD203, GOV-...)
+Route::get('/verify', [Citizen\BranchController::class, 'verify'])->name('public.verify');
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +47,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Application Remarks & Conversation (AJAX)
+    Route::get('/applications/{application}/remarks', [ApplicationRemarkController::class, 'index'])->name('applications.remarks.index');
+    Route::post('/applications/{application}/remarks', [ApplicationRemarkController::class, 'store'])->name('applications.remarks.store');
 });
 
 /*

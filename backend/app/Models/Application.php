@@ -64,6 +64,11 @@ class Application extends Model
         return $this->hasMany(ApplicationDocument::class);
     }
 
+    public function remarks()
+    {
+        return $this->hasMany(ApplicationRemark::class)->latest();
+    }
+
     public function payment()
     {
         return $this->hasOne(Payment::class);
@@ -133,21 +138,28 @@ class Application extends Model
     }
 
     /**
-     * Generate a unique 6-character alphanumeric Certificate ID (e.g. ABC123).
+     * Generate a unique Certificate ID with branch code prefix (e.g. KABD203, YOJ203, YAT104).
      */
-    public static function generateUniqueCertificateId(): string
+    public static function generateUniqueCertificateId($departmentOrCode = null): string
     {
-        $letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // Exclude ambiguous chars like I, O
+        $prefix = 'KAB';
+
+        if (is_object($departmentOrCode) && !empty($departmentOrCode->code)) {
+            $prefix = strtoupper($departmentOrCode->code);
+        } elseif (is_string($departmentOrCode) && !empty($departmentOrCode)) {
+            $prefix = strtoupper(trim($departmentOrCode));
+        }
+
+        // Clean prefix to alphanumeric
+        $prefix = preg_replace('/[^A-Z0-9]/', '', $prefix) ?: 'KAB';
         $digits = '123456789';
 
         do {
-            $code = '';
+            $num = '';
             for ($i = 0; $i < 3; $i++) {
-                $code .= $letters[random_int(0, strlen($letters) - 1)];
+                $num .= $digits[random_int(0, strlen($digits) - 1)];
             }
-            for ($i = 0; $i < 3; $i++) {
-                $code .= $digits[random_int(0, strlen($digits) - 1)];
-            }
+            $code = $prefix . $num;
         } while (static::where('certificate_number', $code)->exists());
 
         return $code;

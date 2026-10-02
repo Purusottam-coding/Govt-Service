@@ -21,6 +21,16 @@
     <!-- Custom CSS with cache-busting -->
     <link href="{{ asset('css/custom.css') }}?v={{ time() }}" rel="stylesheet">
 
+    <!-- Instant Font Size Restoration to prevent layout shift -->
+    <script>
+        (function() {
+            var savedFontSize = localStorage.getItem('portal_font_size');
+            if (savedFontSize) {
+                document.documentElement.style.fontSize = savedFontSize + 'px';
+            }
+        })();
+    </script>
+
     @stack('styles')
 
     <style>
@@ -110,8 +120,8 @@
 
     @stack('scripts')
 
-    <!-- Hidden Google Translate Element -->
-    <div id="google_translate_element" style="display:none; position:absolute; left:-9999px;"></div>
+    <!-- Hidden Google Translate Element (visually hidden, accessible to DOM) -->
+    <div id="google_translate_element" style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none;"></div>
 
     <script>
         function googleTranslateElementInit() {
@@ -126,18 +136,22 @@
             localStorage.setItem('portal_lang', lang);
 
             // Set cookie for Google Translate
-            if (lang === 'en') {
-                document.cookie = "googtrans=/ne/en; path=/";
-                document.cookie = "googtrans=/ne/en; domain=" + window.location.hostname + "; path=/";
-            } else {
-                document.cookie = "googtrans=/ne/ne; path=/";
-                document.cookie = "googtrans=/ne/ne; domain=" + window.location.hostname + "; path=/";
+            var cookieVal = (lang === 'en') ? '/ne/en' : '/ne/ne';
+            document.cookie = "googtrans=" + cookieVal + "; path=/;";
+
+            if (lang === 'ne') {
                 document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=" + window.location.hostname + "; path=/;";
+                if (window.location.hostname && !window.location.hostname.match(/^\d+\.\d+\.\d+\.\d+$/) && window.location.hostname !== 'localhost') {
+                    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname + ";";
+                }
+            } else {
+                if (window.location.hostname && !window.location.hostname.match(/^\d+\.\d+\.\d+\.\d+$/) && window.location.hostname !== 'localhost') {
+                    document.cookie = "googtrans=" + cookieVal + "; path=/; domain=" + window.location.hostname + ";";
+                }
             }
 
             // Trigger Google Translate select element if loaded
-            const select = document.querySelector('.goog-te-combo');
+            var select = document.querySelector('.goog-te-combo');
             if (select) {
                 select.value = lang;
                 select.dispatchEvent(new Event('change'));
@@ -147,11 +161,11 @@
 
             setTimeout(function() {
                 window.location.reload();
-            }, 120);
+            }, 150);
         }
 
         function updateLangUi(lang) {
-            document.querySelectorAll('.koshi-lang-btn').forEach(btn => {
+            document.querySelectorAll('.koshi-lang-btn').forEach(function(btn) {
                 if (btn.getAttribute('data-lang') === lang) {
                     btn.classList.add('active');
                 } else {
@@ -218,31 +232,13 @@
             });
         }
 
-        function removeGoogleTranslateBanner() {
-            if (document.body) {
-                document.body.style.setProperty('top', '0px', 'important');
-                document.body.style.setProperty('position', 'static', 'important');
-            }
-            if (document.documentElement) {
-                document.documentElement.style.setProperty('top', '0px', 'important');
-            }
-            const elements = document.querySelectorAll('iframe.skiptranslate, .skiptranslate iframe, iframe.goog-te-banner-frame, iframe[id*="container"], .VIpgJd-ZVi9od-ORLlD-bN97Pc-haAclf');
-            elements.forEach(function(el) {
-                el.style.setProperty('display', 'none', 'important');
-                el.style.setProperty('visibility', 'hidden', 'important');
-                el.style.setProperty('height', '0px', 'important');
-                el.style.setProperty('width', '0px', 'important');
-                el.style.setProperty('position', 'absolute', 'important');
-                el.style.setProperty('top', '-9999px', 'important');
-            });
-        }
-
         // Font resize control (-A / +A) like koshi.gov.np
         function changeFontSize(delta) {
             const root = document.documentElement;
             let current = parseFloat(window.getComputedStyle(root).fontSize) || 16;
-            let newSize = current + delta;
-            if (newSize >= 12 && newSize <= 22) {
+            let step = (Math.abs(delta) === 1) ? delta * 1.5 : delta;
+            let newSize = Math.round((current + step) * 10) / 10;
+            if (newSize >= 12 && newSize <= 24) {
                 root.style.fontSize = newSize + 'px';
                 localStorage.setItem('portal_font_size', newSize);
             }
@@ -326,6 +322,9 @@
                 }
             }, true);
         });
+    </script>
+
+    <!-- Google Translate Script Loaded Externally -->
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     @stack('modals')

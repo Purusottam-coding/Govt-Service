@@ -220,42 +220,27 @@
         </div>
     @endif
 @else
-    <!-- Default Quick Verification Helpers -->
-    <div class="row g-4">
-        <div class="col-12 col-md-6">
-            <div class="card border-0 shadow-sm bg-white rounded-4 p-4 h-100">
-                <h5 class="fw-bold text-dark mb-3"><i data-lucide="help-circle" class="me-2 text-primary"></i>प्रमाणीकरण कसरी गर्ने?</h5>
-                <ul class="list-unstyled mb-0 small leading-relaxed text-secondary">
-                    <li class="mb-2"><i data-lucide="check-circle-2" class="me-2 text-success" style="width: 16px; height: 16px;"></i>१. तपाईंको अनलाइन निवेदन फारम बुझाएपछि प्राप्त <strong>GOV-XXXX-XXXXX</strong> नम्बर माथिको कोठामा राख्नुहोस्।</li>
-                    <li class="mb-2"><i data-lucide="check-circle-2" class="me-2 text-success" style="width: 16px; height: 16px;"></i>२. यदि तपाईंले प्रमाणपत्र पाउनुभएको छ भने प्रमाणपत्रमा रहेको <strong>६-अङ्कको ID (उदा: ABC123)</strong> बाट पनि प्रमाणीकरण गर्न सक्नुहुन्छ।</li>
-                    <li class="mb-0"><i data-lucide="check-circle-2" class="me-2 text-success" style="width: 16px; height: 16px;"></i>३. प्रमाणीकरण सफल भएपछि तपाईंले आधिकारिक डिजिटल प्रमाणीकरण पत्र प्रिन्ट वा सेभ गर्न सक्नुहुन्छ।</li>
-                </ul>
+    <!-- Quick Verification Guidance (No pre-listed statuses, status only shows upon specific document search) -->
+    <div class="card border-0 shadow-sm bg-white rounded-4 p-4">
+        <h5 class="fw-bold text-dark mb-3"><i data-lucide="help-circle" class="me-2 text-primary"></i>प्रमाणीकरण कसरी गर्ने?</h5>
+        <div class="row g-3">
+            <div class="col-12 col-md-4">
+                <div class="p-3 bg-light rounded-3 h-100 border">
+                    <div class="fw-bold text-dark mb-1"><i data-lucide="hash" class="me-1 text-primary"></i>१. ID वा नम्बर प्रविष्ट गर्नुहोस्</div>
+                    <p class="small text-muted mb-0">माथिको खोजी बाकसमा तपाईंको निवेदन नम्बर (उदा: GOV-XXXX) वा जारी भएको ६-अङ्कको प्रमाणपत्र ID (उदा: KABD203) प्रविष्ट गर्नुहोस्।</p>
+                </div>
             </div>
-        </div>
-
-        <div class="col-12 col-md-6">
-            <div class="card border-0 shadow-sm bg-white rounded-4 p-4 h-100">
-                <h5 class="fw-bold text-dark mb-3"><i data-lucide="file-check-2" class="me-2 text-primary"></i>तपाईंका हालैका निवेदनहरू</h5>
-                @auth
-                    @php
-                        $userApplications = \App\Models\Application::where('user_id', auth()->id())->latest()->take(3)->get();
-                    @endphp
-                    @if($userApplications->count() > 0)
-                        <div class="list-group list-group-flush">
-                            @foreach($userApplications as $app)
-                                <a href="{{ route('citizen.verify.index', ['query' => $app->application_number]) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 px-0 border-bottom">
-                                    <div>
-                                        <span class="fw-bold font-monospace text-primary small d-block">#{{ $app->application_number }}</span>
-                                        <span class="extra-small text-dark">{{ $app->service->name ?? 'सेवा' }}</span>
-                                    </div>
-                                    <span class="badge {{ $app->getStatusBadgeClass() }}">{{ $app->getStatusLabel() }}</span>
-                                </a>
-                            @endforeach
-                        </div>
-                    @else
-                        <p class="small text-muted mb-0">तपाईंले अझै कुनै पनि निवेदन पेश गर्नुभएको छैन।</p>
-                    @endif
-                @endauth
+            <div class="col-12 col-md-4">
+                <div class="p-3 bg-light rounded-3 h-100 border">
+                    <div class="fw-bold text-dark mb-1"><i data-lucide="building" class="me-1 text-primary"></i>२. शाखा छनोट (ऐच्छिक)</div>
+                    <p class="small text-muted mb-0">यदि आवश्यक भए सम्बन्धित विषयगत शाखा छान्नुहोस् र 'प्रमाणीकरण गर्नुहोस्' बटनमा थिच्नुहोस्।</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="p-3 bg-light rounded-3 h-100 border">
+                    <div class="fw-bold text-dark mb-1"><i data-lucide="shield-check" class="me-1 text-success"></i>३. आधिकारिक स्थिति तथा छाप</div>
+                    <p class="small text-muted mb-0">तपाईंको सो विशिष्ट कागजातको आधिकारिक प्रमाणीकरण स्थिति, डिजिटल छाप र आधिकारिक पत्र तुरुन्तै देखिनेछ।</p>
+                </div>
             </div>
         </div>
     </div>

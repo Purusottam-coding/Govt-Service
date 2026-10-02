@@ -45,12 +45,16 @@ class ApplicationController extends Controller
     public function show(Application $application)
     {
         $application->load(['user', 'service.department', 'documents', 'payment']);
-        $suggestedCertificateId = $application->certificate_number ?: Application::generateUniqueCertificateId();
+        $dept = $application->service?->department;
+        $suggestedCertificateId = $application->certificate_number ?: Application::generateUniqueCertificateId($dept);
         return view('admin.applications.show', compact('application', 'suggestedCertificateId'));
     }
 
     public function updateStatus(Request $request, Application $application)
     {
+        $application->load('service.department');
+        $dept = $application->service?->department;
+
         $validated = $request->validate([
             'status' => 'required|in:pending,under_review,approved,rejected,completed',
             'admin_remarks' => 'nullable|string|max:1000',
@@ -104,7 +108,7 @@ class ApplicationController extends Controller
         if ($validated['status'] === 'approved') {
             $certNumber = strtoupper(trim((string) ($request->input('certificate_number', ''))));
             if (!$certNumber) {
-                $certNumber = $application->certificate_number ?: Application::generateUniqueCertificateId();
+                $certNumber = $application->certificate_number ?: Application::generateUniqueCertificateId($dept);
             }
             $data['certificate_number'] = $certNumber;
             if (empty($application->issued_at) && empty($data['issued_at'])) {
@@ -132,7 +136,7 @@ class ApplicationController extends Controller
             $data['approved_document_name'] = $docName;
             $data['approved_document_type'] = $ext;
             if (empty($data['certificate_number'])) {
-                $data['certificate_number'] = $application->certificate_number ?: Application::generateUniqueCertificateId();
+                $data['certificate_number'] = $application->certificate_number ?: Application::generateUniqueCertificateId($dept);
             }
             $data['issued_at'] = now();
         } elseif ($request->filled('approved_document_name') || $request->filled('certificate_number')) {

@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
 
         // 2. नागरिक परीक्षण खाता
         $citizen = User::firstOrCreate(
-            ['email' => 'citizen@test.np'],
+            ['email' => 'citizen@gov.np'],
             [
                 'name' => 'राम बहादुर श्रेष्ठ',
                 'password' => Hash::make('password'),
@@ -42,6 +42,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'transport@gov.np'],
             [
                 'name' => 'यातायात व्यवस्था विभाग',
+                'code' => 'YAT',
                 'description' => 'सवारी चालक अनुमतिपत्र, सवारी साधन दर्ता, सडक परमिट, र यातायात नियमनसम्बन्धी कार्यहरू सञ्चालन गर्दछ।',
                 'phone' => '०१-४२११५४०',
                 'status' => true,
@@ -52,6 +53,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'passport@gov.np'],
             [
                 'name' => 'राहदानी विभाग (अध्यागमन)',
+                'code' => 'PAS',
                 'description' => 'राहदानी जारी, भिसा प्रशोधन, नागरिकता प्रमाणीकरण, र यात्रा कागजातसम्बन्धी सेवाहरू प्रदान गर्दछ।',
                 'phone' => '०१-४४१४३३६',
                 'status' => true,
@@ -62,6 +64,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'civilreg@gov.np'],
             [
                 'name' => 'नागरिक दर्ता विभाग (जिल्ला प्रशासन)',
+                'code' => 'CIV',
                 'description' => 'जन्म दर्ता, विवाह दर्ता, मृत्यु दर्ता, र नागरिकता प्रमाणपत्रसम्बन्धी सेवाहरू व्यवस्थापन गर्दछ।',
                 'phone' => '०१-४२११७८३',
                 'status' => true,
@@ -72,6 +75,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'housing@gov.np'],
             [
                 'name' => 'नगरपालिका तथा भवन निर्माण विभाग',
+                'code' => 'HOU',
                 'description' => 'निर्माण अनुमति, जग्गा प्रयोग स्वीकृति, सार्वजनिक आवास निवेदन, र सम्पत्ति दर्तासम्बन्धी कार्यहरू गर्दछ।',
                 'phone' => '०१-४२११४५१',
                 'status' => true,
@@ -82,6 +86,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'commerce@gov.np'],
             [
                 'name' => 'वाणिज्य तथा आपूर्ति विभाग',
+                'code' => 'COM',
                 'description' => 'व्यापारिक व्यवसाय दर्ता, व्यापार इजाजत, कर अनुपालन प्रमाणपत्र, र व्यावसायिक परमिटसम्बन्धी सेवाहरू।',
                 'phone' => '०१-४२११०१७',
                 'status' => true,

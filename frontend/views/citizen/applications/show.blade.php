@@ -207,6 +207,44 @@
                 @endif
             </div>
         </div>
+
+        <!-- Interactive AJAX Remarks Card (As in Workflow Sketch) -->
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary-subtle text-primary p-1.5 rounded-circle">
+                        <i data-lucide="message-square" style="width: 14px; height: 14px;"></i>
+                    </span>
+                    <h6 class="mb-0 fw-bold text-dark">प्रशासकीय संवाद तथा सोधपुछ (Live Remarks)</h6>
+                </div>
+                <button type="button" class="btn btn-xs btn-outline-secondary" onclick="loadRemarks()" title="टिप्पणीहरू रिफ्रेस गर्नुहोस्">
+                    <i data-lucide="refresh-cw" style="width: 12px; height: 12px;"></i> रिफ्रेस
+                </button>
+            </div>
+            <div class="card-body p-3 bg-light bg-opacity-50">
+                <!-- Remarks Thread -->
+                <div id="remarksThread" class="d-flex flex-column gap-2 mb-3 p-2.5 overflow-auto bg-white rounded border" style="max-height: 280px; min-height: 100px;">
+                    <div class="text-center text-muted small py-4" id="remarksLoading">
+                        <div class="spinner-border spinner-border-sm text-primary me-1" role="status"></div> टिप्पणीहरू लोड हुँदैछ...
+                    </div>
+                </div>
+
+                <!-- Add New Remark Form (AJAX) -->
+                <form id="addRemarkForm" onsubmit="submitRemark(event)">
+                    @csrf
+                    <div class="input-group">
+                        <textarea name="message" id="remarkMessageInput" rows="2" class="form-control form-control-sm" placeholder="प्रशासनलाई कुनै सोधपुछ वा जानकारी पठाउनुहोस्..." required maxlength="1000"></textarea>
+                        <button type="submit" id="remarkSubmitBtn" class="btn btn-primary px-3 d-flex align-items-center gap-1 fw-bold">
+                            <i data-lucide="send" style="width: 14px; height: 14px;"></i> <span>पठाउनुहोस्</span>
+                        </button>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-1">
+                        <small class="text-muted extra-small" style="font-size: 0.72rem;">* यो संवाद सम्बन्धित शाखा/प्रशासनले तुरुन्तै देख्नेछन्।</small>
+                        <small class="text-muted extra-small" id="remarkCharCount" style="font-size: 0.72rem;">० / १०००</small>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- Summary Sidebar -->
@@ -262,3 +300,129 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    loadRemarks();
+
+    const remarkInput = document.getElementById('remarkMessageInput');
+    const charCountEl = document.getElementById('remarkCharCount');
+    if (remarkInput && charCountEl) {
+        remarkInput.addEventListener('input', function() {
+            charCountEl.textContent = this.value.length + ' / 1000';
+        });
+    }
+});
+
+const remarksUrl = "{{ route('applications.remarks.index', $application) }}";
+const remarksStoreUrl = "{{ route('applications.remarks.store', $application) }}";
+const csrfToken = "{{ csrf_token() }}";
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function renderRemarkItem(remark) {
+    const isAdmin = remark.sender_role === 'admin';
+    const isMe = remark.is_me;
+    const badgeHtml = isAdmin 
+        ? `<span class="badge bg-danger-subtle text-danger border border-danger-subtle" style="font-size: 0.68rem;"><i data-lucide="shield" style="width:10px;height:10px;" class="me-1"></i>प्रशासन</span>`
+        : `<span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.68rem;"><i data-lucide="user" style="width:10px;height:10px;" class="me-1"></i>निवेदक</span>`;
+
+    const bgClass = isAdmin ? 'bg-danger-subtle bg-opacity-10 border-danger-subtle' : 'bg-primary-subtle bg-opacity-10 border-primary-subtle';
+
+    return `
+        <div class="p-2.5 rounded-3 border ${bgClass}">
+            <div class="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-1">
+                <div class="d-flex align-items-center gap-1.5">
+                    ${badgeHtml}
+                    <strong class="text-dark small">${escapeHtml(remark.sender_name)}</strong>
+                    ${isMe ? '<span class="text-muted extra-small" style="font-size:0.68rem;">(तपाईं)</span>' : ''}
+                </div>
+                <span class="text-muted extra-small" style="font-size: 0.7rem;" title="${escapeHtml(remark.created_at_formatted)}">${escapeHtml(remark.created_at_human || remark.created_at_formatted)}</span>
+            </div>
+            <p class="mb-0 text-dark small" style="white-space: pre-line; word-break: break-word;">${escapeHtml(remark.message)}</p>
+        </div>
+    `;
+}
+
+function loadRemarks() {
+    const thread = document.getElementById('remarksThread');
+    if (!thread) return;
+
+    fetch(remarksUrl, {
+        headers: { 'Accept': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) return;
+        if (!data.remarks || data.remarks.length === 0) {
+            thread.innerHTML = `
+                <div class="text-center text-muted small py-4">
+                    <i data-lucide="message-square" style="width:28px;height:28px;" class="d-block mb-1.5 text-secondary opacity-50 mx-auto"></i>
+                    कुनै पनि टिप्पणी वा संवाद सुरु भएको छैन। केही सोधपुछ वा जानकारी भए तलबाट लेख्नुहोस्।
+                </div>
+            `;
+        } else {
+            thread.innerHTML = data.remarks.map(renderRemarkItem).join('');
+            thread.scrollTop = thread.scrollHeight;
+        }
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+        }
+    })
+    .catch(err => {
+        thread.innerHTML = `<div class="text-danger small py-3 text-center">टिप्पणी लोड गर्न सकिएन। पुनः प्रयास गर्नुहोस्।</div>`;
+    });
+}
+
+function submitRemark(e) {
+    e.preventDefault();
+    const input = document.getElementById('remarkMessageInput');
+    const submitBtn = document.getElementById('remarkSubmitBtn');
+    const message = input.value.trim();
+    if (!message) return;
+
+    submitBtn.disabled = true;
+
+    fetch(remarksStoreUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({ message: message })
+    })
+    .then(res => res.json())
+    .then(data => {
+        submitBtn.disabled = false;
+        if (data.success && data.remark) {
+            input.value = '';
+            const charCount = document.getElementById('remarkCharCount');
+            if (charCount) charCount.textContent = '० / १०००';
+
+            const thread = document.getElementById('remarksThread');
+            if (thread.innerHTML.includes('कुनै पनि टिप्पणी')) {
+                thread.innerHTML = '';
+            }
+            thread.insertAdjacentHTML('beforeend', renderRemarkItem(data.remark));
+            thread.scrollTop = thread.scrollHeight;
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+        } else {
+            alert(data.message || 'त्रुटि: सन्देश पठाउन सकिएन।');
+        }
+    })
+    .catch(err => {
+        submitBtn.disabled = false;
+        alert('सर्भरसँग सम्पर्क हुन सकेन। कृपया पुनः प्रयास गर्नुहोस्।');
+    });
+}
+</script>
+@endpush

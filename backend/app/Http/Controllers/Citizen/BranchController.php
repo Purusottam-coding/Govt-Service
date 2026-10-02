@@ -52,12 +52,24 @@ class BranchController extends Controller
      */
     public function verify(Request $request)
     {
+        // 1. Must be logged in to search and verify documents
+        if (!auth()->check()) {
+            return redirect()->route('login')
+                ->with('info', 'कागजात प्रमाणीकरण तथा खोजी गर्न कृपया पहिले आफ्नो खातामा लगइन गर्नुहोस्।');
+        }
+
+        $user = auth()->user();
         $application = null;
         $searchQuery = $request->input('query');
         $departmentId = $request->input('department_id');
 
         if (!empty($searchQuery)) {
             $query = Application::with(['service.department', 'user', 'payment', 'documents']);
+
+            // 2. Citizen can ONLY search and view their own verified documents
+            if ($user->isCitizen()) {
+                $query->where('user_id', $user->id);
+            }
 
             if ($departmentId) {
                 $query->whereHas('service', function ($q) use ($departmentId) {

@@ -23,6 +23,7 @@ class DepartmentController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:20|unique:departments,code',
             'description' => 'nullable|string',
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
@@ -31,10 +32,18 @@ class DepartmentController extends Controller
 
         $validated['status'] = $request->has('status');
 
+        if (!empty($validated['code'])) {
+            $validated['code'] = strtoupper(trim($validated['code']));
+        } else {
+            // Auto generate code from department name (3 uppercase letters)
+            $codeSeed = preg_replace('/[^a-zA-Z0-9]/', '', $validated['name']);
+            $validated['code'] = strtoupper(substr($codeSeed ?: 'DEPT', 0, 3));
+        }
+
         Department::create($validated);
 
         return redirect()->route('admin.departments.index')
-            ->with('success', 'Department created successfully.');
+            ->with('success', 'शाखा/विभाग सफलतापूर्वक सिर्जना भयो।');
     }
 
     public function show(Department $department)
@@ -51,6 +60,7 @@ class DepartmentController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:20|unique:departments,code,' . $department->id,
             'description' => 'nullable|string',
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
@@ -59,10 +69,14 @@ class DepartmentController extends Controller
 
         $validated['status'] = $request->has('status');
 
+        if (!empty($validated['code'])) {
+            $validated['code'] = strtoupper(trim($validated['code']));
+        }
+
         $department->update($validated);
 
         return redirect()->route('admin.departments.index')
-            ->with('success', 'Department updated successfully.');
+            ->with('success', 'शाखा/विभाग जानकारी सफलतापूर्वक अद्यावधिक भयो।');
     }
 
     public function destroy(Department $department)
