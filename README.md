@@ -1,6 +1,6 @@
-# Government Service Management System (सरकारी सेवा व्यवस्थापन प्रणाली)
+# Government Service  (सरकारी सेवा प्रणाली)
 
-A full-stack municipal and government service management portal built with **Laravel** and **Blade**. The platform provides streamlined digital workflows for citizen public service applications, document submission and verification, automated unique verification IDs, QR-based fee payments, and an administrative review portal.
+A full-stack municipal and government service portal built with **Laravel** and **Blade**. The platform provides streamlined digital workflows for citizen public service applications, document submission and verification, automated unique verification IDs, QR-based fee payments, and an administrative review portal.
 
 ---
 ## 🚀 Key Features
