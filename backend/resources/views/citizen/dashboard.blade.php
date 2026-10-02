@@ -89,13 +89,13 @@
             </a>
         </div>
         <div class="col-6 col-md-4 col-lg-2">
-            <a href="{{ route('citizen.verify.index') }}" class="quick-action-card h-100 border-success border-opacity-25"
-                style="background: rgba(4, 120, 87, 0.04);">
-                <div class="quick-action-icon-box action-green">
-                    <i data-lucide="shield-check" class="text-success"></i>
+            <a href="{{ route('citizen.verify.index') }}" class="quick-action-card h-100 border-primary border-opacity-25"
+                style="background: rgba(5, 55, 117, 0.04);">
+                <div class="quick-action-icon-box action-blue">
+                    <i data-lucide="shield-check" class="text-primary"></i>
                 </div>
                 <div>
-                    <h6 class="quick-action-title text-success">शाखा प्रमाणीकरण</h6>
+                    <h6 class="quick-action-title text-primary">शाखा प्रमाणीकरण</h6>
                     <p class="quick-action-desc">सत्यता तथा स्थिति जाँच</p>
                 </div>
             </a>
@@ -229,7 +229,7 @@
                                             </a>
                                             @if($app->hasApprovedDocument())
                                                 <a href="{{ route('citizen.approved-documents.view', $app) }}" target="_blank"
-                                                    class="btn btn-sm btn-success text-white"
+                                                    class="btn btn-sm btn-primary text-white"
                                                     title="प्रमाणित कागजात हेर्नुहोस् (ID: {{ $app->certificate_number }})">
                                                     <i data-lucide="award" style="width: 13px; height: 13px;"></i>
                                                 </a>

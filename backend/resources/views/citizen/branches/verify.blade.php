@@ -2,13 +2,15 @@
 
 @section('content')
 <!-- Verification Hero -->
-<div class="card border-0 shadow-sm mb-4 overflow-hidden" style="background: linear-gradient(135deg, #064e3b 0%, #047857 100%); color: #ffffff; border-radius: 14px;">
+<div class="card border-0 shadow-sm mb-4 overflow-hidden" style="background: linear-gradient(135deg, #05264E 0%, #003893 100%); color: #ffffff; border-radius: 14px;">
     <div class="card-body p-4 p-md-5">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill mb-3">
-                    <i data-lucide="shield-check" class="me-1"></i> आधिकारिक डिजिटल प्रमाणीकरण प्रणाली
-                </span>
+                <div class="mb-3">
+                    <span class="barhadashi-badge-pill">
+                        <i data-lucide="shield-check" style="width: 15px; height: 15px;"></i> आधिकारिक डिजिटल प्रमाणीकरण प्रणाली
+                    </span>
+                </div>
                 <h2 class="fw-extrabold text-white mb-2" style="letter-spacing: -0.5px;">आधिकारिक शाखा तथा योजना प्रमाणीकरण</h2>
                 <p class="text-white-50 leading-relaxed mb-0" style="font-size: 1.05rem;">
                     आफ्नो निवेदन नम्बर (उदा: GOV-20260928-00001) वा जारी भएको प्रमाणपत्र ID प्रविष्ट गरी निवेदनको सत्यता, तोकिएको शाखा, कार्य प्रगति र आधिकारिक प्रमाणीकरण स्थिति तुरुन्तै जाँच गर्नुहोस्।
@@ -16,7 +18,7 @@
             </div>
             <div class="col-lg-4 d-none d-lg-block text-center">
                 <div class="p-3 bg-white bg-opacity-10 rounded-4 border border-white border-opacity-25 shadow-lg">
-                    <i data-lucide="badge-check" style="width: 72px; height: 72px; color: #6ee7b7;"></i>
+                    <i data-lucide="badge-check" style="width: 72px; height: 72px; color: #93c5fd;"></i>
                     <h5 class="fw-bold text-white mt-2 mb-0">100% भरपर्दो प्रमाणीकरण</h5>
                 </div>
             </div>
@@ -63,14 +65,14 @@
         <!-- Verified Result Display -->
         <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-4" id="printableVerificationCard">
             <!-- Official Verification Seal Header -->
-            <div class="p-4 text-white d-flex align-items-center justify-content-between flex-wrap gap-3" style="background: linear-gradient(135deg, #065f46 0%, #047857 100%);">
+            <div class="p-4 text-white d-flex align-items-center justify-content-between flex-wrap gap-3" style="background: linear-gradient(135deg, #053775 0%, #003893 100%);">
                 <div class="d-flex align-items-center gap-3">
                     <div class="bg-white rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm" style="width: 54px; height: 54px;">
-                        <i data-lucide="shield-check" class="text-success" style="width: 36px; height: 36px;"></i>
+                        <i data-lucide="shield-check" class="text-primary" style="width: 36px; height: 36px;"></i>
                     </div>
                     <div>
                         <div class="d-flex align-items-center gap-2 mb-1">
-                            <span class="badge bg-warning text-dark fw-bold px-3 py-1">प्रमाणीकरण सफल (VERIFIED)</span>
+                            <span class="barhadashi-badge-pill"><i data-lucide="check-circle" class="me-1" style="width: 12px; height: 12px;"></i>प्रमाणीकरण सफल (VERIFIED)</span>
                             <span class="text-white-50 extra-small">डिजिटल छाप पुष्टि</span>
                         </div>
                         <h4 class="fw-bold text-white mb-0">बाह्रदशी गाउँपालिका आधिकारिक निवेदन प्रमाणीकरण पत्र</h4>
@@ -170,21 +172,21 @@
 
                 <!-- Digital Certificate & Seal Details if Approved -->
                 @if($application->hasApprovedDocument())
-                    <div class="p-4 border border-success rounded-4 bg-success-subtle mb-4">
+                    <div class="p-4 border border-primary-subtle rounded-4 bg-primary-subtle mb-4">
                         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
                             <div>
-                                <span class="badge bg-success text-white mb-1">आधिकारिक प्रमाणपत्र उपलब्ध</span>
+                                <span class="badge bg-primary text-white mb-1">आधिकारिक प्रमाणपत्र उपलब्ध</span>
                                 <h5 class="fw-bold text-dark mb-1">{{ $application->approved_document_name }}</h5>
                                 <div class="small text-secondary">
-                                    प्रमाणपत्र ID: <strong class="font-monospace text-dark">{{ $application->certificate_number }}</strong> &bull;
+                                    प्रमाणपत्र ID: <strong class="font-monospace text-primary">{{ $application->certificate_number }}</strong> &bull;
                                     जारी मिति: <strong>{{ $application->issued_at ? $application->issued_at->format('M d, Y') : 'N/A' }}</strong>
                                 </div>
                             </div>
                             <div class="d-flex gap-2">
-                                <a href="{{ route('citizen.approved-documents.view', $application) }}" target="_blank" class="btn btn-outline-success fw-bold">
+                                <a href="{{ route('citizen.approved-documents.view', $application) }}" target="_blank" class="btn btn-outline-primary fw-bold">
                                     <i data-lucide="eye" class="me-1"></i> हेर्नुहोस्
                                 </a>
-                                <a href="{{ route('citizen.approved-documents.download', $application) }}" class="btn btn-success fw-bold">
+                                <a href="{{ route('citizen.approved-documents.download', $application) }}" class="btn btn-primary fw-bold">
                                     <i data-lucide="download" class="me-1"></i> प्रमाणपत्र डाउनलोड
                                 </a>
                             </div>
@@ -238,7 +240,7 @@
             </div>
             <div class="col-12 col-md-4">
                 <div class="p-3 bg-light rounded-3 h-100 border">
-                    <div class="fw-bold text-dark mb-1"><i data-lucide="shield-check" class="me-1 text-success"></i>३. आधिकारिक स्थिति तथा छाप</div>
+                    <div class="fw-bold text-dark mb-1"><i data-lucide="shield-check" class="me-1 text-primary"></i>३. आधिकारिक स्थिति तथा छाप</div>
                     <p class="small text-muted mb-0">तपाईंको सो विशिष्ट कागजातको आधिकारिक प्रमाणीकरण स्थिति, डिजिटल छाप र आधिकारिक पत्र तुरुन्तै देखिनेछ।</p>
                 </div>
             </div>

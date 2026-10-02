@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Application;
 use App\Models\ApplicationRemark;
+use App\Models\User;
+use App\Notifications\PortalNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ApplicationRemarkController extends Controller
 {
@@ -79,6 +82,34 @@ class ApplicationRemarkController extends Controller
             'sender_name' => $user->name,
             'message' => trim($validated['message']),
         ]);
+
+        // Send Notification to recipient
+        if ($user->isAdmin()) {
+            if ($application->user) {
+                $application->user->notify(new PortalNotification(
+                    title: "नयाँ सन्देश प्राप्त भयो",
+                    message: "निवेदन #{$application->application_number} मा प्रशासकबाट नयाँ सन्देश: \"" . Str::limit($remark->message, 60) . "\"",
+                    link: route('citizen.applications.show', $application),
+                    icon: 'message-square',
+                    color: 'primary',
+                    category: 'remark',
+                    meta: ['application_id' => $application->id, 'remark_id' => $remark->id]
+                ));
+            }
+        } else {
+            $admins = User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new PortalNotification(
+                    title: "निवेदकबाट नयाँ सन्देश",
+                    message: "निवेदन #{$application->application_number} मा {$user->name} बाट नयाँ सन्देश: \"" . Str::limit($remark->message, 60) . "\"",
+                    link: route('admin.applications.show', $application),
+                    icon: 'message-square',
+                    color: 'info',
+                    category: 'remark',
+                    meta: ['application_id' => $application->id, 'remark_id' => $remark->id]
+                ));
+            }
+        }
 
         return response()->json([
             'success' => true,

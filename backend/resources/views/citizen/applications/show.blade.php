@@ -23,7 +23,7 @@
     </div>
     <div>
         @if($application->payment && $application->payment->status === 'completed')
-            <a href="{{ route('citizen.payments.receipt', $application) }}" class="btn btn-sm btn-outline-success">
+            <a href="{{ route('citizen.payments.receipt', $application) }}" class="btn btn-sm btn-outline-primary">
                 <i data-lucide="receipt" class="me-1"></i> भुक्तानी रसिद हेर्नुहोस्
             </a>
         @elseif($application->payment && $application->payment->status === 'pending')
@@ -70,18 +70,18 @@
 </div>
 
 @if($application->hasApprovedDocument())
-    <div class="card border-0 shadow-sm mb-4 overflow-hidden" style="background: linear-gradient(135deg, #064e3b 0%, #047857 100%); color: #ffffff; border-radius: 12px;">
+    <div class="card border-0 shadow-sm mb-4 overflow-hidden" style="background: linear-gradient(135deg, #05264E 0%, #003893 100%); color: #ffffff; border-radius: 12px;">
         <div class="card-body p-3 p-lg-4">
             <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(255, 255, 255, 0.2);">
-                        <i data-lucide="award" style="width: 28px; height: 28px; color: #fef08a;"></i>
+                    <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 50px; height: 50px; background: rgba(255, 255, 255, 0.18); backdrop-filter: blur(4px);">
+                        <i data-lucide="award" style="width: 28px; height: 28px; color: #93c5fd;"></i>
                     </div>
                     <div>
                         <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                            <span class="badge bg-warning text-dark fw-bold small">आधिकारिक प्रमाणपत्र जारी भएको</span>
+                            <span class="barhadashi-badge-pill"><i data-lucide="award" style="width:13px;height:13px;"></i> आधिकारिक प्रमाणपत्र जारी भएको</span>
                             @if($application->certificate_number)
-                                <span class="badge bg-white text-dark font-monospace fw-bold px-2 py-0.5" style="letter-spacing: 0.5px;">
+                                <span class="badge bg-white text-primary font-monospace fw-bold px-2 py-0.5" style="letter-spacing: 0.5px;">
                                     ID: {{ $application->certificate_number }}
                                 </span>
                             @endif
@@ -93,10 +93,10 @@
                     </div>
                 </div>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('citizen.approved-documents.view', $application) }}" target="_blank" class="btn btn-light fw-bold px-3">
+                    <a href="{{ route('citizen.approved-documents.view', $application) }}" target="_blank" class="btn btn-outline-light fw-bold px-3">
                         <i data-lucide="eye" class="me-1"></i> कागजात हेर्नुहोस्
                     </a>
-                    <a href="{{ route('citizen.approved-documents.download', $application) }}" class="btn btn-warning fw-bold px-3 text-dark">
+                    <a href="{{ route('citizen.approved-documents.download', $application) }}" class="btn btn-light fw-bold px-3 text-primary">
                         <i data-lucide="download" class="me-1"></i> डाउनलोड गर्नुहोस्
                     </a>
                 </div>

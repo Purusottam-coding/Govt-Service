@@ -93,32 +93,40 @@
                 </ul>
 
                 <div class="d-flex align-items-center gap-3">
-                    <div class="dropdown">
-                        <button class="btn btn-sm navbar-user-btn dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
-                            @if(auth()->user()->profile_photo)
-                                <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="{{ auth()->user()->name }}" class="rounded-circle object-fit-cover shadow-sm" style="width:30px;height:30px; border: 1.5px solid #fff;">
-                            @else
-                                <div class="user-avatar" style="width:30px;height:30px;font-size:.75rem;">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
-                            @endif
-                            <span class="d-none d-md-inline">{{ auth()->user()->name }}</span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                            <li><span class="dropdown-item-text text-muted small fw-semibold">{{ auth()->user()->email }}</span></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-lucide="user" class="me-2"></i>मेरो प्रोफाइल</a></li>
-                            <li><a class="dropdown-item" href="{{ route('citizen.branches.index') }}"><i data-lucide="building-2" class="me-2 text-primary"></i>विषयगत शाखाहरू निर्देशिका</a></li>
-                            <li><a class="dropdown-item" href="{{ route('citizen.verify.index') }}"><i data-lucide="shield-check" class="me-2 text-success"></i>शाखा तथा निवेदन प्रमाणीकरण</a></li>
-                            <li><a class="dropdown-item" href="{{ route('citizen.applications.index') }}"><i data-lucide="file-check-2" class="me-2"></i>मेरो निवेदन स्थिति</a></li>
-                            <li><a class="dropdown-item" href="{{ route('citizen.approved-documents.index') }}"><i data-lucide="award" class="me-2 text-success"></i>प्रमाणित कागजातहरू</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item text-danger"><i data-lucide="log-out" class="me-2"></i>लगआउट</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
+                    @auth
+                        <x-notification-bell />
+                        <div class="dropdown">
+                            <button class="btn btn-sm navbar-user-btn dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                                @if(auth()->user()->profile_photo)
+                                    <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="{{ auth()->user()->name }}" class="rounded-circle object-fit-cover shadow-sm" style="width:30px;height:30px; border: 1.5px solid #fff;">
+                                @else
+                                    <div class="user-avatar" style="width:30px;height:30px;font-size:.75rem;">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+                                @endif
+                                <span class="d-none d-md-inline">{{ auth()->user()->name }}</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                <li><span class="dropdown-item-text text-muted small fw-semibold">{{ auth()->user()->email }}</span></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ route('notifications.index') }}"><i data-lucide="bell" class="me-2 text-primary"></i>सूचना केन्द्र (Notifications)</a></li>
+                                <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-lucide="user" class="me-2"></i>मेरो प्रोफाइल</a></li>
+                                <li><a class="dropdown-item" href="{{ route('citizen.branches.index') }}"><i data-lucide="building-2" class="me-2 text-primary"></i>विषयगत शाखाहरू निर्देशिका</a></li>
+                                <li><a class="dropdown-item" href="{{ route('citizen.verify.index') }}"><i data-lucide="shield-check" class="me-2 text-success"></i>शाखा तथा निवेदन प्रमाणीकरण</a></li>
+                                <li><a class="dropdown-item" href="{{ route('citizen.applications.index') }}"><i data-lucide="file-check-2" class="me-2"></i>मेरो निवेदन स्थिति</a></li>
+                                <li><a class="dropdown-item" href="{{ route('citizen.approved-documents.index') }}"><i data-lucide="award" class="me-2 text-success"></i>प्रमाणित कागजातहरू</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger"><i data-lucide="log-out" class="me-2"></i>लगआउट</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    @else
+                        <a href="{{ route('login') }}" class="btn btn-sm btn-outline-light fw-bold px-3">
+                            <i data-lucide="log-in" class="me-1"></i> लगइन / दर्ता
+                        </a>
+                    @endauth
 
                     <!-- Right side Nepal Animated Flag (Transparent - Reference: bahradashimun.gov.np) -->
                     <div class="navbar-nepal-flag d-none d-sm-flex align-items-center">

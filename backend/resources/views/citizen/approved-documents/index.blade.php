@@ -2,16 +2,16 @@
 
 @section('content')
 <!-- Page Header Banner -->
-<div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, #064e3b 0%, #047857 100%); color: #ffffff; border-radius: 14px;">
+<div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, #05264E 0%, #003893 100%); color: #ffffff; border-radius: 14px;">
     <div class="card-body p-4 p-lg-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
             <div class="d-flex align-items-center gap-3">
                 <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 54px; height: 54px; background: rgba(255, 255, 255, 0.18); backdrop-filter: blur(4px);">
-                    <i data-lucide="award" style="width: 30px; height: 30px; color: #fef08a;"></i>
+                    <i data-lucide="award" style="width: 30px; height: 30px; color: #93c5fd;"></i>
                 </div>
                 <div>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="badge bg-warning text-dark fw-bold small">आधिकारिक सेवा</span>
+                        <span class="barhadashi-badge-pill"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> आधिकारिक सेवा</span>
                         <span class="text-white-50 small">बाह्रदशी गाउँपालिका नागरिक पोर्टल</span>
                     </div>
                     <h3 class="fw-bold mb-1 text-white">प्रमाणित कागजात तथा प्रमाणपत्रहरू</h3>
@@ -23,7 +23,7 @@
             <div class="d-flex align-items-center gap-2">
                 <div class="text-end d-none d-md-block">
                     <span class="d-block small text-white-50">जारी गरिएका कुल कागजात</span>
-                    <span class="fw-bold fs-4 text-warning font-monospace">{{ $totalApprovedCount }}</span>
+                    <span class="fw-bold fs-4 text-white font-monospace">{{ $totalApprovedCount }}</span>
                 </div>
             </div>
         </div>
@@ -109,12 +109,12 @@
     <div class="row g-3 mb-4">
         @foreach($documents as $app)
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border shadow-sm rounded-3 overflow-hidden position-relative hover-shadow transition-all" style="border-top: 4px solid #059669 !important;">
+                <div class="card h-100 border shadow-sm rounded-3 overflow-hidden position-relative hover-shadow transition-all" style="border-top: 4px solid #053775 !important;">
                     
                     <!-- Card Top Header -->
                     <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold small">
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold small">
                                 <i data-lucide="check-circle" style="width: 12px; height: 12px;" class="me-1"></i>स्वीकृत
                             </span>
                         </div>
@@ -167,11 +167,11 @@
                             @if($app->hasApprovedDocument())
                                 <a href="{{ route('citizen.approved-documents.view', $app) }}" 
                                    target="_blank" 
-                                   class="btn btn-sm btn-outline-success flex-fill fw-semibold">
+                                   class="btn btn-sm btn-outline-primary flex-fill fw-semibold">
                                     <i data-lucide="eye" class="me-1" style="width: 14px; height: 14px;"></i> हेर्नुहोस्
                                 </a>
                                 <a href="{{ route('citizen.approved-documents.download', $app) }}" 
-                                   class="btn btn-sm btn-success flex-fill fw-semibold">
+                                   class="btn btn-sm btn-primary flex-fill fw-semibold">
                                     <i data-lucide="download" class="me-1" style="width: 14px; height: 14px;"></i> डाउनलोड
                                 </a>
                             @else

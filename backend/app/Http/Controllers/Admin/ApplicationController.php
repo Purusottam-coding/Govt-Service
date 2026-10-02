@@ -8,6 +8,7 @@ use App\Models\ApplicationDocument;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
+use App\Notifications\PortalNotification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -151,6 +152,36 @@ class ApplicationController extends Controller
 
         $application->update($data);
 
+        // Notify Citizen
+        if ($application->user) {
+            $statusLabel = $application->getStatusLabel();
+            $icon = match($application->status) {
+                'approved' => 'check-circle',
+                'rejected' => 'x-circle',
+                'under_review' => 'search',
+                default => 'file-text',
+            };
+            $color = match($application->status) {
+                'approved' => 'success',
+                'rejected' => 'danger',
+                'under_review' => 'info',
+                default => 'primary',
+            };
+            $msg = "तपाईंको निवेदन #{$application->application_number} को स्थिति '{$statusLabel}' भएको छ।";
+            if (!empty($application->certificate_number) && $application->status === 'approved') {
+                $msg .= " (प्रमाणपत्र ID: {$application->certificate_number})";
+            }
+            $application->user->notify(new PortalNotification(
+                title: "निवेदन स्थिति अद्यावधिक",
+                message: $msg,
+                link: route('citizen.applications.show', $application),
+                icon: $icon,
+                color: $color,
+                category: 'application_status',
+                meta: ['application_id' => $application->id, 'status' => $application->status]
+            ));
+        }
+
         return redirect()->route('admin.applications.show', $application)
             ->with('success', 'निवेदन स्थिति सफलतापूर्वक अद्यावधिक भयो (' . $application->getStatusLabel() . ')। ' . 
                 (!empty($application->certificate_number) ? 'प्रमाणीकरण ID: ' . $application->certificate_number : ''));
@@ -174,6 +205,19 @@ class ApplicationController extends Controller
 
         if ($application->status === 'pending') {
             $application->update(['status' => 'under_review']);
+        }
+
+        // Notify Citizen
+        if ($application->user) {
+            $application->user->notify(new PortalNotification(
+                title: "कागजात पुनः पेश गर्न अनुरोध",
+                message: "निवेदन #{$application->application_number} को कागजात '{$document->document_name}' पुनः अपलोड गर्न अनुरोध गरिएको छ: {$document->admin_feedback}",
+                link: route('citizen.applications.show', $application),
+                icon: 'alert-triangle',
+                color: 'warning',
+                category: 'replacement',
+                meta: ['application_id' => $application->id, 'document_id' => $document->id]
+            ));
         }
 
         return redirect()->route('admin.applications.show', $application)

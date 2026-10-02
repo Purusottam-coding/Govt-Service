@@ -26,8 +26,8 @@
                         {{ $service->department->name ?? 'नेपाल सरकार' }}
                     </span>
                     @if($branchMeta)
-                        <span class="badge bg-warning-subtle text-dark border border-warning-subtle font-monospace">
-                            <i data-lucide="map-pin" class="me-1 text-danger" style="width:12px;height:12px;"></i>{{ $branchMeta['room'] }}
+                        <span class="badge bg-light text-primary border font-monospace">
+                            <i data-lucide="map-pin" class="me-1 text-primary" style="width:12px;height:12px;"></i>{{ $branchMeta['room'] }}
                         </span>
                     @endif
                 </div>

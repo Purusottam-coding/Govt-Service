@@ -6,15 +6,17 @@
     <div class="card-body p-4 p-md-5">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill mb-3">
-                    <i data-lucide="building-2" class="me-1"></i> गाउँपालिका विषयगत शाखा पोर्टल
-                </span>
+                <div class="mb-3">
+                    <span class="barhadashi-badge-pill">
+                        <i data-lucide="building-2" style="width: 15px; height: 15px;"></i> गाउँपालिका विषयगत शाखा पोर्टल
+                    </span>
+                </div>
                 <h2 class="fw-extrabold text-white mb-2" style="letter-spacing: -0.5px;">विषयगत शाखा तथा योजना निर्देशिका</h2>
                 <p class="text-white-50 leading-relaxed mb-4" style="font-size: 1.05rem;">
                     नागरिकहरूले कुन योजना तथा कामको लागि कुन शाखामा जाने, के कागजात बुझाउने र कसरी प्रमाणीकरण गर्ने सम्बन्धी सम्पूर्ण विस्तृत विवरण यहाँ प्राप्त गर्न सक्नुहुन्छ।
                 </p>
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ route('citizen.verify.index') }}" class="btn btn-warning fw-bold text-dark px-4 py-2">
+                    <a href="{{ route('citizen.verify.index') }}" class="btn btn-light text-primary fw-bold px-4 py-2 shadow-sm">
                         <i data-lucide="shield-check" class="me-1"></i> निवेदन / शाखा प्रमाणीकरण ट्र्याक गर्नुहोस्
                     </a>
                     <a href="{{ route('citizen.services.index') }}" class="btn btn-outline-light px-4 py-2">
@@ -24,7 +26,7 @@
             </div>
             <div class="col-lg-4 d-none d-lg-block text-center">
                 <div class="p-3 bg-white bg-opacity-10 rounded-4 border border-white border-opacity-25 shadow-lg">
-                    <i data-lucide="git-branch" style="width: 72px; height: 72px; color: #fbbf24;"></i>
+                    <i data-lucide="git-branch" style="width: 72px; height: 72px; color: #93c5fd;"></i>
                     <h5 class="fw-bold text-white mt-2 mb-1">गाउँपालिका शाखाहरू</h5>
                     <p class="text-white-50 extra-small mb-0">पारदर्शी सेवा प्रवाह र छिटो प्रशोधन</p>
                 </div>
@@ -69,7 +71,7 @@
                         </span>
                         <h5 class="fw-bold text-dark mb-0">{{ $dept->name }}</h5>
                     </div>
-                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1">
                         {{ $dept->services_count }} योजना / सेवाहरू
                     </span>
                 </div>
@@ -123,14 +125,14 @@
             </div>
         </div>
         <div class="col-12 col-md-4">
-            <div class="p-3 bg-warning-subtle rounded-3 border border-warning-subtle h-100">
-                <div class="fw-bold text-dark mb-1"><i data-lucide="file-check-2" class="me-1"></i> २. आवश्यक कागजात र कोठा रुजु</div>
+            <div class="p-3 bg-info-subtle rounded-3 border border-info-subtle h-100">
+                <div class="fw-bold text-info-emphasis mb-1"><i data-lucide="file-check-2" class="me-1"></i> २. आवश्यक कागजात र कोठा रुजु</div>
                 <p class="small text-secondary mb-0">शाखा विवरणमा तोकिएको कोठा नं., आवश्यक कागजातको सूची र दस्तुर विवरण राम्ररी अध्ययन गरी अनलाइन वा प्रत्यक्ष पेश गर्नुहोस्।</p>
             </div>
         </div>
         <div class="col-12 col-md-4">
-            <div class="p-3 bg-success-subtle rounded-3 border border-success-subtle h-100">
-                <div class="fw-bold text-success mb-1"><i data-lucide="badge-check" class="me-1"></i> ३. विश्वसनीय प्रमाणीकरण</div>
+            <div class="p-3 bg-light rounded-3 border border-secondary-subtle h-100">
+                <div class="fw-bold text-primary mb-1"><i data-lucide="badge-check" class="me-1"></i> ३. विश्वसनीय प्रमाणीकरण</div>
                 <p class="small text-secondary mb-0">आवेदन दर्ता पश्चात् प्राप्त निवेदन नम्बर प्रयोग गरी जुनसुकै समयमा शाखा प्रमाणीकरण र प्रगति स्थिति ट्र्याक गर्नुहोस्।</p>
             </div>
         </div>

@@ -99,6 +99,7 @@
             <span class="badge bg-danger-subtle text-danger border border-danger-subtle d-none d-md-inline-block fw-semibold px-2 py-1">
                 <i data-lucide="shield-check" style="width:12px;height:12px;"></i> प्रशासक मोड
             </span>
+            <x-notification-bell />
             <div class="dropdown">
                 <button class="btn btn-sm btn-light dropdown-toggle d-flex align-items-center gap-2 border shadow-sm rounded-pill px-3 py-1" data-bs-toggle="dropdown">
                     @if(auth()->user()->profile_photo)
@@ -111,6 +112,7 @@
                 <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
                     <li><span class="dropdown-item-text text-muted small fw-semibold">{{ auth()->user()->email }}</span></li>
                     <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ route('notifications.index') }}"><i data-lucide="bell" class="me-2 text-primary"></i>सूचना केन्द्र (Notifications)</a></li>
                     <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-lucide="user" class="me-2"></i>मेरो प्रोफाइल</a></li>
                     <li>
                         <form method="POST" action="{{ route('logout') }}">

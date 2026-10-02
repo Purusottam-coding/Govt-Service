@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Payment;
 use App\Models\PaymentQrCode;
+use App\Models\User;
+use App\Notifications\PortalNotification;
 use App\Traits\FileUploadTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -82,6 +84,20 @@ class PaymentController extends Controller
             $application->update([
                 'status' => ApplicationStatus::UNDER_REVIEW->value,
             ]);
+        }
+
+        // Notify admins about payment submission
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new PortalNotification(
+                title: "नयाँ भुक्तानी प्रमाण पेश",
+                message: "निवेदन #{$application->application_number} को लागि रु. " . number_format($amount, 2) . " को भुक्तानी प्रमाण पेश गरिएको छ।",
+                link: route('admin.applications.show', $application),
+                icon: 'credit-card',
+                color: 'info',
+                category: 'payment',
+                meta: ['application_id' => $application->id, 'payment_id' => $payment->id]
+            ));
         }
 
         if ($isCashPayment) {

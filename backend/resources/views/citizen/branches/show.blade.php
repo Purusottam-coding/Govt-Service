@@ -16,7 +16,7 @@
                     <span class="badge bg-primary text-white font-monospace px-3 py-1">
                         <i data-lucide="building" class="me-1" style="width: 14px; height: 14px;"></i> {{ $branchMeta['code'] }}
                     </span>
-                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1">
                         सक्रिय शाखा
                     </span>
                 </div>

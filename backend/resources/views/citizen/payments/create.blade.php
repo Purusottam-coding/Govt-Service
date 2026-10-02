@@ -74,7 +74,7 @@
                         @enderror
                     </div>
 
-                    <button type="submit" class="btn btn-success btn-lg w-100 fw-bold">
+                    <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">
                         <i data-lucide="lock" class="me-1"></i> रु. {{ number_format($application->service->fee, 2) }} भुक्तानी प्रमाण पेश गर्नुहोस्
                     </button>
                 </form>

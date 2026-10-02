@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\ApplicationDocument;
 use App\Models\Service;
+use App\Models\User;
+use App\Notifications\PortalNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -78,6 +80,20 @@ class ApplicationController extends Controller
                     ]);
                 }
             }
+        }
+
+        // Notify admins of new application submission
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new PortalNotification(
+                title: "नयाँ सेवा निवेदन दर्ता",
+                message: "{$application->applicant_name} द्वारा '{$service->name}' सेवाको लागि नयाँ निवेदन (#{$application->application_number}) दर्ता भएको छ।",
+                link: route('admin.applications.show', $application),
+                icon: 'file-text',
+                color: 'primary',
+                category: 'new_application',
+                meta: ['application_id' => $application->id]
+            ));
         }
 
         // If service fee > 0, redirect to payment page

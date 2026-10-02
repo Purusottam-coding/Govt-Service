@@ -94,6 +94,7 @@
 
                 <div class="d-flex align-items-center gap-3">
                     @auth
+                        <x-notification-bell />
                         <div class="dropdown">
                             <button class="btn btn-sm navbar-user-btn dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
                                 @if(auth()->user()->profile_photo)
@@ -106,6 +107,7 @@
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
                                 <li><span class="dropdown-item-text text-muted small fw-semibold">{{ auth()->user()->email }}</span></li>
                                 <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ route('notifications.index') }}"><i data-lucide="bell" class="me-2 text-primary"></i>सूचना केन्द्र (Notifications)</a></li>
                                 <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-lucide="user" class="me-2"></i>मेरो प्रोफाइल</a></li>
                                 <li><a class="dropdown-item" href="{{ route('citizen.branches.index') }}"><i data-lucide="building-2" class="me-2 text-primary"></i>विषयगत शाखाहरू निर्देशिका</a></li>
                                 <li><a class="dropdown-item" href="{{ route('citizen.verify.index') }}"><i data-lucide="shield-check" class="me-2 text-success"></i>शाखा तथा निवेदन प्रमाणीकरण</a></li>
