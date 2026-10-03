@@ -171,23 +171,23 @@
                 </div>
 
                 <!-- Digital Certificate & Seal Details if Approved -->
-                @if($application->hasApprovedDocument())
+                @if($application->hasApprovedDocument() || $application->status === 'approved')
                     <div class="p-4 border border-primary-subtle rounded-4 bg-primary-subtle mb-4">
                         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
                             <div>
                                 <span class="badge bg-primary text-white mb-1">आधिकारिक प्रमाणपत्र उपलब्ध</span>
-                                <h5 class="fw-bold text-dark mb-1">{{ $application->approved_document_name }}</h5>
+                                <h5 class="fw-bold text-dark mb-1">{{ $application->approved_document_name ?: ($application->service->name . ' — प्रमाणपत्र') }}</h5>
                                 <div class="small text-secondary">
                                     प्रमाणपत्र ID: <strong class="font-monospace text-primary">{{ $application->certificate_number }}</strong> &bull;
-                                    जारी मिति: <strong>{{ $application->issued_at ? $application->issued_at->format('M d, Y') : 'N/A' }}</strong>
+                                    जारी मिति: <strong>{{ $application->issued_at ? $application->issued_at->format('M d, Y') : ($application->processed_at ? $application->processed_at->format('M d, Y') : 'N/A') }}</strong>
                                 </div>
                             </div>
-                            <div class="d-flex gap-2">
-                                <a href="{{ route('citizen.approved-documents.view', $application) }}" target="_blank" class="btn btn-outline-primary fw-bold">
-                                    <i data-lucide="eye" class="me-1"></i> हेर्नुहोस्
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a href="{{ route('citizen.approved-documents.certificate', $application) }}" target="_blank" class="btn btn-primary fw-bold shadow-sm">
+                                    <i data-lucide="award" class="me-1"></i> आधिकारिक प्रमाणपत्र हेर्नुहोस्
                                 </a>
-                                <a href="{{ route('citizen.approved-documents.download', $application) }}" class="btn btn-primary fw-bold">
-                                    <i data-lucide="download" class="me-1"></i> प्रमाणपत्र डाउनलोड
+                                <a href="{{ route('citizen.approved-documents.certificate.pdf', $application) }}" class="btn btn-outline-primary fw-bold">
+                                    <i data-lucide="download" class="me-1"></i> PDF डाउनलोड
                                 </a>
                             </div>
                         </div>

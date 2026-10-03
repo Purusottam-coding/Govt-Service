@@ -164,22 +164,17 @@
                     <!-- Card Footer Actions -->
                     <div class="card-footer bg-white border-top p-2.5">
                         <div class="d-flex gap-2">
-                            @if($app->hasApprovedDocument())
-                                <a href="{{ route('citizen.approved-documents.view', $app) }}" 
-                                   target="_blank" 
-                                   class="btn btn-sm btn-outline-primary flex-fill fw-semibold">
-                                    <i data-lucide="eye" class="me-1" style="width: 14px; height: 14px;"></i> हेर्नुहोस्
-                                </a>
-                                <a href="{{ route('citizen.approved-documents.download', $app) }}" 
-                                   class="btn btn-sm btn-primary flex-fill fw-semibold">
-                                    <i data-lucide="download" class="me-1" style="width: 14px; height: 14px;"></i> डाउनलोड
-                                </a>
-                            @else
-                                <a href="{{ route('citizen.applications.show', $app) }}" 
-                                   class="btn btn-sm btn-outline-primary flex-fill fw-semibold">
-                                    <i data-lucide="file-text" class="me-1" style="width: 14px; height: 14px;"></i> विवरण हेर्नुहोस्
-                                </a>
-                            @endif
+                            <a href="{{ route('citizen.approved-documents.certificate', $app) }}" 
+                               target="_blank" 
+                               class="btn btn-sm btn-outline-primary flex-fill fw-semibold"
+                               title="आधिकारिक डिजिटल प्रमाणपत्र हेर्नुहोस्">
+                                <i data-lucide="award" class="me-1" style="width: 14px; height: 14px;"></i> प्रमाणपत्र
+                            </a>
+                            <a href="{{ route('citizen.approved-documents.certificate.pdf', $app) }}" 
+                               class="btn btn-sm btn-primary flex-fill fw-semibold"
+                               title="आधिकारिक PDF प्रमाणपत्र डाउनलोड गर्नुहोस्">
+                                <i data-lucide="download" class="me-1" style="width: 14px; height: 14px;"></i> PDF डाउनलोड
+                            </a>
                         </div>
                     </div>
                 </div>

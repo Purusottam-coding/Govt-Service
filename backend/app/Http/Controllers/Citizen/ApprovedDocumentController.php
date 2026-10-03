@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Citizen;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Department;
+use App\Services\CertificateService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -107,5 +108,43 @@ class ApprovedDocumentController extends Controller
             '.' . ($application->approved_document_type ?: 'pdf');
 
         return Storage::disk('public')->download($application->approved_document_path, $filename);
+    }
+
+    /**
+     * View the official system-generated certificate in browser with letterhead, QR & seal.
+     */
+    public function certificate(Application $application, CertificateService $certificateService)
+    {
+        if ($application->user_id !== auth()->id()) {
+            abort(403, 'अनधिकृत पहुँच: यो प्रमाणपत्र तपाईंको खातासँग सम्बन्धित छैन।');
+        }
+
+        if ($application->status !== 'approved' && !$application->hasApprovedDocument()) {
+            return back()->with('error', 'यस निवेदनको आधिकारिक प्रमाणपत्र हालसम्म जारी गरिएको छैन।');
+        }
+
+        $data = $certificateService->getCertificateData($application);
+
+        return view('certificates.official', $data);
+    }
+
+    /**
+     * Download the official system-generated certificate as PDF.
+     */
+    public function downloadCertificatePdf(Application $application, CertificateService $certificateService)
+    {
+        if ($application->user_id !== auth()->id()) {
+            abort(403, 'अनधिकृत पहुँच: यो प्रमाणपत्र तपाईंको खातासँग सम्बन्धित छैन।');
+        }
+
+        if ($application->status !== 'approved' && !$application->hasApprovedDocument()) {
+            return back()->with('error', 'यस निवेदनको आधिकारिक प्रमाणपत्र हालसम्म जारी गरिएको छैन।');
+        }
+
+        $pdf = $certificateService->generatePdf($application);
+
+        $filename = 'Certificate-' . ($application->certificate_number ?: $application->application_number) . '.pdf';
+
+        return $pdf->download($filename);
     }
 }

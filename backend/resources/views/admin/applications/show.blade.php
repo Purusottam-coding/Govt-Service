@@ -224,6 +224,23 @@
                             नागरिकलाई प्रदान गरिने स्वीकृत पत्र, सिफारिस वा प्रमाणपत्र (PDF/Image) अनिवार्य रूपमा अपलोड गर्नुहोस्।
                         </p>
 
+                        @if($application->status === 'approved' || $application->hasApprovedDocument())
+                            <div class="p-2.5 mb-3 rounded-2 bg-primary-subtle border border-primary-subtle d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                <div>
+                                    <span class="badge bg-primary text-white extra-small mb-1"><i data-lucide="award" style="width: 11px; height: 11px;" class="me-1"></i>आधिकारिक प्रमाणपत्र तयार छ</span>
+                                    <div class="fw-bold text-dark small font-monospace">{{ $application->certificate_number }}</div>
+                                </div>
+                                <div class="d-flex gap-1.5">
+                                    <a href="{{ route('admin.applications.certificate', $application) }}" target="_blank" class="btn btn-sm btn-primary py-1 px-2.5 fw-semibold" title="आधिकारिक प्रमाणपत्र हेर्नुहोस् / प्रिन्ट">
+                                        <i data-lucide="eye" style="width: 13px; height: 13px;" class="me-1"></i> हेर्नुहोस्
+                                    </a>
+                                    <a href="{{ route('admin.applications.certificate.pdf', $application) }}" class="btn btn-sm btn-outline-primary py-1 px-2.5 fw-semibold" title="PDF डाउनलोड">
+                                        <i data-lucide="download" style="width: 13px; height: 13px;" class="me-1"></i> PDF
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
+
                         @if($application->hasApprovedDocument())
                             <div class="alert alert-success py-2 px-2.5 small mb-2 d-flex justify-content-between align-items-center">
                                 <div class="text-truncate me-2">

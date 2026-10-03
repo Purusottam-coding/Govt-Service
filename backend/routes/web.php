@@ -82,6 +82,8 @@ Route::middleware(['auth', 'admin'])
         Route::get('/applications/{application}', [Admin\ApplicationController::class, 'show'])->name('applications.show');
         Route::patch('/applications/{application}/status', [Admin\ApplicationController::class, 'updateStatus'])->name('applications.status');
         Route::post('/applications/{application}/documents/{document}/request-replacement', [Admin\ApplicationController::class, 'requestDocumentReplacement'])->name('applications.documents.request-replacement');
+        Route::get('/applications/{application}/certificate', [Admin\ApplicationController::class, 'certificate'])->name('applications.certificate');
+        Route::get('/applications/{application}/certificate/pdf', [Admin\ApplicationController::class, 'downloadCertificatePdf'])->name('applications.certificate.pdf');
 
         Route::resource('qr-codes', Admin\QrCodeController::class)->names('qr-codes');
         Route::patch('/qr-codes/{qrCode}/toggle-status', [Admin\QrCodeController::class, 'toggleStatus'])->name('qr-codes.toggle-status');
@@ -119,6 +121,8 @@ Route::middleware(['auth', 'citizen', 'citizen.verified'])
         Route::get('/verify', [Citizen\BranchController::class, 'verify'])->name('verify.index');
 
         Route::resource('applications', Citizen\ApplicationController::class);
+        Route::get('/applications/{application}/certificate', [Citizen\ApprovedDocumentController::class, 'certificate'])->name('applications.certificate');
+        Route::get('/applications/{application}/certificate/pdf', [Citizen\ApprovedDocumentController::class, 'downloadCertificatePdf'])->name('applications.certificate.pdf');
         Route::post('/applications/{application}/documents/{document}/replace', [Citizen\ApplicationController::class, 'replaceDocument'])->name('applications.documents.replace');
 
         Route::get('/payments/{application}', [Citizen\PaymentController::class, 'create'])->name('payments.create');
@@ -131,6 +135,8 @@ Route::middleware(['auth', 'citizen', 'citizen.verified'])
         Route::get('/approved-documents', [Citizen\ApprovedDocumentController::class, 'index'])->name('approved-documents.index');
         Route::get('/approved-documents/{application}/view', [Citizen\ApprovedDocumentController::class, 'viewDocument'])->name('approved-documents.view');
         Route::get('/approved-documents/{application}/download', [Citizen\ApprovedDocumentController::class, 'download'])->name('approved-documents.download');
+        Route::get('/approved-documents/{application}/certificate', [Citizen\ApprovedDocumentController::class, 'certificate'])->name('approved-documents.certificate');
+        Route::get('/approved-documents/{application}/certificate/pdf', [Citizen\ApprovedDocumentController::class, 'downloadCertificatePdf'])->name('approved-documents.certificate.pdf');
     });
 
 require __DIR__.'/auth.php';

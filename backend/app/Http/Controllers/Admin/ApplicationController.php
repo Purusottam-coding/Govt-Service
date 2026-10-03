@@ -9,6 +9,7 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 
 use App\Notifications\PortalNotification;
+use App\Services\CertificateService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -222,5 +223,35 @@ class ApplicationController extends Controller
 
         return redirect()->route('admin.applications.show', $application)
             ->with('success', "'{$document->document_name}' प्रतिस्थापनको लागि निवेदकलाई सफलतापूर्वक अनुरोध पठाइयो।");
+    }
+
+    /**
+     * Admin view of the official system-generated certificate.
+     */
+    public function certificate(Application $application, CertificateService $certificateService)
+    {
+        if ($application->status !== 'approved' && !$application->hasApprovedDocument()) {
+            return back()->with('error', 'यस निवेदनको आधिकारिक प्रमाणपत्र हालसम्म जारी गरिएको छैन।');
+        }
+
+        $data = $certificateService->getCertificateData($application);
+
+        return view('certificates.official', $data);
+    }
+
+    /**
+     * Admin download of the official system-generated certificate as PDF.
+     */
+    public function downloadCertificatePdf(Application $application, CertificateService $certificateService)
+    {
+        if ($application->status !== 'approved' && !$application->hasApprovedDocument()) {
+            return back()->with('error', 'यस निवेदनको आधिकारिक प्रमाणपत्र हालसम्म जारी गरिएको छैन।');
+        }
+
+        $pdf = $certificateService->generatePdf($application);
+
+        $filename = 'Official-Certificate-' . ($application->certificate_number ?: $application->application_number) . '.pdf';
+
+        return $pdf->download($filename);
     }
 }
