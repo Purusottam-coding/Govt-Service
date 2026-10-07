@@ -35,6 +35,28 @@
     </div>
 </div>
 
+<!-- Revenue & Analytics Quick Spotlight Banner -->
+<div class="card border-0 shadow-sm rounded-3 bg-white p-3 p-lg-4 mb-4 border-start border-4 border-success">
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="p-3 rounded-circle bg-success-subtle text-success">
+                <i data-lucide="wallet" style="width: 28px; height: 28px;"></i>
+            </div>
+            <div>
+                <span class="badge bg-success-subtle text-success fw-bold px-2.5 py-1 rounded-pill extra-small mb-1">सरकारी कोष • राजस्व विवरण</span>
+                <h3 class="fw-extrabold text-dark mb-0 fs-3">रु. {{ number_format($stats['total_revenue'] ?? 0, 2) }}</h3>
+                <small class="text-muted fw-semibold">हालसम्म नागरिक सेवाहरूबाट संकलित कुल प्रमाणित सरकारी राजस्व</small>
+            </div>
+        </div>
+        <div>
+            <a href="{{ route('admin.reports.index') }}" class="btn btn-primary fw-bold px-4 py-2.5 d-inline-flex align-items-center gap-2 shadow-sm">
+                <i data-lucide="bar-chart-3" style="width: 18px; height: 18px;"></i>
+                <span>शाखागत रिपोर्ट तथा एनालिटिक्स &rarr;</span>
+            </a>
+        </div>
+    </div>
+</div>
+
 <!-- Primary Stat Cards Row -->
 <div class="row g-3 mb-4">
     <div class="col-12 col-sm-6 col-xl-3">

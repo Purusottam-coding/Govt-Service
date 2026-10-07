@@ -25,4 +25,9 @@ class Department extends Model
     {
         return $this->hasMany(Service::class);
     }
+
+    public function applications()
+    {
+        return $this->hasManyThrough(Application::class, Service::class);
+    }
 }

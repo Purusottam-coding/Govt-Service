@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Department;
 use App\Models\Feedback;
+use App\Models\Payment;
 use App\Models\Service;
 use App\Models\User;
 
@@ -23,6 +24,7 @@ class DashboardController extends Controller
             'completed_applications' => Application::where('status', 'completed')->count(),
             'total_citizens' => User::where('role', 'citizen')->count(),
             'pending_feedback' => Feedback::where('status', 'open')->count(),
+            'total_revenue' => Payment::where('status', 'completed')->sum('amount'),
         ];
 
         $recentApplications = Application::with(['user', 'service'])

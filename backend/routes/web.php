@@ -96,6 +96,10 @@ Route::middleware(['auth', 'admin'])
         Route::get('/feedback', [Admin\FeedbackController::class, 'index'])->name('feedback.index');
         Route::get('/feedback/{feedback}', [Admin\FeedbackController::class, 'show'])->name('feedback.show');
         Route::patch('/feedback/{feedback}/reply', [Admin\FeedbackController::class, 'reply'])->name('feedback.reply');
+
+        // Department & Revenue Analytics and Reports
+        Route::get('/reports', [Admin\ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/export-csv', [Admin\ReportController::class, 'exportCsv'])->name('reports.export-csv');
     });
 
 /*
