@@ -39,6 +39,11 @@
             <i data-lucide="file-text"></i> प्राप्त निवेदनहरू
         </a>
 
+        <div class="nav-section">विश्लेषण तथा प्रतिवेदन</div>
+        <a href="{{ route('admin.reports.index') }}" class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
+            <i data-lucide="bar-chart-3"></i> शाखा तथा राजस्व रिपोर्ट
+        </a>
+
         <div class="nav-section">नागरिक सेवा</div>
         <a href="{{ route('admin.citizens.index') }}" class="nav-link {{ request()->routeIs('admin.citizens.*') ? 'active' : '' }}">
             <i data-lucide="users"></i> नागरिक सूची

@@ -362,6 +362,34 @@
                             </a>
                         </div>
                     @endif
+
+                    @if($application->payment->status === 'pending')
+                        <div class="mt-3 pt-3 border-top">
+                            <label class="form-label extra-small fw-bold text-dark d-block mb-2">प्रशासकीय भुक्तानी प्रमाणीकरण:</label>
+                            <div class="d-flex gap-2">
+                                <form method="POST" action="{{ route('admin.applications.payments.verify', $application) }}" class="flex-grow-1" onsubmit="return confirm('के तपाईं यो भुक्तानी प्रमाणित गर्न निश्चित हुनुहुन्छ? निवेदकको इमेलमा पुष्टि सूचना जानेछ।');">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="btn btn-sm btn-success w-100 fw-bold d-flex align-items-center justify-content-center gap-1">
+                                        <i data-lucide="check-circle-2" style="width: 14px; height: 14px;"></i>
+                                        <span>भुक्तानी प्रमाणित गर्नुहोस्</span>
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ route('admin.applications.payments.reject', $application) }}" onsubmit="return confirm('के तपाईं यो भुक्तानी प्रमाण अस्वीकृत गर्न चाहनुहुन्छ?');">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="भुक्तानी अस्वीकृत गर्नुहोस्">
+                                        <i data-lucide="x-circle" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @elseif($application->payment->status === 'completed')
+                        <div class="mt-3 pt-2 border-top extra-small text-success fw-bold d-flex align-items-center gap-1">
+                            <i data-lucide="check-check" style="width: 14px; height: 14px;"></i>
+                            <span>यो भुक्तानी प्रमाणित भइसकेको छ।</span>
+                        </div>
+                    @endif
                 @else
                     <div class="text-center py-3">
                         <i data-lucide="alert-circle" class="text-warning fs-3 mb-2 d-block"></i>

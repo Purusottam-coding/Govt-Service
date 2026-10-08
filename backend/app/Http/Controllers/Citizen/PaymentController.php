@@ -9,9 +9,11 @@ use App\Models\Application;
 use App\Models\Payment;
 use App\Models\PaymentQrCode;
 use App\Models\User;
+use App\Notifications\PaymentVerifiedNotification;
 use App\Notifications\PortalNotification;
 use App\Traits\FileUploadTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class PaymentController extends Controller
@@ -101,6 +103,15 @@ class PaymentController extends Controller
         }
 
         if ($isCashPayment) {
+            try {
+                $citizenUser = $application->user ?? auth()->user();
+                if ($citizenUser) {
+                    $citizenUser->notify(new PaymentVerifiedNotification($application, $payment));
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Cash payment verification email failed: ' . $e->getMessage());
+            }
+
             return redirect()->route('citizen.payments.receipt', $application)
                 ->with('success', 'Payment of रु. ' . number_format($amount, 2) . ' received successfully!');
         }

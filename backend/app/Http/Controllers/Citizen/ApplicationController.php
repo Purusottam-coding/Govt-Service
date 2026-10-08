@@ -98,24 +98,24 @@ class ApplicationController extends Controller
             ));
         }
 
-        // Notify Citizen via Confirmation Email
-        try {
-            $citizenUser = $application->user ?? auth()->user();
-            if ($citizenUser) {
-                $citizenUser->notify(new ApplicationSubmittedNotification($application));
+        // If service fee <= 0 (free service), payment is not required so confirm immediately via email
+        if ($service->fee <= 0) {
+            try {
+                $citizenUser = $application->user ?? auth()->user();
+                if ($citizenUser) {
+                    $citizenUser->notify(new ApplicationSubmittedNotification($application));
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Application submission confirmation email failed: ' . $e->getMessage());
             }
-        } catch (\Throwable $e) {
-            Log::warning('Application submission confirmation email failed: ' . $e->getMessage());
+
+            return redirect()->route('citizen.applications.show', $application)
+                ->with('success', 'Application submitted successfully! Reference number: ' . $application->application_number);
         }
 
-        // If service fee > 0, redirect to payment page
-        if ($service->fee > 0) {
-            return redirect()->route('citizen.payments.create', $application)
-                ->with('success', 'Application submitted successfully! Please complete the payment to process your application.');
-        }
-
-        return redirect()->route('citizen.applications.show', $application)
-            ->with('success', 'Application submitted successfully! Reference number: ' . $application->application_number);
+        // If service fee > 0, redirect to payment page (Confirmation email is sent once payment is verified)
+        return redirect()->route('citizen.payments.create', $application)
+            ->with('success', 'Application submitted successfully! Please complete the payment to process your application.');
     }
 
     public function show(Application $application)

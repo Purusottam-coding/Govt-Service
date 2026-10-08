@@ -5,11 +5,13 @@ namespace Tests\Feature;
 use App\Models\Application;
 use App\Models\ApplicationDocument;
 use App\Models\Department;
+use App\Models\Payment;
 use App\Models\Service;
 use App\Models\User;
 use App\Notifications\ApplicationStatusUpdatedNotification;
 use App\Notifications\ApplicationSubmittedNotification;
 use App\Notifications\DocumentReplacementRequestedNotification;
+use App\Notifications\PaymentVerifiedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
@@ -23,7 +25,8 @@ class ApplicationEmailNotificationTest extends TestCase
     protected User $admin;
     protected User $citizen;
     protected Department $department;
-    protected Service $service;
+    protected Service $paidService;
+    protected Service $freeService;
 
     protected function setUp(): void
     {
@@ -46,20 +49,52 @@ class ApplicationEmailNotificationTest extends TestCase
             ]
         );
 
-        $this->service = Service::create([
+        $this->paidService = Service::create([
             'department_id' => $this->department->id,
             'name' => 'घर बाटो सिफारिस',
             'fee' => 500,
             'status' => true,
         ]);
+
+        $this->freeService = Service::create([
+            'department_id' => $this->department->id,
+            'name' => 'नागरिकता सिफारिस (निःशुल्क)',
+            'fee' => 0,
+            'status' => true,
+        ]);
     }
 
-    public function test_citizen_receives_confirmation_email_upon_submitting_application(): void
+    public function test_citizen_does_not_receive_email_for_paid_service_until_payment_verified(): void
     {
         Notification::fake();
 
         $response = $this->actingAs($this->citizen)->post(route('citizen.applications.store'), [
-            'service_id' => $this->service->id,
+            'service_id' => $this->paidService->id,
+            'applicant_name' => $this->citizen->name,
+            'applicant_email' => $this->citizen->email,
+            'applicant_phone' => '9841234567',
+            'applicant_address' => 'बाह्रदशी-१, झापा',
+            'documents' => [
+                UploadedFile::fake()->create('citizenship.pdf', 500, 'application/pdf'),
+            ],
+            'document_names' => [
+                'नागरिकता प्रमाणपत्र',
+            ],
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect();
+
+        // Confirmation email should NOT be sent yet because payment is required and not verified
+        Notification::assertNotSentTo($this->citizen, ApplicationSubmittedNotification::class);
+    }
+
+    public function test_citizen_receives_confirmation_email_for_free_service_immediately(): void
+    {
+        Notification::fake();
+
+        $response = $this->actingAs($this->citizen)->post(route('citizen.applications.store'), [
+            'service_id' => $this->freeService->id,
             'applicant_name' => $this->citizen->name,
             'applicant_email' => $this->citizen->email,
             'applicant_phone' => '9841234567',
@@ -74,7 +109,7 @@ class ApplicationEmailNotificationTest extends TestCase
 
         $response->assertSessionHasNoErrors();
 
-        // Verify ApplicationSubmittedNotification was sent to citizen
+        // Confirmation email should be sent for free service immediately
         Notification::assertSentTo(
             $this->citizen,
             ApplicationSubmittedNotification::class,
@@ -86,13 +121,56 @@ class ApplicationEmailNotificationTest extends TestCase
         );
     }
 
+    public function test_citizen_receives_payment_verified_email_when_admin_verifies_payment(): void
+    {
+        Notification::fake();
+
+        $application = Application::create([
+            'user_id' => $this->citizen->id,
+            'service_id' => $this->paidService->id,
+            'applicant_name' => $this->citizen->name,
+            'applicant_email' => $this->citizen->email,
+            'applicant_phone' => '9841234567',
+            'status' => 'pending',
+        ]);
+
+        $payment = Payment::create([
+            'application_id' => $application->id,
+            'amount' => 500,
+            'payment_method' => 'esewa',
+            'transaction_id' => 'TXN-TEST123',
+            'status' => 'pending',
+        ]);
+
+        $response = $this->actingAs($this->admin)->patch(
+            route('admin.applications.payments.verify', $application)
+        );
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('admin.applications.show', $application));
+
+        $payment->refresh();
+        $this->assertEquals('completed', $payment->status);
+
+        // Verification email sent to citizen
+        Notification::assertSentTo(
+            $this->citizen,
+            PaymentVerifiedNotification::class,
+            function (PaymentVerifiedNotification $notification) use ($application) {
+                $mail = $notification->toMail($this->citizen);
+                $this->assertStringContainsString('भुक्तानी प्रमाणीकरण', $mail->subject);
+                return $notification->application->id === $application->id;
+            }
+        );
+    }
+
     public function test_citizen_receives_approval_email_when_admin_approves_application(): void
     {
         Notification::fake();
 
         $application = Application::create([
             'user_id' => $this->citizen->id,
-            'service_id' => $this->service->id,
+            'service_id' => $this->paidService->id,
             'applicant_name' => $this->citizen->name,
             'applicant_email' => $this->citizen->email,
             'applicant_phone' => '9841234567',
@@ -136,7 +214,7 @@ class ApplicationEmailNotificationTest extends TestCase
 
         $application = Application::create([
             'user_id' => $this->citizen->id,
-            'service_id' => $this->service->id,
+            'service_id' => $this->paidService->id,
             'applicant_name' => $this->citizen->name,
             'applicant_email' => $this->citizen->email,
             'applicant_phone' => '9841234567',
@@ -174,7 +252,7 @@ class ApplicationEmailNotificationTest extends TestCase
 
         $application = Application::create([
             'user_id' => $this->citizen->id,
-            'service_id' => $this->service->id,
+            'service_id' => $this->paidService->id,
             'applicant_name' => $this->citizen->name,
             'applicant_email' => $this->citizen->email,
             'applicant_phone' => '9841234567',

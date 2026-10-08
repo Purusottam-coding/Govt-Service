@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 use App\Notifications\ApplicationStatusUpdatedNotification;
 use App\Notifications\DocumentReplacementRequestedNotification;
+use App\Notifications\PaymentVerifiedNotification;
 use App\Notifications\PortalNotification;
 use App\Services\CertificateService;
 use Illuminate\Support\Facades\Log;
@@ -118,6 +119,14 @@ class ApplicationController extends Controller
             $data['certificate_number'] = $certNumber;
             if (empty($application->issued_at) && empty($data['issued_at'])) {
                 $data['issued_at'] = now();
+            }
+
+            // Ensure payment is marked completed upon official application approval
+            if ($application->payment && $application->payment->status !== 'completed') {
+                $application->payment->update([
+                    'status' => 'completed',
+                    'paid_at' => $application->payment->paid_at ?? now(),
+                ]);
             }
         }
 
@@ -240,6 +249,80 @@ class ApplicationController extends Controller
 
         return redirect()->route('admin.applications.show', $application)
             ->with('success', "'{$document->document_name}' प्रतिस्थापनको लागि निवेदकलाई सफलतापूर्वक अनुरोध पठाइयो।");
+    }
+
+    /**
+     * Admin manually verifies citizen submitted payment/statement.
+     */
+    public function verifyPayment(Request $request, Application $application)
+    {
+        $payment = $application->payment;
+        if (!$payment) {
+            return back()->with('error', 'यस निवेदनको लागि कुनै भुक्तानी रेकर्ड भेटिएन।');
+        }
+
+        $payment->update([
+            'status' => 'completed',
+            'paid_at' => $payment->paid_at ?? now(),
+        ]);
+
+        if ($application->status === 'pending') {
+            $application->update(['status' => 'under_review']);
+        }
+
+        // Notify Citizen via Portal & Email
+        if ($application->user) {
+            $application->user->notify(new PortalNotification(
+                title: "भुक्तानी प्रमाणीकरण सम्पन्न",
+                message: "निवेदन #{$application->application_number} को लागि रु. " . number_format($payment->amount, 2) . " को भुक्तानी प्रमाणीकरण भएको छ।",
+                link: route('citizen.applications.show', $application),
+                icon: 'check-circle-2',
+                color: 'success',
+                category: 'payment',
+                meta: ['application_id' => $application->id, 'payment_id' => $payment->id]
+            ));
+
+            try {
+                $application->user->notify(new PaymentVerifiedNotification($application, $payment));
+            } catch (\Throwable $e) {
+                Log::warning('Payment verification email failed: ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->route('admin.applications.show', $application)
+            ->with('success', 'भुक्तानी सफलतापूर्वक प्रमाणीकरण गरियो र निवेदकलाई इमेल पठाइयो।');
+    }
+
+    /**
+     * Admin marks citizen payment as invalid/failed.
+     */
+    public function rejectPayment(Request $request, Application $application)
+    {
+        $payment = $application->payment;
+        if (!$payment) {
+            return back()->with('error', 'यस निवेदनको लागि कुनै भुक्तानी रेकर्ड भेटिएन।');
+        }
+
+        $reason = $request->input('rejection_reason', 'भुक्तानी भौचर/स्टेटमेन्ट अमान्य वा अस्पष्ट देखिएको छ।');
+
+        $payment->update([
+            'status' => 'failed',
+        ]);
+
+        if ($application->user) {
+            $application->user->notify(new PortalNotification(
+                title: "भुक्तानी अस्वीकृत / अमान्य",
+                message: "निवेदन #{$application->application_number} को भुक्तानी प्रमाण अस्वीकृत भएको छ: {$reason}",
+                link: route('citizen.payments.create', $application),
+                icon: 'alert-circle',
+                color: 'danger',
+                category: 'payment',
+                meta: ['application_id' => $application->id, 'payment_id' => $payment->id]
+            ));
+        }
+
+        return redirect()->route('admin.applications.show', $application)
+            ->with('error', 'भुक्तानी अस्वीकृत गरियो र निवेदकलाई पुनः भुक्तानी गर्न अनुरोध पठाइयो।');
     }
 
     /**

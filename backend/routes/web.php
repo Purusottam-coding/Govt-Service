@@ -84,6 +84,8 @@ Route::middleware(['auth', 'admin'])
         Route::post('/applications/{application}/documents/{document}/request-replacement', [Admin\ApplicationController::class, 'requestDocumentReplacement'])->name('applications.documents.request-replacement');
         Route::get('/applications/{application}/certificate', [Admin\ApplicationController::class, 'certificate'])->name('applications.certificate');
         Route::get('/applications/{application}/certificate/pdf', [Admin\ApplicationController::class, 'downloadCertificatePdf'])->name('applications.certificate.pdf');
+        Route::patch('/applications/{application}/payments/verify', [Admin\ApplicationController::class, 'verifyPayment'])->name('applications.payments.verify');
+        Route::patch('/applications/{application}/payments/reject', [Admin\ApplicationController::class, 'rejectPayment'])->name('applications.payments.reject');
 
         Route::resource('qr-codes', Admin\QrCodeController::class)->names('qr-codes');
         Route::patch('/qr-codes/{qrCode}/toggle-status', [Admin\QrCodeController::class, 'toggleStatus'])->name('qr-codes.toggle-status');
