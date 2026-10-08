@@ -8,8 +8,11 @@ use App\Models\ApplicationDocument;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
+use App\Notifications\ApplicationStatusUpdatedNotification;
+use App\Notifications\DocumentReplacementRequestedNotification;
 use App\Notifications\PortalNotification;
 use App\Services\CertificateService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -181,6 +184,13 @@ class ApplicationController extends Controller
                 category: 'application_status',
                 meta: ['application_id' => $application->id, 'status' => $application->status]
             ));
+
+            // Send Email Notification to Citizen (Approved, Rejected, or Status update)
+            try {
+                $application->user->notify(new ApplicationStatusUpdatedNotification($application));
+            } catch (\Throwable $e) {
+                Log::warning('Application status email failed: ' . $e->getMessage());
+            }
         }
 
         return redirect()->route('admin.applications.show', $application)
@@ -219,6 +229,13 @@ class ApplicationController extends Controller
                 category: 'replacement',
                 meta: ['application_id' => $application->id, 'document_id' => $document->id]
             ));
+
+            // Send Document Replacement Request Email to Citizen
+            try {
+                $application->user->notify(new DocumentReplacementRequestedNotification($application, $document, $document->admin_feedback));
+            } catch (\Throwable $e) {
+                Log::warning('Document replacement email failed: ' . $e->getMessage());
+            }
         }
 
         return redirect()->route('admin.applications.show', $application)

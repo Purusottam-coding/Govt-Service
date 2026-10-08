@@ -7,8 +7,10 @@ use App\Models\Application;
 use App\Models\ApplicationDocument;
 use App\Models\Service;
 use App\Models\User;
+use App\Notifications\ApplicationSubmittedNotification;
 use App\Notifications\PortalNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ApplicationController extends Controller
@@ -94,6 +96,16 @@ class ApplicationController extends Controller
                 category: 'new_application',
                 meta: ['application_id' => $application->id]
             ));
+        }
+
+        // Notify Citizen via Confirmation Email
+        try {
+            $citizenUser = $application->user ?? auth()->user();
+            if ($citizenUser) {
+                $citizenUser->notify(new ApplicationSubmittedNotification($application));
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Application submission confirmation email failed: ' . $e->getMessage());
         }
 
         // If service fee > 0, redirect to payment page
