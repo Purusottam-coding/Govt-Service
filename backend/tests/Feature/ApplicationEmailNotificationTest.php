@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Notifications\ApplicationStatusUpdatedNotification;
 use App\Notifications\ApplicationSubmittedNotification;
 use App\Notifications\DocumentReplacementRequestedNotification;
+use App\Notifications\PaymentSubmittedVerificationNotification;
 use App\Notifications\PaymentVerifiedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -87,6 +88,41 @@ class ApplicationEmailNotificationTest extends TestCase
 
         // Confirmation email should NOT be sent yet because payment is required and not verified
         Notification::assertNotSentTo($this->citizen, ApplicationSubmittedNotification::class);
+    }
+
+    public function test_citizen_receives_email_when_submitting_payment_that_documents_are_in_verification(): void
+    {
+        Notification::fake();
+
+        $application = Application::create([
+            'user_id' => $this->citizen->id,
+            'service_id' => $this->paidService->id,
+            'applicant_name' => $this->citizen->name,
+            'applicant_email' => $this->citizen->email,
+            'applicant_phone' => '9841234567',
+            'status' => 'pending',
+        ]);
+
+        $response = $this->actingAs($this->citizen)->post(
+            route('citizen.payments.store', $application),
+            [
+                'payment_method' => 'esewa',
+                'payment_statement' => UploadedFile::fake()->image('statement.jpg'),
+            ]
+        );
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('citizen.applications.show', $application));
+
+        Notification::assertSentTo(
+            $this->citizen,
+            PaymentSubmittedVerificationNotification::class,
+            function (PaymentSubmittedVerificationNotification $notification) use ($application) {
+                $mail = $notification->toMail($this->citizen);
+                $this->assertStringContainsString('कागजात प्रमाणीकरण प्रक्रियामा', $mail->subject);
+                return $notification->application->id === $application->id;
+            }
+        );
     }
 
     public function test_citizen_receives_confirmation_email_for_free_service_immediately(): void

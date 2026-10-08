@@ -9,6 +9,7 @@ use App\Models\Application;
 use App\Models\Payment;
 use App\Models\PaymentQrCode;
 use App\Models\User;
+use App\Notifications\PaymentSubmittedVerificationNotification;
 use App\Notifications\PaymentVerifiedNotification;
 use App\Notifications\PortalNotification;
 use App\Traits\FileUploadTrait;
@@ -114,6 +115,16 @@ class PaymentController extends Controller
 
             return redirect()->route('citizen.payments.receipt', $application)
                 ->with('success', 'Payment of रु. ' . number_format($amount, 2) . ' received successfully!');
+        }
+
+        // Notify citizen via Email that payment statement was submitted and documents are now in verification process
+        try {
+            $citizenUser = $application->user ?? auth()->user();
+            if ($citizenUser) {
+                $citizenUser->notify(new PaymentSubmittedVerificationNotification($application, $payment));
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Payment submitted verification email failed: ' . $e->getMessage());
         }
 
         return redirect()->route('citizen.applications.show', $application)
