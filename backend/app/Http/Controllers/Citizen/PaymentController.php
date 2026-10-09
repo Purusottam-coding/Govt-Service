@@ -12,6 +12,8 @@ use App\Models\User;
 use App\Notifications\PaymentSubmittedVerificationNotification;
 use App\Notifications\PaymentVerifiedNotification;
 use App\Notifications\PortalNotification;
+use App\Services\EsewaPaymentService;
+use App\Services\KhaltiPaymentService;
 use App\Traits\FileUploadTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -148,4 +150,234 @@ class PaymentController extends Controller
 
         return view('citizen.payments.receipt', compact('application'));
     }
+
+    /**
+     * Initiate eSewa payment gateway.
+     */
+    public function initiateEsewa(Application $application, EsewaPaymentService $esewaService)
+    {
+        if ($application->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($application->payment && $application->payment->status === PaymentStatus::COMPLETED->value) {
+            return redirect()->route('citizen.payments.receipt', $application)
+                ->with('info', 'यस निवेदनको भुक्तानी पहिल्यै सम्पन्न भइसकेको छ।');
+        }
+
+        $amount = $application->service->fee;
+        $txnId = 'ESEWA-' . strtoupper(Str::random(10));
+
+        $payment = Payment::updateOrCreate(
+            ['application_id' => $application->id],
+            [
+                'amount' => $amount,
+                'payment_method' => 'esewa',
+                'transaction_id' => $txnId,
+                'status' => PaymentStatus::PENDING->value,
+                'paid_at' => null,
+            ]
+        );
+
+        $payload = $esewaService->getPaymentPayload($application, $payment);
+        $actionUrl = $esewaService->getFormActionUrl();
+
+        return view('citizen.payments.esewa_redirect', compact('application', 'payment', 'payload', 'actionUrl'));
+    }
+
+    /**
+     * Handle eSewa success callback.
+     */
+    public function esewaSuccess(Request $request, Application $application, EsewaPaymentService $esewaService)
+    {
+        if ($application->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $txnCode = 'ESEWA-' . strtoupper(Str::random(10));
+        $isMock = $request->boolean('mock') || $request->has('mock_success');
+
+        if ($request->filled('data')) {
+            $decoded = $esewaService->decodeCallbackData($request->query('data'));
+            if (!$decoded || !$esewaService->isSuccessful($decoded)) {
+                return redirect()->route('citizen.payments.create', $application)
+                    ->with('error', 'eSewa भुक्तानी प्रमाणीकरण असफल भयो।');
+            }
+            $txnCode = $decoded['transaction_code'] ?? $decoded['transaction_uuid'] ?? $txnCode;
+        } elseif (!$isMock) {
+            return redirect()->route('citizen.payments.create', $application)
+                ->with('error', 'eSewa भुक्तानी विवरण फेला परेन।');
+        }
+
+        $payment = $application->payment ?? Payment::where('application_id', $application->id)->first();
+        if ($payment) {
+            $payment->update([
+                'payment_method' => 'esewa',
+                'status' => PaymentStatus::COMPLETED->value,
+                'transaction_id' => $txnCode,
+                'paid_at' => now(),
+            ]);
+        }
+
+        if ($application->status === ApplicationStatus::PENDING->value) {
+            $application->update([
+                'status' => ApplicationStatus::UNDER_REVIEW->value,
+            ]);
+        }
+
+        // Send notifications
+        $this->notifyPaymentCompleted($application, $payment, 'eSewa');
+
+        return redirect()->route('citizen.payments.receipt', $application)
+            ->with('success', 'eSewa मार्फत रु. ' . number_format($payment?->amount ?? $application->service->fee, 2) . ' भुक्तानी सफलतापूर्वक सम्पन्न भयो!');
+    }
+
+    /**
+     * Handle eSewa failure callback.
+     */
+    public function esewaFailed(Request $request, Application $application)
+    {
+        if ($application->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        return redirect()->route('citizen.payments.create', $application)
+            ->with('error', 'eSewa भुक्तानी रद्द वा असफल भयो। कृपया पुन: प्रयास गर्नुहोस्।');
+    }
+
+    /**
+     * Initiate Khalti ePayment v2.
+     */
+    public function initiateKhalti(Application $application, KhaltiPaymentService $khaltiService)
+    {
+        if ($application->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($application->payment && $application->payment->status === PaymentStatus::COMPLETED->value) {
+            return redirect()->route('citizen.payments.receipt', $application)
+                ->with('info', 'यस निवेदनको भुक्तानी पहिल्यै सम्पन्न भइसकेको छ।');
+        }
+
+        $amount = $application->service->fee;
+        $txnId = 'KHL-' . strtoupper(Str::random(10));
+
+        $payment = Payment::updateOrCreate(
+            ['application_id' => $application->id],
+            [
+                'amount' => $amount,
+                'payment_method' => 'khalti',
+                'transaction_id' => $txnId,
+                'status' => PaymentStatus::PENDING->value,
+                'paid_at' => null,
+            ]
+        );
+
+        $initResult = $khaltiService->initiatePayment($application, $payment);
+
+        if (!empty($initResult['payment_url'])) {
+            return redirect()->away($initResult['payment_url']);
+        }
+
+        return redirect()->route('citizen.payments.create', $application)
+            ->with('error', 'Khalti गेटवेमा जडान हुन सकेन। कृपया केही समयपछि पुन: प्रयास गर्नुहोस्।');
+    }
+
+    /**
+     * Handle Khalti return callback.
+     */
+    public function khaltiCallback(Request $request, Application $application, KhaltiPaymentService $khaltiService)
+    {
+        if ($application->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $status = $request->query('status');
+        if ($status && strtolower($status) === 'user canceled') {
+            return redirect()->route('citizen.payments.create', $application)
+                ->with('error', 'Khalti भुक्तानी रद्द गरियो।');
+        }
+
+        $pidx = $request->query('pidx');
+        if (!$pidx) {
+            return redirect()->route('citizen.payments.create', $application)
+                ->with('error', 'Khalti भुक्तानी विवरण फेला परेन।');
+        }
+
+        $verification = $khaltiService->verifyPayment($pidx);
+
+        if (empty($verification['success']) || strtolower($verification['status']) !== 'completed') {
+            return redirect()->route('citizen.payments.create', $application)
+                ->with('error', 'Khalti भुक्तानी प्रमाणीकरण असफल भयो।');
+        }
+
+        $txnCode = $verification['transaction_id'] ?? $pidx;
+
+        $payment = $application->payment ?? Payment::where('application_id', $application->id)->first();
+        if ($payment) {
+            $payment->update([
+                'payment_method' => 'khalti',
+                'status' => PaymentStatus::COMPLETED->value,
+                'transaction_id' => $txnCode,
+                'paid_at' => now(),
+            ]);
+        }
+
+        if ($application->status === ApplicationStatus::PENDING->value) {
+            $application->update([
+                'status' => ApplicationStatus::UNDER_REVIEW->value,
+            ]);
+        }
+
+        // Send notifications
+        $this->notifyPaymentCompleted($application, $payment, 'Khalti');
+
+        return redirect()->route('citizen.payments.receipt', $application)
+            ->with('success', 'Khalti मार्फत रु. ' . number_format($payment?->amount ?? $application->service->fee, 2) . ' भुक्तानी सफलतापूर्वक सम्पन्न भयो!');
+    }
+
+    /**
+     * Helper to notify citizen and admins upon successful online payment.
+     */
+    protected function notifyPaymentCompleted(Application $application, ?Payment $payment, string $methodName): void
+    {
+        $amount = $payment?->amount ?? $application->service->fee;
+
+        // 1. Notify Admins
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new PortalNotification(
+                title: "डिजिटल भुक्तानी प्राप्त ({$methodName})",
+                message: "निवेदन #{$application->application_number} को लागि {$methodName} मार्फत रु. " . number_format($amount, 2) . " प्राप्त भएको छ।",
+                link: route('admin.applications.show', $application),
+                icon: 'check-circle',
+                color: 'success',
+                category: 'payment',
+                meta: ['application_id' => $application->id, 'payment_id' => $payment?->id, 'gateway' => $methodName]
+            ));
+        }
+
+        // 2. Notify Citizen via Email & Portal
+        try {
+            $citizenUser = $application->user ?? auth()->user();
+            if ($citizenUser) {
+                if ($payment) {
+                    $citizenUser->notify(new PaymentVerifiedNotification($application, $payment));
+                }
+
+                $citizenUser->notify(new PortalNotification(
+                    title: "भुक्तानी सफल ({$methodName})",
+                    message: "तपाईंको निवेदन #{$application->application_number} को लागि रु. " . number_format($amount, 2) . " भुक्तानी सफल भएको छ। निवेदन प्रमाणीकरण प्रक्रियामा छ।",
+                    link: route('citizen.payments.receipt', $application),
+                    icon: 'check-circle',
+                    color: 'success',
+                    category: 'payment',
+                    meta: ['application_id' => $application->id, 'gateway' => $methodName]
+                ));
+            }
+        } catch (\Throwable $e) {
+            Log::warning("Digital payment notification error ({$methodName}): " . $e->getMessage());
+        }
+    }
 }
+
