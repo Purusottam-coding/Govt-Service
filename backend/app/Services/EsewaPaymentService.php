@@ -16,7 +16,7 @@ class EsewaPaymentService
     public function __construct()
     {
         $this->merchantCode = config('services.esewa.merchant_code', 'EPAYTEST');
-        $this->secretKey = config('services.esewa.secret_key', '8gBm/:&EnhH.1/q(');
+        $this->secretKey = config('services.esewa.secret_key', '8gBm/:&EnhH.1/q');
         $this->baseUrl = config('services.esewa.base_url', 'https://rc-epay.esewa.com.np/api/epay/main/v2/form');
         $this->statusUrl = config('services.esewa.status_url', 'https://rc-epay.esewa.com.np/api/epay/main/v2/verify');
     }

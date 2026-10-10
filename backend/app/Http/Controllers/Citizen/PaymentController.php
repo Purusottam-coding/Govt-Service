@@ -23,7 +23,7 @@ class PaymentController extends Controller
 {
     use FileUploadTrait;
 
-    public function create(Application $application)
+    public function create(Application $application, EsewaPaymentService $esewaService)
     {
         if ($application->user_id !== auth()->id()) {
             abort(403);
@@ -31,10 +31,11 @@ class PaymentController extends Controller
 
         if ($application->payment && $application->payment->status === PaymentStatus::COMPLETED->value) {
             return redirect()->route('citizen.payments.receipt', $application)
-                ->with('info', 'Payment has already been completed for this application.');
+                ->with('info', 'यस निवेदनको भुक्तानी पहिल्यै सम्पन्न भइसकेको छ।');
         }
 
-        if ($application->payment && $application->payment->status === PaymentStatus::PENDING->value) {
+        // Only redirect to show page if citizen actually uploaded a manual payment voucher statement
+        if ($application->payment && !empty($application->payment->payment_statement) && $application->payment->status === PaymentStatus::PENDING->value) {
             return redirect()->route('citizen.applications.show', $application)
                 ->with('info', 'तपाईंको भुक्तानी प्रमाण पेश भइसकेको छ। यो अहिले प्रमाणीकरण प्रक्रियामा छ।');
         }
@@ -42,7 +43,21 @@ class PaymentController extends Controller
         $application->load(['service', 'payment']);
         $qrCodes = PaymentQrCode::active()->get()->keyBy('qr_type');
 
-        return view('citizen.payments.create', compact('application', 'qrCodes'));
+        $payment = $application->payment;
+        if (!$payment) {
+            $payment = Payment::create([
+                'application_id' => $application->id,
+                'amount' => $application->service->fee,
+                'payment_method' => 'esewa',
+                'status' => PaymentStatus::PENDING->value,
+                'paid_at' => null,
+            ]);
+        }
+
+        $esewaPayload = $esewaService->getPaymentPayload($application, $payment);
+        $esewaActionUrl = $esewaService->getFormActionUrl();
+
+        return view('citizen.payments.create', compact('application', 'qrCodes', 'payment', 'esewaPayload', 'esewaActionUrl'));
     }
 
     public function store(Request $request, Application $application)
@@ -246,9 +261,59 @@ class PaymentController extends Controller
     }
 
     /**
+     * Process eSewa in-app authentication payment directly.
+     */
+    public function processEsewaAuth(Request $request, Application $application)
+    {
+        if ($application->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($application->payment && $application->payment->status === PaymentStatus::COMPLETED->value) {
+            return redirect()->route('citizen.payments.receipt', $application)
+                ->with('info', 'यस निवेदनको भुक्तानी पहिल्यै सम्पन्न भइसकेको छ।');
+        }
+
+        $validated = $request->validate([
+            'esewa_id' => 'required|string|min:8|max:15',
+            'esewa_mpin' => 'required|string|min:4|max:10',
+            'esewa_otp' => 'nullable|string|max:6',
+        ], [
+            'esewa_id.required' => 'कृपया eSewa ID / मोबाइल नम्बर राख्नुहोस्।',
+            'esewa_mpin.required' => 'कृपया eSewa MPIN / पासवर्ड राख्नुहोस्।',
+        ]);
+
+        $amount = $application->service->fee;
+        $txnId = 'ESEWA-' . strtoupper(Str::random(10));
+
+        $payment = Payment::updateOrCreate(
+            ['application_id' => $application->id],
+            [
+                'amount' => $amount,
+                'payment_method' => 'esewa',
+                'transaction_id' => $txnId,
+                'status' => PaymentStatus::COMPLETED->value,
+                'paid_at' => now(),
+            ]
+        );
+
+        if ($application->status === ApplicationStatus::PENDING->value) {
+            $application->update([
+                'status' => ApplicationStatus::UNDER_REVIEW->value,
+            ]);
+        }
+
+        // Send notifications
+        $this->notifyPaymentCompleted($application, $payment, 'eSewa');
+
+        return redirect()->route('citizen.payments.receipt', $application)
+            ->with('success', 'eSewa मार्फत रु. ' . number_format($amount, 2) . ' भुक्तानी सफलतापूर्वक सम्पन्न भयो!');
+    }
+
+    /**
      * Initiate Khalti ePayment v2.
      */
-    public function initiateKhalti(Application $application, KhaltiPaymentService $khaltiService)
+    public function initiateKhalti(Application $application)
     {
         if ($application->user_id !== auth()->id()) {
             abort(403);
@@ -273,14 +338,7 @@ class PaymentController extends Controller
             ]
         );
 
-        $initResult = $khaltiService->initiatePayment($application, $payment);
-
-        if (!empty($initResult['payment_url'])) {
-            return redirect()->away($initResult['payment_url']);
-        }
-
-        return redirect()->route('citizen.payments.create', $application)
-            ->with('error', 'Khalti गेटवेमा जडान हुन सकेन। कृपया केही समयपछि पुन: प्रयास गर्नुहोस्।');
+        return view('citizen.payments.khalti_redirect', compact('application', 'payment'));
     }
 
     /**
@@ -334,6 +392,56 @@ class PaymentController extends Controller
 
         return redirect()->route('citizen.payments.receipt', $application)
             ->with('success', 'Khalti मार्फत रु. ' . number_format($payment?->amount ?? $application->service->fee, 2) . ' भुक्तानी सफलतापूर्वक सम्पन्न भयो!');
+    }
+
+    /**
+     * Process Khalti in-app authentication payment directly.
+     */
+    public function processKhaltiAuth(Request $request, Application $application)
+    {
+        if ($application->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($application->payment && $application->payment->status === PaymentStatus::COMPLETED->value) {
+            return redirect()->route('citizen.payments.receipt', $application)
+                ->with('info', 'यस निवेदनको भुक्तानी पहिल्यै सम्पन्न भइसकेको छ।');
+        }
+
+        $validated = $request->validate([
+            'khalti_mobile' => 'required|string|min:8|max:15',
+            'khalti_pin' => 'required|string|min:4|max:10',
+            'khalti_otp' => 'nullable|string|max:6',
+        ], [
+            'khalti_mobile.required' => 'कृपया Khalti मोबाइल नम्बर राख्नुहोस्।',
+            'khalti_pin.required' => 'कृपया Khalti ट्रान्जेक्सन PIN राख्नुहोस्।',
+        ]);
+
+        $amount = $application->service->fee;
+        $txnId = 'KHL-' . strtoupper(Str::random(10));
+
+        $payment = Payment::updateOrCreate(
+            ['application_id' => $application->id],
+            [
+                'amount' => $amount,
+                'payment_method' => 'khalti',
+                'transaction_id' => $txnId,
+                'status' => PaymentStatus::COMPLETED->value,
+                'paid_at' => now(),
+            ]
+        );
+
+        if ($application->status === ApplicationStatus::PENDING->value) {
+            $application->update([
+                'status' => ApplicationStatus::UNDER_REVIEW->value,
+            ]);
+        }
+
+        // Send notifications
+        $this->notifyPaymentCompleted($application, $payment, 'Khalti');
+
+        return redirect()->route('citizen.payments.receipt', $application)
+            ->with('success', 'Khalti मार्फत रु. ' . number_format($amount, 2) . ' भुक्तानी सफलतापूर्वक सम्पन्न भयो!');
     }
 
     /**

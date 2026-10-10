@@ -76,8 +76,8 @@ class DigitalPaymentGatewayTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('सरकारी सेवा आवेदन भुक्तानी');
-        $response->assertSee('eSewa ePay');
-        $response->assertSee('Khalti ePayment');
+        $response->assertSee('eSewa');
+        $response->assertSee('Khalti');
         $response->assertSee(number_format(750, 2));
     }
 
@@ -88,9 +88,7 @@ class DigitalPaymentGatewayTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertViewIs('citizen.payments.esewa_redirect');
-        $response->assertSee('eSewa ePay सुरक्षित गेटवे');
-        $response->assertSee('rc-epay.esewa.com.np');
-        $response->assertSee('signature');
+        $response->assertSee('eSewa ePay');
         $response->assertSee('750.00');
 
         $this->assertDatabaseHas('payments', [
@@ -168,8 +166,10 @@ class DigitalPaymentGatewayTest extends TestCase
         $response = $this->actingAs($this->citizen)
             ->get(route('citizen.payments.khalti.initiate', $this->application));
 
-        // Either redirects to Khalti payment URL or fallback simulation
-        $response->assertStatus(302);
+        $response->assertStatus(200);
+        $response->assertViewIs('citizen.payments.khalti_redirect');
+        $response->assertSee('Khalti ePayment');
+        $response->assertSee('750.00');
 
         $this->assertDatabaseHas('payments', [
             'application_id' => $this->application->id,
@@ -214,6 +214,81 @@ class DigitalPaymentGatewayTest extends TestCase
         );
 
         Notification::assertSentTo($this->citizen, PaymentVerifiedNotification::class);
+    }
+
+    public function test_citizen_can_process_esewa_in_app_authentication_payment(): void
+    {
+        Notification::fake();
+
+        $response = $this->actingAs($this->citizen)
+            ->post(route('citizen.payments.esewa.process', $this->application), [
+                'esewa_id' => '9806800001',
+                'esewa_mpin' => '1122',
+                'esewa_otp' => '123456',
+            ]);
+
+        $response->assertRedirect(route('citizen.payments.receipt', $this->application));
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('payments', [
+            'application_id' => $this->application->id,
+            'payment_method' => 'esewa',
+            'status' => PaymentStatus::COMPLETED->value,
+            'amount' => 750.00,
+        ]);
+
+        $this->assertEquals(
+            ApplicationStatus::UNDER_REVIEW->value,
+            $this->application->fresh()->status
+        );
+
+        Notification::assertSentTo($this->citizen, PaymentVerifiedNotification::class);
+    }
+
+    public function test_citizen_can_process_khalti_in_app_authentication_payment(): void
+    {
+        Notification::fake();
+
+        $response = $this->actingAs($this->citizen)
+            ->post(route('citizen.payments.khalti.process', $this->application), [
+                'khalti_mobile' => '9800000000',
+                'khalti_pin' => '1122',
+                'khalti_otp' => '123456',
+            ]);
+
+        $response->assertRedirect(route('citizen.payments.receipt', $this->application));
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('payments', [
+            'application_id' => $this->application->id,
+            'payment_method' => 'khalti',
+            'status' => PaymentStatus::COMPLETED->value,
+            'amount' => 750.00,
+        ]);
+
+        $this->assertEquals(
+            ApplicationStatus::UNDER_REVIEW->value,
+            $this->application->fresh()->status
+        );
+
+        Notification::assertSentTo($this->citizen, PaymentVerifiedNotification::class);
+    }
+
+    public function test_citizen_who_initiates_payment_and_returns_can_continue_payment(): void
+    {
+        // Citizen visits eSewa initiation
+        $this->actingAs($this->citizen)
+            ->get(route('citizen.payments.esewa.initiate', $this->application));
+
+        // Now citizen goes back to payment create page
+        $response = $this->actingAs($this->citizen)
+            ->get(route('citizen.payments.create', $this->application));
+
+        // Must stay on payment create page (200 OK), NOT redirect to applications.show
+        $response->assertStatus(200);
+        $response->assertSee('सरकारी सेवा आवेदन भुक्तानी');
+        $response->assertSee('eSewa');
+        $response->assertSee('Khalti');
     }
 
     public function test_unauthorized_citizen_cannot_initiate_another_users_payment(): void

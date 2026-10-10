@@ -137,9 +137,11 @@ Route::middleware(['auth', 'citizen', 'citizen.verified'])
 
         // Digital Payment Gateway Routes (eSewa & Khalti)
         Route::get('/payments/{application}/esewa', [Citizen\PaymentController::class, 'initiateEsewa'])->name('payments.esewa.initiate');
+        Route::post('/payments/{application}/esewa-process', [Citizen\PaymentController::class, 'processEsewaAuth'])->name('payments.esewa.process');
         Route::get('/payments/{application}/esewa/success', [Citizen\PaymentController::class, 'esewaSuccess'])->name('payments.esewa.success');
         Route::get('/payments/{application}/esewa/failed', [Citizen\PaymentController::class, 'esewaFailed'])->name('payments.esewa.failed');
         Route::get('/payments/{application}/khalti', [Citizen\PaymentController::class, 'initiateKhalti'])->name('payments.khalti.initiate');
+        Route::post('/payments/{application}/khalti-process', [Citizen\PaymentController::class, 'processKhaltiAuth'])->name('payments.khalti.process');
         Route::get('/payments/{application}/khalti/callback', [Citizen\PaymentController::class, 'khaltiCallback'])->name('payments.khalti.callback');
 
         Route::resource('feedback', Citizen\FeedbackController::class)->only(['index', 'create', 'store']);

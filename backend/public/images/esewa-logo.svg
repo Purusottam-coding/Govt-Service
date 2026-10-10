@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <rect width="200" height="60" rx="10" fill="#ffffff"/>
+  <!-- eSewa Icon Box -->
+  <rect x="10" y="10" width="40" height="40" rx="8" fill="#60bb46"/>
+  <path d="M37 28 C37 21 32 17 26 17 C19 17 14 22 14 30 C14 38 19 43 27 43 C33 43 36.5 40 37.5 35 L32.5 35 C32 37.5 30 39 27 39 C22.5 39 19.5 35.5 19.5 31 L37 31 C37 30 37 29 37 28 Z M19.5 27 C20 23 22.5 21 26 21 C29.5 21 31.8 23 32 27 L19.5 27 Z" fill="#ffffff"/>
+  <!-- eSewa Wordmark -->
+  <text x="60" y="38" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="800" fill="#60bb46">eSewa</text>
+</svg>
