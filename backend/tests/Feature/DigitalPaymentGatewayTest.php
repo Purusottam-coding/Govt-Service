@@ -69,7 +69,7 @@ class DigitalPaymentGatewayTest extends TestCase
         ]);
     }
 
-    public function test_citizen_can_view_payment_page_with_esewa_and_khalti_options(): void
+    public function test_citizen_can_view_payment_page_with_esewa_options(): void
     {
         $response = $this->actingAs($this->citizen)
             ->get(route('citizen.payments.create', $this->application));
@@ -77,7 +77,9 @@ class DigitalPaymentGatewayTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('सरकारी सेवा आवेदन भुक्तानी');
         $response->assertSee('eSewa');
-        $response->assertSee('Khalti');
+        $response->assertSee('QR स्क्यान');
+        $response->assertSee('नगद भुक्तानी');
+        $response->assertDontSee('Khalti');
         $response->assertSee(number_format(750, 2));
     }
 
@@ -288,7 +290,19 @@ class DigitalPaymentGatewayTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('सरकारी सेवा आवेदन भुक्तानी');
         $response->assertSee('eSewa');
-        $response->assertSee('Khalti');
+        $response->assertDontSee('Khalti');
+    }
+
+    public function test_citizen_canceling_khalti_returns_to_payment_create_page(): void
+    {
+        $response = $this->actingAs($this->citizen)
+            ->get(route('citizen.payments.khalti.callback', [
+                'application' => $this->application,
+                'status' => 'User Canceled',
+            ]));
+
+        $response->assertRedirect(route('citizen.payments.create', $this->application));
+        $response->assertSessionHas('error');
     }
 
     public function test_unauthorized_citizen_cannot_initiate_another_users_payment(): void

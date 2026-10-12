@@ -139,7 +139,7 @@ class CertificateGenerationTest extends TestCase
         $data = $service->getCertificateData($this->approvedApplication);
 
         $this->assertEquals('YOJ909', $data['certificateNumber']);
-        $this->assertStringContainsString('verify?query=YOJ909', $data['verificationUrl']);
+        $this->assertStringContainsString('verify/YOJ909', $data['verificationUrl']);
         $this->assertStringStartsWith('data:image', $data['qrCodeDataUri']);
         $this->assertEquals('राम प्रसाद रिजाल', $data['applicantName']);
     }

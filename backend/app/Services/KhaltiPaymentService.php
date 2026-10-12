@@ -16,9 +16,9 @@ class KhaltiPaymentService
 
     public function __construct()
     {
-        $this->secretKey = config('services.khalti.secret_key', 'live_secret_key_test');
-        $this->publicKey = config('services.khalti.public_key', 'live_public_key_test');
-        $this->baseUrl = rtrim(config('services.khalti.base_url', 'https://a.khalti.com/api/v2/'), '/') . '/';
+        $this->secretKey = config('services.khalti.secret_key', 'test_secret_key_default');
+        $this->publicKey = config('services.khalti.public_key', 'test_public_key_default');
+        $this->baseUrl = rtrim(config('services.khalti.base_url', 'https://dev.khalti.com/api/v2/'), '/') . '/';
     }
 
     /**
@@ -59,6 +59,7 @@ class KhaltiPaymentService
                         'success' => true,
                         'payment_url' => $data['payment_url'],
                         'pidx' => $data['pidx'],
+                        'is_simulation' => false,
                     ];
                 }
             }

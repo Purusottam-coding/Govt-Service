@@ -313,7 +313,7 @@ class PaymentController extends Controller
     /**
      * Initiate Khalti ePayment v2.
      */
-    public function initiateKhalti(Application $application)
+    public function initiateKhalti(Application $application, KhaltiPaymentService $khaltiService)
     {
         if ($application->user_id !== auth()->id()) {
             abort(403);
@@ -338,7 +338,13 @@ class PaymentController extends Controller
             ]
         );
 
-        return view('citizen.payments.khalti_redirect', compact('application', 'payment'));
+        $initiate = $khaltiService->initiatePayment($application, $payment);
+
+        if (!empty($initiate['success']) && !empty($initiate['payment_url']) && empty($initiate['is_simulation'])) {
+            return redirect()->away($initiate['payment_url']);
+        }
+
+        return view('citizen.payments.khalti_redirect', compact('application', 'payment', 'initiate'));
     }
 
     /**
@@ -351,7 +357,7 @@ class PaymentController extends Controller
         }
 
         $status = $request->query('status');
-        if ($status && strtolower($status) === 'user canceled') {
+        if ($status && in_array(strtolower($status), ['user canceled', 'user_canceled', 'canceled', 'cancelled', 'failed'])) {
             return redirect()->route('citizen.payments.create', $application)
                 ->with('error', 'Khalti भुक्तानी रद्द गरियो।');
         }

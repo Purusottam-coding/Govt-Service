@@ -44,7 +44,7 @@ class CertificateService
         $application->loadMissing(['user', 'service.department', 'payment']);
 
         $certNumber = $application->certificate_number ?: $application->application_number;
-        $verificationUrl = url('/verify?query=' . urlencode($certNumber));
+        $verificationUrl = route('public.verify', ['code' => $certNumber]);
 
         $qrCodeDataUri = $this->generateQrCode($verificationUrl);
         $emblemBase64 = $this->getImageBase64('images/Emblem_of_Nepal.png');

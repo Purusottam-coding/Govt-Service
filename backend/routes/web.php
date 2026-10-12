@@ -22,8 +22,8 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->name('welcome');
 
-// Public Application & Certificate Verification Page by ID (KABD203, GOV-...)
-Route::get('/verify', [Citizen\BranchController::class, 'verify'])->name('public.verify');
+// Public Application & Certificate Verification Page by QR Scan or Code (No login required)
+Route::get('/verify/{code?}', [App\Http\Controllers\PublicVerificationController::class, 'verify'])->name('public.verify');
 
 /*
 |--------------------------------------------------------------------------

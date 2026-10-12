@@ -31,7 +31,7 @@
                 <label class="form-label fw-bold text-dark mb-2">भुक्तानीको माध्यम छान्नुहोस् <span class="text-danger">*</span></label>
                 <div class="row g-3 mb-4">
                     <!-- 1. eSewa Direct Payment Card -->
-                    <div class="col-6 col-md-3">
+                    <div class="col-12 col-md-4">
                         <form id="esewaDirectForm" action="{{ $esewaActionUrl ?? 'https://rc-epay.esewa.com.np/api/epay/main/v2/form' }}" method="POST" class="h-100">
                             @if(isset($esewaPayload))
                                 @foreach($esewaPayload as $key => $value)
@@ -47,18 +47,8 @@
                         </form>
                     </div>
 
-                    <!-- 2. Khalti Direct Payment Card -->
-                    <div class="col-6 col-md-3">
-                        <a href="{{ route('citizen.payments.khalti.initiate', $application) }}" class="payment-action-card card h-100 p-3 text-center border text-decoration-none bg-white cursor-pointer d-flex flex-column justify-content-center align-items-center" style="border: 1.5px solid #e11d48 !important; min-height: 110px;">
-                            <div class="d-flex justify-content-center align-items-center mb-1" style="height: 48px;">
-                                <img src="{{ asset('images/khalti-logo.png') }}" alt="Khalti" style="max-height: 44px; max-width: 140px; object-fit: contain;">
-                            </div>
-                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">Khalti</span>
-                        </a>
-                    </div>
-
-                    <!-- 3. QR Scan & Voucher Option Card -->
-                    <div class="col-6 col-md-3">
+                    <!-- 2. QR Scan & Voucher Option Card -->
+                    <div class="col-6 col-md-4">
                         <div class="payment-action-card card h-100 p-3 text-center border cursor-pointer bg-white d-flex flex-column justify-content-center align-items-center" id="card_qr" onclick="toggleOption('qr')" style="border: 1.5px solid #0ea5e9 !important; min-height: 110px;">
                             <div class="d-flex justify-content-center align-items-center mb-1" style="height: 48px;">
                                 <span class="badge bg-info-subtle text-info p-2 rounded-circle">
@@ -69,8 +59,8 @@
                         </div>
                     </div>
 
-                    <!-- 4. Cash Counter Option Card -->
-                    <div class="col-6 col-md-3">
+                    <!-- 3. Cash Counter Option Card -->
+                    <div class="col-6 col-md-4">
                         <div class="payment-action-card card h-100 p-3 text-center border cursor-pointer bg-white d-flex flex-column justify-content-center align-items-center" id="card_cash" onclick="toggleOption('cash')" style="border: 1.5px solid #64748b !important; min-height: 110px;">
                             <div class="d-flex justify-content-center align-items-center mb-1" style="height: 48px;">
                                 <span class="badge bg-secondary-subtle text-secondary p-2 rounded-circle">
@@ -104,9 +94,6 @@
 
                                 <input type="radio" class="btn-check" name="payment_method" id="qr_opt_esewa" value="esewa" onchange="updateQrDisplay('esewa')">
                                 <label class="btn btn-outline-success" for="qr_opt_esewa">eSewa QR</label>
-
-                                <input type="radio" class="btn-check" name="payment_method" id="qr_opt_khalti" value="khalti" onchange="updateQrDisplay('khalti')">
-                                <label class="btn btn-outline-secondary" for="qr_opt_khalti">Khalti QR</label>
                             </div>
                         </div>
 

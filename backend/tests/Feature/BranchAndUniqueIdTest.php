@@ -79,21 +79,23 @@ class BranchAndUniqueIdTest extends TestCase
             'certificate_number' => 'YAT203',
         ]);
 
-        // 1. Unauthenticated guest is redirected to login
-        $guestResponse = $this->get(route('public.verify', ['query' => 'YAT203']));
-        $guestResponse->assertRedirect(route('login'));
+        // 1. Unauthenticated guest scanning the QR code gets verified details WITHOUT login
+        $guestResponse = $this->get(route('public.verify', ['code' => 'YAT203']));
+        $guestResponse->assertStatus(200);
+        $guestResponse->assertSee('YAT203');
+        $guestResponse->assertSee('राम बहादुर');
+        $guestResponse->assertSee('यातायात व्यवस्था विभाग');
+        $guestResponse->assertSee('कागजात सत्यता प्रमाणित');
 
-        // 2. Logged-in owner citizen can verify their document
-        $ownerResponse = $this->actingAs($user)->get(route('public.verify', ['query' => 'YAT203']));
-        $ownerResponse->assertStatus(200);
-        $ownerResponse->assertSee('YAT203');
-        $ownerResponse->assertSee('राम बहादुर');
-        $ownerResponse->assertSee('यातायात व्यवस्था विभाग');
+        // 2. Visiting root /verify directly without code displays QR scan instruction (No manual search form)
+        $rootResponse = $this->get(route('public.verify'));
+        $rootResponse->assertStatus(200);
+        $rootResponse->assertSee('कागजात प्रमाणीकरणका लागि QR कोड स्क्यान गर्नुहोस्');
 
-        // 3. Another citizen cannot view someone else's verified document
-        $otherResponse = $this->actingAs($otherCitizen)->get(route('public.verify', ['query' => 'YAT203']));
-        $otherResponse->assertStatus(200);
-        $otherResponse->assertSee('भेटिएन');
-        $otherResponse->assertDontSee('राम बहादुर');
+        // 3. Invalid or non-existent certificate ID displays failed verification notice
+        $invalidResponse = $this->get(route('public.verify', ['code' => 'INVALID999']));
+        $invalidResponse->assertStatus(200);
+        $invalidResponse->assertSee('प्रमाणीकरण असफल');
+        $invalidResponse->assertDontSee('राम बहादुर');
     }
 }

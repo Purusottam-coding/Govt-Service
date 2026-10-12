@@ -43,9 +43,9 @@ return [
     ],
 
     'khalti' => [
-        'public_key' => env('KHALTI_PUBLIC_KEY', 'live_public_key_test'),
-        'secret_key' => env('KHALTI_SECRET_KEY', 'live_secret_key_test'),
-        'base_url' => env('KHALTI_BASE_URL', 'https://a.khalti.com/api/v2/'),
+        'public_key' => env('KHALTI_PUBLIC_KEY', 'test_public_key_default'),
+        'secret_key' => env('KHALTI_SECRET_KEY', 'test_secret_key_default'),
+        'base_url' => env('KHALTI_BASE_URL', 'https://dev.khalti.com/api/v2/'),
     ],
 
 ];
