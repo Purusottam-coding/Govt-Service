@@ -271,36 +271,23 @@ a {
 
 /* --- Stat Cards --- */
 .stat-card {
-    background: var(--surface-bg);
+    background: #ffffff;
     border-radius: var(--radius-lg);
     padding: 1.35rem;
-    box-shadow: var(--card-shadow);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: var(--transition);
-    border: 1px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     position: relative;
     overflow: hidden;
 }
 
 .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 5px;
-    height: 100%;
-    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+    display: none !important;
 }
 
-.stat-card.primary::before { background: linear-gradient(to bottom, #2563eb, #3b82f6); }
-.stat-card.success::before { background: linear-gradient(to bottom, #059669, #10b981); }
-.stat-card.warning::before { background: linear-gradient(to bottom, #64748b, #94a3b8); }
-.stat-card.danger::before  { background: linear-gradient(to bottom, #dc2626, #ef4444); }
-.stat-card.info::before    { background: linear-gradient(to bottom, #0284c7, #38bdf8); }
-.stat-card.accent::before  { background: linear-gradient(to bottom, #0ea5e9, #38bdf8); }
-
 .stat-card:hover {
-    box-shadow: var(--card-shadow-hover);
-    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
     border-color: #cbd5e1;
 }
 
@@ -2044,28 +2031,76 @@ a {
     line-height: 1.3;
 }
 
-/* --- Stat Cards Enhanced --- */
+/* --- Stat Cards Enhanced (Clean, No Colored Top/Left Borders) --- */
 .stat-card {
-    background: var(--surface-bg);
-    border: 1px solid var(--border-color);
-    border-top: 3.5px solid var(--primary);
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-top: 1px solid #e2e8f0 !important;
     border-radius: var(--radius-lg);
     padding: 1.35rem 1.45rem;
-    box-shadow: var(--card-shadow);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: var(--transition);
     height: 100%;
 }
 
 .stat-card:hover {
-    box-shadow: var(--card-shadow-hover);
-    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    border-color: #cbd5e1 !important;
 }
 
-.stat-card.primary { border-top-color: #053775; }
-.stat-card.warning { border-top-color: #d97706; }
-.stat-card.success { border-top-color: #059669; }
-.stat-card.danger  { border-top-color: #c8102e; }
-.stat-card.info    { border-top-color: #0284c7; }
+.stat-card.primary,
+.stat-card.warning,
+.stat-card.success,
+.stat-card.danger,
+.stat-card.info {
+    border-top-color: #e2e8f0 !important;
+}
+
+/* --- Notification Bell & Badge --- */
+.notification-bell-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    color: #1e293b;
+    outline: none;
+}
+
+.notification-bell-btn:hover {
+    background: #f8fafc !important;
+    transform: scale(1.05);
+}
+
+.notification-bell-btn .notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    background: #dc2626 !important;
+    color: #ffffff !important;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 17px;
+    border-radius: 10px;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 5px rgba(220, 38, 38, 0.45);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
 
 .stat-card .stat-icon {
     width: 48px;

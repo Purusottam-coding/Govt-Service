@@ -250,27 +250,6 @@
                     </table>
                 </div>
             </div>
-
-            <!-- Featured Services Grid -->
-            <h6 class="fw-bold text-dark mb-3"><i data-lucide="star" class="me-2 text-warning"></i>लोकप्रिय सरकारी सेवाहरू
-            </h6>
-            <div class="row g-3">
-                @foreach($featuredServices as $srv)
-                    <div class="col-12 col-md-6">
-                        <div class="service-card">
-                            <span class="service-dept">{{ $srv->department->name ?? 'नेपाल सरकार' }}</span>
-                            <h6>{{ $srv->name }}</h6>
-                            <p class="small text-muted mb-2">{{ Str::limit($srv->description, 80) }}</p>
-                            <div class="service-meta">
-                                <span
-                                    class="service-fee">{{ $srv->fee > 0 ? 'रु. ' . number_format($srv->fee, 2) : 'निःशुल्क' }}</span>
-                                <a href="{{ route('citizen.services.show', $srv) }}"
-                                    class="btn btn-sm btn-outline-primary">आवेदन दिनुहोस्</a>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
         </div>
 
         <!-- Active Public Notices Sidebar -->

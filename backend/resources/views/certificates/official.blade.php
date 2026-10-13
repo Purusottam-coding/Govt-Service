@@ -2,12 +2,38 @@
 <html lang="ne">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>आधिकारिक प्रमाणपत्र — {{ $certificateNumber }}</title>
+
+    @if(empty($isPdf))
+        <!-- Google Fonts Noto Sans Devanagari for crisp Web Browser rendering -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    @else
+        <!-- Local TTF font for Puppeteer / DomPDF engines -->
+        <style>
+            @font-face {
+                font-family: 'Noto Sans Devanagari';
+                src: url('{{ $fontRegular ?? str_replace('\\', '/', public_path('fonts/NotoSansDevanagari-Regular.ttf')) }}') format('truetype');
+                font-weight: normal;
+                font-style: normal;
+            }
+            @font-face {
+                font-family: 'Noto Sans Devanagari';
+                src: url('{{ $fontBold ?? str_replace('\\', '/', public_path('fonts/NotoSansDevanagari-Bold.ttf')) }}') format('truetype');
+                font-weight: bold;
+                font-style: normal;
+            }
+        </style>
+    @endif
+
     <style>
-        @page {
-            size: A4 portrait;
-            margin: 8mm;
+        /* Base typography */
+        body, table, th, td, p, div, span, h1, h2, h3, h4, h5, h6, strong, b {
+            font-family: 'Noto Sans Devanagari', 'Mukta', 'Kalimati', sans-serif;
+            letter-spacing: normal !important;
         }
 
         * {
@@ -16,16 +42,7 @@
             print-color-adjust: exact;
         }
 
-        body {
-            font-family: 'Mukta', 'Kalimati', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f8fafc;
-            color: #0f172a;
-            margin: 0;
-            padding: 0;
-            line-height: 1.5;
-        }
-
-        /* Top Action Bar (hidden on print) */
+        /* Top Action Bar for Browser View */
         .no-print-bar {
             background: #05264E;
             color: #ffffff;
@@ -51,6 +68,7 @@
             cursor: pointer;
             border: none;
             transition: all 0.15s ease;
+            font-family: inherit;
         }
 
         .btn-back {
@@ -77,38 +95,46 @@
             background: #0369a1;
         }
 
-        /* Certificate Container */
+        @if(empty($isPdf))
+        /* ==========================================================================
+           BROWSER VIEW SPECIFIC STYLES (Generous, crisp, legible on desktop screens)
+           ========================================================================== */
+        body {
+            background-color: #cbd5e1;
+            color: #0f172a;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
         .cert-wrapper {
-            max-width: 820px;
-            margin: 24px auto;
+            max-width: 880px;
+            margin: 32px auto 48px auto;
             background: #ffffff;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.08);
+            border-radius: 4px;
             position: relative;
         }
 
         .cert-outer-border {
             border: 4px double #05264E;
             padding: 6px;
-            margin: 0;
-            position: relative;
             background: #ffffff;
         }
 
         .cert-inner-border {
             border: 1.5px solid #d97706;
-            padding: 24px 28px;
-            position: relative;
+            padding: 28px 36px;
             background: #ffffff;
+            position: relative;
         }
 
-        /* Watermark */
         .cert-watermark {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 320px;
-            height: auto;
+            width: 330px;
             opacity: 0.045;
             pointer-events: none;
             z-index: 1;
@@ -119,13 +145,12 @@
             z-index: 2;
         }
 
-        /* Header */
         .cert-header {
             display: table;
             width: 100%;
             border-bottom: 2px solid #05264E;
-            padding-bottom: 12px;
-            margin-bottom: 14px;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .header-col-left {
@@ -149,47 +174,67 @@
         }
 
         .emblem-img {
-            width: 88px;
+            width: 82px;
             height: auto;
         }
 
-        .flag-img {
-            width: 58px;
-            height: auto;
+        .header-qr-box {
+            display: inline-block;
+            background: #ffffff;
+            padding: 4px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .header-qr-img {
+            width: 72px;
+            height: 72px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .header-qr-caption {
+            font-size: 7.5px;
+            color: #475569;
+            margin-top: 2px;
+            font-weight: 700;
         }
 
         .gov-sub-title {
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             color: #dc2626;
             margin: 0;
-            letter-spacing: 0.3px;
+            line-height: 1.25;
         }
 
         .gov-main-title {
-            font-size: 24px;
+            font-size: 25px;
             font-weight: 800;
             color: #05264E;
             margin: 2px 0;
-            letter-spacing: 0.5px;
+            line-height: 1.2;
         }
 
         .gov-office-title {
-            font-size: 16px;
+            font-size: 16.5px;
             font-weight: 700;
             color: #dc2626;
             margin: 2px 0;
+            line-height: 1.2;
         }
 
         .gov-address-title {
-            font-size: 13px;
+            font-size: 13.5px;
             font-weight: 600;
             color: #334155;
             margin: 0;
+            line-height: 1.2;
         }
 
         .gov-dept-title {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
             color: #053775;
             margin-top: 4px;
@@ -200,12 +245,12 @@
             border: 1px solid #bfdbfe;
         }
 
-        /* Reference Strip */
         .ref-strip {
             display: table;
             width: 100%;
-            margin-bottom: 18px;
-            font-size: 13px;
+            margin-bottom: 14px;
+            font-size: 13.5px;
+            line-height: 1.5;
         }
 
         .ref-left {
@@ -235,36 +280,32 @@
             display: inline-block;
             background: #05264E;
             color: #ffffff;
-            font-family: monospace;
             font-weight: bold;
             padding: 2px 8px;
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 12.5px;
         }
 
-        /* Certificate Title */
         .cert-title-container {
             text-align: center;
-            margin: 18px 0 20px 0;
+            margin: 14px 0 16px 0;
         }
 
         .cert-title-pill {
             display: inline-block;
-            background: linear-gradient(135deg, #05264E 0%, #003893 100%);
+            background-color: #05264E;
             color: #ffffff;
-            padding: 8px 32px;
-            border-radius: 30px;
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            border: 2px solid #d97706;
-            box-shadow: 0 2px 6px rgba(5, 38, 78, 0.2);
+            padding: 6px 28px;
+            border-radius: 20px;
+            font-size: 16.5px;
+            font-weight: 700;
+            border: 1.5px solid #d97706;
+            box-shadow: 0 2px 6px rgba(5, 38, 78, 0.18);
         }
 
-        /* Subject */
         .cert-subject {
             text-align: center;
-            margin-bottom: 18px;
+            margin-bottom: 14px;
             font-size: 15px;
             font-weight: 700;
             color: #0f172a;
@@ -272,177 +313,131 @@
 
         .cert-subject span {
             text-decoration: underline;
-            text-decoration-thickness: 1.5px;
-            text-underline-offset: 4px;
         }
 
-        /* Certificate Body */
         .cert-body {
-            font-size: 14.5px;
-            line-height: 1.8;
+            font-size: 14px;
+            line-height: 1.75;
             color: #1e293b;
             text-align: justify;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .cert-body p {
-            margin: 0 0 12px 0;
-            text-indent: 32px;
+            margin: 0 0 8px 0;
+            text-indent: 26px;
         }
 
-        .highlight-text {
-            font-weight: 700;
-            color: #05264E;
-        }
-
-        /* Details Grid / Key-Value table */
         .details-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 14px 0 20px 0;
+            margin: 12px 0 16px 0;
             font-size: 13.5px;
         }
 
         .details-table td {
-            padding: 6px 12px;
+            padding: 7px 12px;
             border: 1px solid #cbd5e1;
             background: #ffffff;
+            vertical-align: middle;
         }
 
         .details-table td.label-cell {
-            width: 28%;
+            width: 26%;
             background: #f8fafc;
-            font-weight: 600;
-            color: #475569;
+            font-weight: 700;
+            color: #334155;
         }
 
         .details-table td.value-cell {
+            width: 24%;
             color: #0f172a;
             font-weight: 600;
         }
 
-        /* Bottom Seal & Signatures */
         .bottom-section {
             display: table;
             width: 100%;
-            margin-top: 30px;
-            padding-top: 10px;
+            margin-top: 18px;
+            padding-top: 8px;
         }
 
-        .seal-col {
+        .bottom-note-col {
             display: table-cell;
-            width: 33%;
+            width: 55%;
             vertical-align: bottom;
-            text-align: center;
+            text-align: left;
+            padding-left: 6px;
         }
 
-        .qr-col {
-            display: table-cell;
-            width: 34%;
-            vertical-align: bottom;
-            text-align: center;
+        .doc-verification-note {
+            background: #f8fafc;
+            border-left: 3px solid #003893;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: inline-block;
+            max-width: 320px;
+        }
+
+        .note-badge {
+            display: inline-block;
+            background: #05264E;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 3px;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .note-text {
+            font-size: 10px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.4;
         }
 
         .sign-col {
             display: table-cell;
-            width: 33%;
+            width: 45%;
             vertical-align: bottom;
-            text-align: center;
+            text-align: right;
+            padding-right: 15px;
         }
 
-        /* Circular Municipal Seal */
-        .municipal-stamp {
-            width: 108px;
-            height: 108px;
-            border: 3px dashed #b91c1c;
-            border-radius: 50%;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #b91c1c;
-            transform: rotate(-5deg);
-            padding: 6px;
-            background: rgba(254, 242, 242, 0.4);
-        }
-
-        .stamp-outer-text {
-            font-size: 9.5px;
-            font-weight: 800;
-            line-height: 1.1;
-            text-transform: uppercase;
-        }
-
-        .stamp-inner-text {
-            font-size: 8px;
-            font-weight: 700;
-            border-top: 1px solid #b91c1c;
-            border-bottom: 1px solid #b91c1c;
-            padding: 2px 4px;
-            margin: 2px 0;
-        }
-
-        .stamp-label {
-            font-size: 8.5px;
-            font-weight: 600;
-            color: #7f1d1d;
-        }
-
-        /* QR Code Container */
-        .qr-box {
-            display: inline-block;
-            background: #ffffff;
-            padding: 6px;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            text-align: center;
-        }
-
-        .qr-img {
-            width: 90px;
-            height: 90px;
-            display: block;
-            margin: 0 auto;
-        }
-
-        .qr-caption {
-            font-size: 9px;
-            color: #64748b;
-            margin-top: 4px;
-            font-weight: 600;
-        }
-
-        /* Signature Box */
         .sign-box {
             display: inline-block;
-            width: 100%;
             text-align: center;
+            min-width: 170px;
+        }
+
+        .sign-space {
+            height: 38px;
         }
 
         .sign-line {
             width: 160px;
             border-bottom: 1.5px dashed #05264E;
-            margin: 0 auto 6px auto;
+            margin: 0 auto 4px auto;
         }
 
         .sign-title {
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 700;
             color: #05264E;
             margin: 0;
         }
 
         .sign-office {
-            font-size: 11.5px;
+            font-size: 11px;
             color: #475569;
             margin: 2px 0 0 0;
         }
 
-        /* Security Footer Note */
         .security-footer {
-            border-top: 1px solid #e2e8f0;
-            margin-top: 24px;
+            border-top: 1px solid #cbd5e1;
+            margin-top: 16px;
             padding-top: 8px;
             font-size: 10px;
             color: #64748b;
@@ -450,34 +445,446 @@
             line-height: 1.4;
         }
 
-        /* Print Specific Styling */
+        /* Print Media Styles (Full attached A4 sheet) */
         @media print {
-            body {
+            @page {
+                size: A4 portrait;
+                margin: 8mm 10mm;
+            }
+            html, body {
+                width: 100% !important;
+                height: 100% !important;
                 background: #ffffff !important;
                 padding: 0 !important;
+                margin: 0 !important;
             }
             .no-print-bar {
                 display: none !important;
             }
             .cert-wrapper {
                 max-width: 100% !important;
+                width: 100% !important;
+                height: 100% !important;
+                min-height: 278mm !important;
                 margin: 0 !important;
                 box-shadow: none !important;
+                page-break-inside: avoid;
+                display: flex !important;
+                flex-direction: column !important;
             }
             .cert-outer-border {
+                flex: 1 !important;
+                height: 100% !important;
                 border: 4px double #05264E !important;
+                padding: 4px !important;
+                display: flex !important;
+                flex-direction: column !important;
             }
             .cert-inner-border {
+                flex: 1 !important;
+                height: 100% !important;
                 border: 1.5px solid #d97706 !important;
-                padding: 20px 24px !important;
+                padding: 22px 26px 14px 26px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+            }
+            .cert-content {
+                flex: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                height: 100% !important;
             }
         }
+
+        @else
+        /* ==========================================================================
+           FULL ATTACHED A4 PDF SPECIFIC STYLES (Chromium Puppeteer Engine)
+           ========================================================================== */
+        @page {
+            size: A4 portrait;
+            margin: 7mm 9mm;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #0f172a;
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .cert-wrapper {
+            width: 100%;
+            height: 100%;
+            min-height: 280mm;
+            max-height: 280mm;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: #ffffff;
+            page-break-inside: avoid;
+            page-break-after: avoid;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cert-outer-border {
+            border: 4px double #05264E;
+            padding: 4px;
+            background: #ffffff;
+            box-sizing: border-box;
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cert-inner-border {
+            border: 1.5px solid #d97706;
+            padding: 22px 28px 16px 28px;
+            background: #ffffff;
+            position: relative;
+            box-sizing: border-box;
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .cert-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            height: auto;
+            opacity: 0.045;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .cert-content {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .cert-header {
+            display: table;
+            width: 100%;
+            border-bottom: 2px solid #05264E;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .header-col-left {
+            display: table-cell;
+            width: 95px;
+            vertical-align: middle;
+            text-align: left;
+        }
+
+        .header-col-center {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .header-col-right {
+            display: table-cell;
+            width: 95px;
+            vertical-align: middle;
+            text-align: right;
+        }
+
+        .emblem-img {
+            width: 76px;
+            height: auto;
+        }
+
+        .header-qr-box {
+            display: inline-block;
+            background: #ffffff;
+            padding: 3px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .header-qr-img {
+            width: 66px;
+            height: 66px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .header-qr-caption {
+            font-size: 7px;
+            color: #475569;
+            margin-top: 1.5px;
+            font-weight: 700;
+        }
+
+        .gov-sub-title {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #dc2626;
+            margin: 0;
+            line-height: 1.25;
+        }
+
+        .gov-main-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #05264E;
+            margin: 2px 0;
+            line-height: 1.2;
+        }
+
+        .gov-office-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #dc2626;
+            margin: 2px 0;
+            line-height: 1.2;
+        }
+
+        .gov-address-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .gov-dept-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #053775;
+            margin-top: 3px;
+            display: inline-block;
+            background: #eff6ff;
+            padding: 2px 14px;
+            border-radius: 4px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .ref-strip {
+            display: table;
+            width: 100%;
+            margin-bottom: 12px;
+            font-size: 12.5px;
+            line-height: 1.45;
+        }
+
+        .ref-left {
+            display: table-cell;
+            text-align: left;
+            vertical-align: top;
+            width: 50%;
+        }
+
+        .ref-right {
+            display: table-cell;
+            text-align: right;
+            vertical-align: top;
+            width: 50%;
+        }
+
+        .ref-item {
+            margin-bottom: 2px;
+            color: #334155;
+        }
+
+        .ref-item strong {
+            color: #0f172a;
+        }
+
+        .cert-id-badge {
+            display: inline-block;
+            background: #05264E;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 2px 7px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .cert-title-container {
+            text-align: center;
+            margin: 10px 0 12px 0;
+        }
+
+        .cert-title-pill {
+            display: inline-block;
+            background-color: #05264E;
+            color: #ffffff;
+            padding: 5px 26px;
+            border-radius: 18px;
+            font-size: 15.5px;
+            font-weight: 700;
+            border: 1.5px solid #d97706;
+        }
+
+        .cert-subject {
+            text-align: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .cert-subject span {
+            text-decoration: underline;
+        }
+
+        .cert-body {
+            font-size: 13.5px;
+            line-height: 1.7;
+            color: #1e293b;
+            text-align: justify;
+            margin-bottom: 12px;
+        }
+
+        .cert-body p {
+            margin: 0 0 6px 0;
+            text-indent: 24px;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 14px 0;
+            font-size: 12.5px;
+        }
+
+        .details-table td {
+            padding: 6px 10px;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            vertical-align: middle;
+        }
+
+        .details-table td.label-cell {
+            width: 26%;
+            background: #f8fafc;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .details-table td.value-cell {
+            width: 24%;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .bottom-section {
+            display: table;
+            width: 100%;
+            margin-top: 14px;
+            padding-top: 8px;
+        }
+
+        .bottom-note-col {
+            display: table-cell;
+            width: 55%;
+            vertical-align: bottom;
+            text-align: left;
+            padding-left: 6px;
+        }
+
+        .doc-verification-note {
+            background: #f8fafc;
+            border-left: 2.5px solid #003893;
+            padding: 6px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            max-width: 300px;
+        }
+
+        .note-badge {
+            display: inline-block;
+            background: #05264E;
+            color: #ffffff;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1.5px 6px;
+            border-radius: 3px;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+
+        .note-text {
+            font-size: 9px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.35;
+        }
+
+        .sign-col {
+            display: table-cell;
+            width: 45%;
+            vertical-align: bottom;
+            text-align: right;
+            padding-right: 12px;
+        }
+
+        .sign-box {
+            display: inline-block;
+            text-align: center;
+            min-width: 165px;
+        }
+
+        .sign-space {
+            height: 34px;
+        }
+
+        .sign-line {
+            width: 155px;
+            border-bottom: 1.5px dashed #05264E;
+            margin: 0 auto 4px auto;
+        }
+
+        .sign-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #05264E;
+            margin: 0;
+        }
+
+        .sign-office {
+            font-size: 10.5px;
+            color: #475569;
+            margin: 1px 0 0 0;
+        }
+
+        .security-footer {
+            border-top: 1px solid #cbd5e1;
+            margin-top: 12px;
+            padding-top: 6px;
+            font-size: 9px;
+            color: #64748b;
+            text-align: center;
+            line-height: 1.35;
+        }
+        @endif
     </style>
 </head>
 <body>
 
     @if(empty($isPdf))
-        <!-- Browser Top Action Bar -->
+        <!-- Browser Top Action Bar (Hidden when downloading as PDF) -->
         <div class="no-print-bar">
             <div>
                 <a href="{{ url()->previous() ?: route('citizen.approved-documents.index') }}" class="btn-back">
@@ -523,11 +930,10 @@
                             <div class="gov-dept-title">{{ $departmentName }}</div>
                         </div>
                         <div class="header-col-right">
-                            @if(!empty($flagBase64))
-                                <img src="{{ $flagBase64 }}" class="flag-img" alt="Nepal Flag">
-                            @else
-                                <div style="width: 50px;"></div>
-                            @endif
+                            <div class="header-qr-box">
+                                <img src="{{ $qrCodeDataUri }}" class="header-qr-img" alt="Verification QR Code">
+                                <div class="header-qr-caption">QR स्क्यान</div>
+                            </div>
                         </div>
                     </div>
 
@@ -573,7 +979,7 @@
                             <td class="label-cell">आवेदकको नाम</td>
                             <td class="value-cell">{{ $applicantName }}</td>
                             <td class="label-cell">प्रमाणपत्र नम्बर</td>
-                            <td class="value-cell"><span style="font-family: monospace; color: #05264E;">{{ $certificateNumber }}</span></td>
+                            <td class="value-cell"><span style="color: #05264E; font-weight: bold;">{{ $certificateNumber }}</span></td>
                         </tr>
                         <tr>
                             <td class="label-cell">स्थायी / हालको ठेगाना</td>
@@ -595,35 +1001,22 @@
                         @endif
                     </table>
 
-                    <!-- Bottom Seals, QR & Signatures -->
+                    <!-- Bottom Details & Signature -->
                     <div class="bottom-section">
-                        <!-- Left: Circular Municipal Seal -->
-                        <div class="seal-col">
-                            <div class="municipal-stamp">
-                                <div class="stamp-outer-text">बाह्रदशी गाउँपालिका</div>
-                                <div class="stamp-inner-text">गाउँ कार्यपालिकाको कार्यालय</div>
-                                <div class="stamp-label">डिजिटल छाप • २०७३</div>
-                                <div style="font-size: 7.5px; font-weight: 700; margin-top: 1px;">झापा, नेपाल</div>
-                            </div>
-                        </div>
-
-                        <!-- Center: Dynamic Verification QR -->
-                        <div class="qr-col">
-                            <div class="qr-box">
-                                <img src="{{ $qrCodeDataUri }}" class="qr-img" alt="Verification QR Code">
-                                <div class="qr-caption">प्रमाणीकरणको लागि QR स्क्यान गर्नुहोस्</div>
-                                <div style="font-size: 8.5px; font-family: monospace; font-weight: bold; color: #05264E;">{{ $certificateNumber }}</div>
+                        <!-- Left: Document Verification Note -->
+                        <div class="bottom-note-col">
+                            <div class="doc-verification-note">
+                                <span class="note-badge">प्रमाणपत्र ID: {{ $certificateNumber }}</span>
+                                <p class="note-text">
+                                    यस प्रमाणपत्रको आधिकारिकता माथि शीर्ष भागमा रहेको <strong>QR कोड स्क्यान गरी</strong> वा गाउँपालिकाको पोर्टलमा सिधै प्रमाणीकरण गर्न सकिन्छ।
+                                </p>
                             </div>
                         </div>
 
                         <!-- Right: Authorized Signature -->
                         <div class="sign-col">
                             <div class="sign-box">
-                                <div style="height: 48px; display: flex; align-items: flex-end; justify-content: center;">
-                                    <span style="font-family: 'Brush Script MT', cursive, sans-serif; font-size: 22px; color: #05264E; font-weight: bold;">
-                                        Authorized Seal
-                                    </span>
-                                </div>
+                                <div class="sign-space"></div>
                                 <div class="sign-line"></div>
                                 <p class="sign-title">शाखा प्रमुख / प्रशासकीय अधिकृत</p>
                                 <p class="sign-office">बाह्रदशी गाउँपालिका, झापा</p>

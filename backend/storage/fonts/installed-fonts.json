@@ -1,0 +1,12 @@
+{
+    "mukta": {
+        "normal": "D:\\government-service\\backend\\storage\\fonts\/mukta_normal_33ef8455395a49957da4f2b6a6686b59",
+        "bold": "D:\\government-service\\backend\\storage\\fonts\/mukta_bold_ae376ba25f1ff16ff03f83660e90b969",
+        "600": "D:\\government-service\\backend\\storage\\fonts\/mukta_600_ae376ba25f1ff16ff03f83660e90b969",
+        "800": "mukta_800_ae376ba25f1ff16ff03f83660e90b969"
+    },
+    "noto sans devanagari": {
+        "normal": "D:\\government-service\\backend\\storage\\fonts\/noto_sans_devanagari_normal_cf062bbd56790ba2797e2eb4e256942c",
+        "bold": "noto_sans_devanagari_bold_c50b05f05e613f3d7641b4006a56796f"
+    }
+}

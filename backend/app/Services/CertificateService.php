@@ -3,10 +3,13 @@
 namespace App\Services;
 
 use App\Models\Application;
+use App\Support\NepaliUnicode;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\PDF as DomPdfWrapper;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\Process\Process;
 
 class CertificateService
 {
@@ -37,7 +40,7 @@ class CertificateService
     }
 
     /**
-     * Compile all certificate payload data for an application.
+     * Compile all certificate payload data for an application with clean Unicode UTF-8 normalization.
      */
     public function getCertificateData(Application $application): array
     {
@@ -54,6 +57,30 @@ class CertificateService
         $dispatchNumber = 'CH-' . str_pad((string) $application->id, 5, '0', STR_PAD_LEFT);
         $fiscalYear = '२०८३/०८४';
 
+        // Clean and normalize Unicode UTF-8 strings (preserving English names, addresses, and remarks)
+        $rawApplicantName = (string) $application->applicant_name;
+        $applicantName = NepaliUnicode::normalize($rawApplicantName);
+
+        $rawAddress = (string) ($application->applicant_address ?: 'बाह्रदशी गाउँपालिका, झापा');
+        $applicantAddress = NepaliUnicode::normalize($rawAddress);
+
+        $serviceName = NepaliUnicode::normalize($application->service->name ?? 'सरकारी सेवा');
+        $departmentName = NepaliUnicode::normalize($application->service->department->name ?? 'प्रशासन शाखा');
+        $rawRemarks = (string) ($application->admin_remarks ?: 'नियमानुसार सम्पूर्ण प्रक्रिया र प्रमाण रुजु गरी यो आधिकारिक प्रमाणपत्र जारी गरिएको छ।');
+        $adminRemarks = NepaliUnicode::normalize($rawRemarks);
+
+        // Load Noto Sans Devanagari fonts (embedded directly as base64 for reliable, zero-latency rendering)
+        $fontRegPath = public_path('fonts/NotoSansDevanagari-Regular.ttf');
+        $fontBoldPath = public_path('fonts/NotoSansDevanagari-Bold.ttf');
+
+        $fontRegular = file_exists($fontRegPath)
+            ? 'data:font/truetype;charset=utf-8;base64,' . base64_encode(file_get_contents($fontRegPath))
+            : str_replace('\\', '/', $fontRegPath);
+
+        $fontBold = file_exists($fontBoldPath)
+            ? 'data:font/truetype;charset=utf-8;base64,' . base64_encode(file_get_contents($fontBoldPath))
+            : str_replace('\\', '/', $fontBoldPath);
+
         return [
             'application' => $application,
             'certificateNumber' => $certNumber,
@@ -64,29 +91,68 @@ class CertificateService
             'issuedAt' => $issuedAt,
             'dispatchNumber' => $dispatchNumber,
             'fiscalYear' => $fiscalYear,
-            'departmentName' => $application->service->department->name ?? 'प्रशासन शाखा',
-            'serviceName' => $application->service->name ?? 'सरकारी सेवा',
-            'applicantName' => $application->applicant_name,
-            'applicantAddress' => $application->applicant_address ?: 'बाह्रदशी गाउँपालिका, झापा',
+            'departmentName' => $departmentName,
+            'serviceName' => $serviceName,
+            'applicantName' => $applicantName,
+            'applicantAddress' => $applicantAddress,
             'applicantPhone' => $application->applicant_phone,
-            'adminRemarks' => $application->admin_remarks ?: 'नियमानुसार सम्पूर्ण प्रक्रिया र प्रमाण रुजु गरी यो आधिकारिक प्रमाणपत्र जारी गरिएको छ।',
+            'fontRegular' => $fontRegular,
+            'fontBold' => $fontBold,
+            'adminRemarks' => $adminRemarks,
         ];
     }
 
     /**
-     * Generate Dompdf instance for the certificate.
+     * Generate high-fidelity PDF instance using Puppeteer (Chromium engine with OpenType HarfBuzz text shaping).
+     * Falls back to DomPDF if Puppeteer is unavailable.
      */
-    public function generatePdf(Application $application): DomPdfWrapper
+    public function generatePdf(Application $application): PuppeteerPdf|DomPdfWrapper
     {
         $data = $this->getCertificateData($application);
         $data['isPdf'] = true;
 
+        // 1. Primary Engine: Puppeteer with Headless Chromium & Noto Sans Devanagari embedded
+        try {
+            $html = view('certificates.official', $data)->render();
+            $tempHtml = tempnam(sys_get_temp_dir(), 'cert_html_') . '.html';
+            $tempPdf = tempnam(sys_get_temp_dir(), 'cert_pdf_') . '.pdf';
+            file_put_contents($tempHtml, $html);
+
+            $scriptPath = base_path('scripts/generate-pdf.cjs');
+            $process = new Process([
+                'node',
+                $scriptPath,
+                '--html-file',
+                $tempHtml,
+                '--output',
+                $tempPdf,
+            ], base_path());
+
+            $process->setTimeout(60);
+            $process->run();
+
+            if ($process->isSuccessful() && file_exists($tempPdf) && filesize($tempPdf) > 0) {
+                $pdfBinary = file_get_contents($tempPdf);
+                @unlink($tempHtml);
+                @unlink($tempPdf);
+                return new PuppeteerPdf($pdfBinary);
+            }
+
+            Log::warning('Puppeteer execution did not produce PDF, falling back to DomPDF: ' . $process->getErrorOutput());
+            @unlink($tempHtml);
+            @unlink($tempPdf);
+        } catch (\Throwable $e) {
+            Log::warning('Puppeteer exception, falling back to DomPDF: ' . $e->getMessage());
+        }
+
+        // 2. Safety Fallback: DomPDF
         $pdf = Pdf::loadView('certificates.official', $data);
         $pdf->setPaper('a4', 'portrait');
         $pdf->setOption([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
-            'defaultFont' => 'sans-serif',
+            'defaultFont' => 'Noto Sans Devanagari',
+            'enable_font_subsetting' => true,
         ]);
 
         return $pdf;

@@ -5,17 +5,15 @@
 @endphp
 
 <div class="dropdown notification-dropdown" id="portalNotificationDropdown">
-    <button class="btn btn-sm btn-light border shadow-sm rounded-circle position-relative d-flex align-items-center justify-content-center"
+    <button class="notification-bell-btn position-relative"
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
             id="notificationBellBtn"
-            title="सूचनाहरू (Notifications)"
-            style="width: 38px; height: 38px; background: #ffffff;">
-        <i data-lucide="bell" style="width: 18px; height: 18px; color: #1e293b;"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white notification-badge {{ $unreadCount > 0 ? '' : 'd-none' }}"
-              id="notificationCountBadge"
-              style="font-size: 0.68rem; padding: 0.28em 0.55em;">
+            title="सूचनाहरू (Notifications)">
+        <i class="bi bi-bell-fill" style="font-size: 1.05rem; color: #1e293b;"></i>
+        <span class="notification-badge {{ $unreadCount > 0 ? '' : 'd-none' }}"
+              id="notificationCountBadge">
             {{ $unreadCount > 9 ? '9+' : $unreadCount }}
         </span>
     </button>

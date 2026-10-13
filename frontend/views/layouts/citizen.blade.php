@@ -60,11 +60,7 @@
                             <i data-lucide="layout-dashboard"></i>ड्यासबोर्ड
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('citizen.services.*') ? 'active' : '' }}" href="{{ route('citizen.services.index') }}">
-                            <i data-lucide="briefcase"></i>सरकारी सेवाहरू
-                        </a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('citizen.branches.*') ? 'active' : '' }}" href="{{ route('citizen.branches.index') }}">
                             <i data-lucide="git-branch"></i>विषयगत शाखाहरू
@@ -107,12 +103,7 @@
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
                                 <li><span class="dropdown-item-text text-muted small fw-semibold">{{ auth()->user()->email }}</span></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ route('notifications.index') }}"><i data-lucide="bell" class="me-2 text-primary"></i>सूचना केन्द्र (Notifications)</a></li>
                                 <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-lucide="user" class="me-2"></i>मेरो प्रोफाइल</a></li>
-                                <li><a class="dropdown-item" href="{{ route('citizen.branches.index') }}"><i data-lucide="building-2" class="me-2 text-primary"></i>विषयगत शाखाहरू निर्देशिका</a></li>
-                                <li><a class="dropdown-item" href="{{ route('citizen.verify.index') }}"><i data-lucide="shield-check" class="me-2 text-success"></i>शाखा तथा निवेदन प्रमाणीकरण</a></li>
-                                <li><a class="dropdown-item" href="{{ route('citizen.applications.index') }}"><i data-lucide="file-check-2" class="me-2"></i>मेरो निवेदन स्थिति</a></li>
-                                <li><a class="dropdown-item" href="{{ route('citizen.approved-documents.index') }}"><i data-lucide="award" class="me-2 text-success"></i>प्रमाणित कागजातहरू</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">

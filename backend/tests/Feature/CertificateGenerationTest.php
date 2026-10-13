@@ -143,4 +143,51 @@ class CertificateGenerationTest extends TestCase
         $this->assertStringStartsWith('data:image', $data['qrCodeDataUri']);
         $this->assertEquals('राम प्रसाद रिजाल', $data['applicantName']);
     }
+
+    public function test_nepali_unicode_utility_converts_legacy_preeti_and_normalizes_utf8(): void
+    {
+        // 1. Preeti 'g]kfn' -> Unicode 'नेपाल'
+        $this->assertEquals('नेपाल', \App\Support\NepaliUnicode::preetiToUnicode('g]kfn'));
+
+        // 2. Preeti detection
+        $this->assertTrue(\App\Support\NepaliUnicode::isLikelyPreeti('g]kfn'));
+        $this->assertFalse(\App\Support\NepaliUnicode::isLikelyPreeti('नेपाल सरकार'));
+
+        // 3. Normalization preserves Devanagari text
+        $nepaliText = 'बाह्रदशी गाउँपालिका, कोशी प्रदेश';
+        $this->assertEquals($nepaliText, \App\Support\NepaliUnicode::normalize($nepaliText));
+    }
+
+    public function test_puppeteer_generates_pdf_with_complex_devanagari_ligatures_and_embedded_font(): void
+    {
+        // Complex ligatures: क्ष, त्र, ज्ञ, श्री, र्य, द्ध, ष्ट्र
+        $complexApplication = Application::create([
+            'user_id' => $this->citizen->id,
+            'service_id' => $this->service->id,
+            'applicant_name' => 'श्रीमान् ज्ञानबहादुर क्षेत्री',
+            'applicant_email' => 'gyan@test.np',
+            'applicant_address' => 'बाह्रदशी-५, राष्ट्रिय मार्ग',
+            'status' => 'approved',
+            'certificate_number' => 'LIG123',
+            'issued_at' => now(),
+            'admin_remarks' => 'प्रशासकीय कार्यपालिकाको निर्णय बमोजिम सम्पूर्ण प्रक्रिया रुजु गरियो।',
+        ]);
+
+        $service = app(CertificateService::class);
+        $pdf = $service->generatePdf($complexApplication);
+
+        $this->assertNotNull($pdf);
+        $binary = $pdf->output();
+
+        // 1. Verify standard PDF signature (%PDF-)
+        $this->assertStringStartsWith('%PDF-', $binary);
+
+        // 2. Verify PDF size is substantial (font subset embedded)
+        $this->assertGreaterThan(50000, strlen($binary));
+
+        // 3. Verify data payload has normalized ligatures
+        $data = $service->getCertificateData($complexApplication);
+        $this->assertStringContainsString('श्रीमान् ज्ञानबहादुर क्षेत्री', $data['applicantName']);
+        $this->assertStringContainsString('प्रशासकीय कार्यपालिका', $data['adminRemarks']);
+    }
 }
